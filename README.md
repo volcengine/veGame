@@ -16,4 +16,4 @@
 
 ## 联系我们
 
-如果您遇到任何问题，可通过火山引擎云游戏产品主页（https://www.volcengine.com/product/veGame）获取帮助，我们会竭力为您提供帮助。
+如果您遇到任何问题，可通过火山引擎 [云游戏产品主页]( https://www.volcengine.com/product/veGame) 获取帮助，我们会竭力为您提供帮助。
