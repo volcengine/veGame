@@ -8,15 +8,15 @@
 
 ## 运行示例程序
 
-1. 将代码下载到本地；
-2. 将 Web SDK 复制到 `lib` 文件夹下，重命名为 `veGameSDK-Web.js`，在`config.js` 中补全以下配置信息：
+1. 将 Web SDK demo 代码下载到本地；
+2. 前往火山引擎 [云游戏文档中心]( https://www.volcengine.com/docs/6512/75594)，下载 Web SDK；将其复制到 `lib` 文件夹下，并重命名为 `veGameSDK-Web.js`；
+3. 在 `config.js` 中补全以下配置信息：
 
 ```js
 
 // 实例化 veGameSDK 的参数
 const initConfig = {
-    userId: '',
-    appId: '',
+    userId: ''
 };
 
 // 调用 veGameSDK.start 的参数
@@ -35,8 +35,11 @@ const startConfig = {
 };
 
 ```
-   
+
 3. 在浏览器中打开 `index.html` 文件；
    
 4. 点击开始游戏。
 
+## 参考资料
+
+火山引擎云游戏 Web/H5 客户端 SDK 接口说明：https://www.volcengine.com/docs/6512/75597
