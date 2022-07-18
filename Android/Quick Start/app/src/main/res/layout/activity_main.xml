@@ -4,21 +4,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.volcengine.vegameengine.MainActivity">
+    tools:context=".MainActivity">
 
     <LinearLayout
         android:id="@+id/llGame"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="-48dp"
-        tools:layout_editor_absoluteY="0dp">
+        tools:layout_editor_absoluteY="0dp"
+        tools:ignore="MissingConstraints">
 
         <TextView
+            android:text="@string/game"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/game"
             android:textSize="20sp" />
 
         <LinearLayout
@@ -92,6 +92,34 @@
                 android:hint="请输入清晰度Id"
                 android:inputType="number" />
         </LinearLayout>
+
+        <RadioGroup
+            android:id="@+id/rg_engine"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:text="engine"
+                android:layout_width="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/rb_rtc"
+                android:text="byte_rtc"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+
+            <RadioButton
+                android:id="@+id/rb_llama"
+                android:text="llama"
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
+        </RadioGroup>
     </LinearLayout>
 
     <Button

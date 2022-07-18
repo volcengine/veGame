@@ -23,12 +23,10 @@
 package com.volcengine.vegameengine
 
 import android.Manifest
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.widget.Button
 import android.widget.EditText
+import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.PermissionUtils
 
@@ -38,19 +36,15 @@ class MainActivity : AppCompatActivity() {
 
     // 云游戏
     private lateinit var mGameIdEditText: EditText
+    private lateinit var mRoundEditText: EditText
     private lateinit var mClarityEditText: EditText
-    private lateinit var mRoundIdEditText: EditText
 
-    private var mGameId: String = "7104356860098059039"
-    private var mRoundId: String = "123"
-    private var mClarityId = "1"
-    private lateinit var mSp: SharedPreferences
+    private val testBean =
+        TestBean(gameId = "7104356860098059039", roundId = "123")
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        mSp = getSharedPreferences("demo_sp", MODE_PRIVATE)
-        mGameId = mSp.getString("game_id", mGameId).toString()
-        mRoundId = mSp.getString("round_id", mRoundId).toString()
         setContentView(R.layout.activity_main)
         initView()
     }
@@ -58,91 +52,42 @@ class MainActivity : AppCompatActivity() {
     private fun initView() {
         mBtnStartGame = findViewById(R.id.btn_start_game)
         mGameIdEditText = findViewById(R.id.editText_gameId)
+        mRoundEditText = findViewById(R.id.editText_roundId)
         mClarityEditText = findViewById(R.id.editText_clarityId)
-        mRoundIdEditText = findViewById(R.id.editText_roundId)
-
-        mBtnStartGame.apply {
-            setOnClickListener {
-                GameActivity.startGame(
-                    mGameId,
-                    mRoundId,
-                    mClarityId.toInt(),
-                    this@MainActivity
-                )
+        val rbEngine = findViewById<RadioGroup>(R.id.rg_engine)
+        rbEngine.apply {
+            check(if (testBean.engineType == "BYTE_RTC") R.id.rb_rtc else R.id.rb_llama)
+            setOnCheckedChangeListener { _, id ->
+                testBean.engineType = if (id == R.id.rb_rtc) "BYTE_RTC" else "LLAMA"
             }
         }
-        mGameIdEditText.setText(mGameId)
-        mGameIdEditText.apply {
-            addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
 
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
+        mBtnStartGame.setOnClickListener {
 
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    mGameId = s.toString()
-                    mSp.edit().putString("game_id", mGameId).apply()
-                }
-            })
-        }
-
-        mRoundIdEditText.setText(mRoundId)
-        mRoundIdEditText.apply {
-            addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(s: Editable) {}
-
-                override fun beforeTextChanged(
-                    s: CharSequence, start: Int,
-                    count: Int, after: Int
-                ) {
-                }
-
-                override fun onTextChanged(
-                    s: CharSequence, start: Int,
-                    before: Int, count: Int
-                ) {
-                    mRoundId = s.toString()
-                    mSp.edit().putString("round_id", mRoundId).apply()
-                }
-            })
-        }
-
-        mClarityEditText.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-            }
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                mClarityId = s.toString()
-            }
-
-            override fun afterTextChanged(s: Editable?) {
-
-            }
-        })
-
-        if (!PermissionUtils.isGranted(
-                Manifest.permission.CAMERA,
-                Manifest.permission.RECORD_AUDIO
+            GameActivity.startGame(
+                mGameIdEditText.text.toString(),
+                mRoundEditText.text.toString(),
+                mClarityEditText.text.toString().toInt(),
+                if (rbEngine.checkedRadioButtonId == R.id.rb_rtc) "BYTE_RTC" else "LLAMA",
+                this@MainActivity
             )
-        ) {
-            PermissionUtils.permission(
-                Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO
-            ).request()
         }
+        mGameIdEditText.setText(testBean.gameId)
+        mRoundEditText.setText(testBean.roundId)
+        mClarityEditText.setText(testBean.clarityId)
 
+        PermissionUtils.permission(
+            Manifest.permission.CAMERA,
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.BLUETOOTH,
+        ).request()
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-    }
+
+    data class TestBean(
+        var gameId: String,
+        var roundId: String,
+        var clarityId: String? = "1",
+        var engineType: String = "BYTE_RTC"
+    )
 }

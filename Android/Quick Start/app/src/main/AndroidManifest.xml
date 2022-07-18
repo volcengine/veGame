@@ -14,7 +14,7 @@
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
+    <uses-permission android:name="android.permission.VIBRATE" />
     <!-- 摄像头权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
@@ -33,6 +33,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SDKDemo"
         tools:replace="android:label">
+        <meta-data
+            android:name="VOLC_ENV"
+            android:value="online" />
         <activity
             android:name="com.volcengine.vegameengine.GameActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
