@@ -42,4 +42,7 @@ const startConfig = {
 
 ## 参考资料
 
-火山引擎云游戏 Web/H5 客户端 SDK 接口说明：https://www.volcengine.com/docs/6512/75597
+客户端 SDK 下载：https://www.volcengine.com/docs/6512/75597
+
+注：如果不能访问以上链接，请参考 [开通云游戏服务](https://www.volcengine.com/docs/6512/75577) 说明文档。
+

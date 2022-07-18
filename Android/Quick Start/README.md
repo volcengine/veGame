@@ -56,4 +56,4 @@
 
 客户端 SDK 下载：https://www.volcengine.com/docs/6512/75594
 
-注：如果不能访问以上链接，请参考 开通云游戏服务 说明文档。
+注：如果不能访问以上链接，请参考 [开通云游戏服务](https://www.volcengine.com/docs/6512/75577) 说明文档。
