@@ -51,7 +51,6 @@ public class GameActivity extends AppCompatActivity
     private ViewGroup mContainer;
     public static final String KEY_PARAM_GAME_ID = "gameId";
     public static final String KEY_ROUND_ID = "roundId";
-    public static final String KEY_ENGINE = "engine";
     public static final String KEY_ClARITY_ID = "clarity_id";
 
     public VeGameEngine veGameEngine = VeGameEngine.getInstance();
@@ -147,13 +146,11 @@ public class GameActivity extends AppCompatActivity
             String gameId,
             String roundId,
             int clarityId,
-            String engine,
             Activity activity) {
         Intent intent = new Intent(activity, GameActivity.class);
         intent.putExtra(GameActivity.KEY_PARAM_GAME_ID, gameId);
         intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
         intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
-        intent.putExtra(GameActivity.KEY_ENGINE, engine);
         activity.startActivity(intent);
     }
 

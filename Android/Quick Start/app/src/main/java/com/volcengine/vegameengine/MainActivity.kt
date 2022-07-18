@@ -26,7 +26,6 @@ import android.Manifest
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
-import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
 import com.blankj.utilcode.util.PermissionUtils
 
@@ -54,13 +53,6 @@ class MainActivity : AppCompatActivity() {
         mGameIdEditText = findViewById(R.id.editText_gameId)
         mRoundEditText = findViewById(R.id.editText_roundId)
         mClarityEditText = findViewById(R.id.editText_clarityId)
-        val rbEngine = findViewById<RadioGroup>(R.id.rg_engine)
-        rbEngine.apply {
-            check(if (testBean.engineType == "BYTE_RTC") R.id.rb_rtc else R.id.rb_llama)
-            setOnCheckedChangeListener { _, id ->
-                testBean.engineType = if (id == R.id.rb_rtc) "BYTE_RTC" else "LLAMA"
-            }
-        }
 
         mBtnStartGame.setOnClickListener {
 
@@ -68,7 +60,6 @@ class MainActivity : AppCompatActivity() {
                 mGameIdEditText.text.toString(),
                 mRoundEditText.text.toString(),
                 mClarityEditText.text.toString().toInt(),
-                if (rbEngine.checkedRadioButtonId == R.id.rb_rtc) "BYTE_RTC" else "LLAMA",
                 this@MainActivity
             )
         }
