@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mClarityEditText: EditText
 
     private val testBean =
-        TestBean(gameId = "7104356860098059039", roundId = "123")
+        TestBean(gameId = "7112353257888193324", roundId = "123")
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,7 +59,7 @@ class MainActivity : AppCompatActivity() {
             GameActivity.startGame(
                 mGameIdEditText.text.toString(),
                 mRoundEditText.text.toString(),
-                mClarityEditText.text.toString().toInt(),
+                mClarityEditText.text.toString().toIntOrNull()?:1,
                 this@MainActivity
             )
         }
