@@ -60,16 +60,6 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_pause" />
 
-        <Button
-            android:id="@+id/btn_release"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/release"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btn_resume" />
-
-
-
         <androidx.core.widget.NestedScrollView
             android:layout_width="wrap_content"
             android:layout_height="300dp"

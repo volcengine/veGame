@@ -25,24 +25,21 @@ package com.volcengine.vegameengine;
 import android.app.Application;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-
 import com.blankj.utilcode.util.CrashUtils;
 import com.volcengine.androidcloud.common.log.AcLog;
-import com.volcengine.androidcloud.plugin.CpuABIType;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.outinterface.ICloudCoreManagerStatusListener;
-import com.volcengine.cloudphone.apiservice.outinterface.InitListener;
-
-import org.jetbrains.annotations.NotNull;
 
 public class InitApplication extends Application {
 
     private static final String TAG = "TAG_INIT";
 
+    private static InitApplication instance = null;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        instance = this;
         CrashUtils.init(); //默认日志目录：/storage/emulated/0/Android/data/com.example.sdkdemo/files/crash/
         VeGameEngine.setDebug(true);
         VeGameEngine.setLogger(new AcLog.ILogger() {
@@ -82,44 +79,28 @@ public class InitApplication extends Application {
             public void onInitialed() {
                 AcLog.d(TAG, "onInitialed :" + cloudPhoneManager.getStatus());
             }
-
-            @Override
-            public void onStarted() {
-                AcLog.d(TAG, "onStarted : " + cloudPhoneManager.getStatus());
-            }
-
-            @Override
-            public void onPaused() {
-                AcLog.d(TAG, "onPaused : " + cloudPhoneManager.getStatus());
-            }
-
-            @Override
-            public void onResumed() {
-                AcLog.d(TAG, "onResumed : " + cloudPhoneManager.getStatus());
-            }
-
-            @Override
-            public void onStopped(boolean b) {
-                AcLog.d(TAG, "onStopped : " + cloudPhoneManager.getStatus());
-            }
-
-            @Override
-            public void onEnd() {
-                AcLog.d(TAG, "onEnd : " + cloudPhoneManager.getStatus());
-            }
         });
-        VeGameEngine.getInstance().init(this, new GsonConverter(), CpuABIType.ABI_armeabi_v7a, new InitListener() {
-            @Override
-            public void initSuccess() {
-                Log.d(TAG, "init success");
-                Log.d(TAG, "serviceDeviceId:" + VeGameEngine.getInstance().getServiceDeviceId());
-            }
 
-            @Override
-            public void initFail(int i, @NonNull @NotNull String s) {
-                Log.d(TAG, "init fail" + s);
-            }
-        });
+//        VeGameEngine.getInstance().init(this, new GsonConverter(), CpuABIType.ABI_armeabi_v7a, new InitListener() {
+//            @Override
+//            public void initSuccess() {
+//                Log.d(TAG, "init success");
+//
+//                FileChannelEngine.getInstance().init();
+//                FileChannelEngine.getInstance().setDebug(true);
+//
+//                Log.d(TAG, "serviceDeviceId:" + VeGameEngine.getInstance().getServiceDeviceId());
+//            }
+//
+//            @Override
+//            public void initFail(int i, @NonNull @NotNull String s) {
+//                Log.d(TAG, "init fail" + s);
+//            }
+//        });
         Log.d(TAG, "deviceId" + VeGameEngine.getInstance().getDeviceId());
+    }
+
+    public static InitApplication getInstance() {
+        return instance;
     }
 }

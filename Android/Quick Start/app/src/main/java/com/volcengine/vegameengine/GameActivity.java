@@ -43,22 +43,22 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.volcengine.androidcloud.common.log.AcLog;
-import com.volcengine.androidcloud.common.model.CommonEvent;
-import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.CameraId;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
-import com.volcengine.cloudgame.GamePlayConfig;
-import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
 import com.volcengine.cloudphone.apiservice.IMessageChannel;
 import com.volcengine.cloudphone.apiservice.StreamProfileChangeCallBack;
 import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
-import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
-import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
 import com.volcengine.vegameengine.util.ScreenUtil;
+import com.volcengine.androidcloud.common.log.AcLog;
+import com.volcengine.androidcloud.common.model.StreamStats;
+import com.volcengine.cloudcore.common.mode.LocalStreamStats;
+import com.volcengine.cloudgame.GamePlayConfig;
+import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
+import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 
 import java.util.Arrays;
 import java.util.List;
@@ -68,19 +68,14 @@ public class GameActivity extends AppCompatActivity
         implements IGamePlayerListener, IStreamListener {
 
     private final String TAG = getClass().getSimpleName();
-
     private ViewGroup mContainer;
-    private Bundle mBundle;
     public static final String KEY_PARAM_GAME_ID = "gameId";
     public static final String KEY_ROUND_ID = "roundId";
     public static final String KEY_ClARITY_ID = "clarity_id";
-
     private ConstraintLayout mContainers;
 
     private boolean mIsHideBtns = false;
-
     public VeGameEngine veGameEngine = VeGameEngine.getInstance();
-    private IMessageChannel mMessageChannel;
 
     private Button btnClarity0, btnClarity1, btnClarity2, btnClarity3, btnClarity4, btnClarity5;
     private TextView tvInfo;
@@ -98,8 +93,8 @@ public class GameActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        mBundle = getIntent().getBundleExtra("bundle");
         setContentView(R.layout.activity_play);
+        mContainer = findViewById(R.id.container);
         initView();
         initClarity();
         intConfig();
@@ -118,16 +113,18 @@ public class GameActivity extends AppCompatActivity
         GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
         String userId = "userid" + System.currentTimeMillis();
         AcLog.d(TAG, "userId: " + userId);
-        builder.userId(userId) // 用户userid
-                .ak("")  // 必填参数，申请云游戏服务临时 ak
-                .sk("")  // 必填参数，申请云游戏服务临时 sk
-                .token("") //必填参数，申请云游戏服务临时 token
-                .container(mContainer)//必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
-                .roundId(mBundle.getString(KEY_ROUND_ID))//必填参数，自定义roundId
-                .videoStreamProfileId(mBundle.getInt(KEY_ClARITY_ID)) // 选填参数，清晰度ID
-                .gameId(mBundle.getString(KEY_PARAM_GAME_ID)) //必填 gameId
-                .streamListener(GameActivity.this);
+        Intent intent = getIntent();
 
+        // ak, sk， token。请通过火山引擎申请ak获得，详情见https://www.volcengine.com/docs/6512/75577
+        builder.userId(userId) // 用户userid
+                .ak("请通过火山引擎申请ak") // 必填 ACEP ak
+                .sk("请通过火山引擎申请sk")  // 必填 ACEP sk
+                .token("请通过火山引擎申请token") // acep session
+                .container(mContainer)//必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
+                .roundId(intent.getStringExtra(KEY_ROUND_ID))//必填参数，自定义roundId
+                .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
+                .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) //必填 gameId
+                .streamListener(GameActivity.this);
 
         GamePlayConfig phoneConfig = builder.build();
         // 初始化成功才可以调用
@@ -160,8 +157,9 @@ public class GameActivity extends AppCompatActivity
         super.onDestroy();
     }
 
-    public void onPlayEvent(CommonEvent commonEvent) {
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -218,23 +216,6 @@ public class GameActivity extends AppCompatActivity
         }
     }
 
-
-    @Override
-    public void onError(int i, String s) {
-        String msg = "onError:" + i + ", " + s;
-        Toast.makeText(this, "code" + i + "msg" + s, Toast.LENGTH_SHORT).show();
-        Log.e(TAG, msg);
-    }
-
-    @Override
-    public void onWarning(int i, String s) {
-    }
-
-    @Override
-    public void onNetworkChanged(int i) {
-        Log.d(TAG, String.format("%d", i));
-    }
-
     private void initView() {
         mContainer = findViewById(R.id.container);
 
@@ -284,9 +265,6 @@ public class GameActivity extends AppCompatActivity
         findViewById(R.id.btn_resume).setOnClickListener(v -> {
             veGameEngine.resume();
         });
-        findViewById(R.id.btn_release).setOnClickListener(v -> {
-            veGameEngine.release();
-        });
 
         findViewById(R.id.btn_throw_exception).setOnClickListener(v -> {
             throw new IllegalArgumentException("test");
@@ -327,17 +305,6 @@ public class GameActivity extends AppCompatActivity
             VeGameEngine.getInstance().getClipBoardServiceManager()
                     .sendClipBoardMessage(ClipData.newPlainText("test", "test data"));
         });
-
-    }
-
-    public static void startGame(String gameId, String roundId, int clarityId, Activity activity) {
-        Intent intent = new Intent(activity, GameActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putString(GameActivity.KEY_PARAM_GAME_ID, gameId);
-        bundle.putString(GameActivity.KEY_ROUND_ID, roundId);
-        bundle.putInt(GameActivity.KEY_ClARITY_ID, clarityId);
-        intent.putExtra("bundle", bundle);
-        activity.startActivity(intent);
     }
 
     private void setRotation(int rotation) {
@@ -351,6 +318,37 @@ public class GameActivity extends AppCompatActivity
                 setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
                 break;
         }
+    }
+
+    @Override
+    public void onError(int i, String s) {
+        String msg = "onError:" + i + ", " + s;
+        Toast.makeText(this, "code" + i + "msg" + s, Toast.LENGTH_SHORT).show();
+        Log.e(TAG, msg);
+    }
+
+    @Override
+    public void onWarning(int i, String s) {
+        Log.d(TAG, "warn: code " + i + ", msg" + s);
+    }
+
+    @Override
+    public void onNetworkChanged(int i) {
+        Log.d(TAG, String.format("%d", i));
+    }
+
+
+    public static void startGame(
+            String gameId,
+            String roundId,
+            int clarityId,
+            Activity activity) {
+        Intent intent = new Intent(activity, GameActivity.class);
+        intent.putExtra(GameActivity.KEY_PARAM_GAME_ID, gameId);
+        if (roundId.isEmpty() || roundId.equals("")) roundId="123";
+        intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
+        intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -391,6 +389,11 @@ public class GameActivity extends AppCompatActivity
     }
 
     @Override
+    public void onLocalStreamStats(LocalStreamStats localStreamStats) {
+        AcLog.d(TAG, "LocalStreamStats" + localStreamStats);
+    }
+
+    @Override
     public void onStreamConnectionStateChanged(int i) {
         Log.d(TAG, "onStreamConnectionStateChanged " + i);
     }
@@ -398,8 +401,7 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        AcLog.d(TAG, "onConfigurationChanged newConfig " + newConfig.toString());
-        veGameEngine.rotate(newConfig.orientation);
+        AcLog.d(TAG, "onConfigurationChanged newConfig " + newConfig);
     }
 
     @Override
@@ -410,7 +412,6 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onRotation(int i) {
         Log.d(TAG, "rotation" + i);
-        setRotation(i);
     }
 
     @Override
