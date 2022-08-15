@@ -8,4 +8,4 @@
 
 ## 参考文档
 
-火山引擎云游戏[服务端OpenAPI说明文档](https://www.volcengine.com/docs/6512/75581).
+火山引擎云游戏 [服务端OpenAPI说明文档](https://www.volcengine.com/docs/6512/75581)。
