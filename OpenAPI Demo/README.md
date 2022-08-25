@@ -9,3 +9,5 @@
 ## 参考文档
 
 火山引擎云游戏 [服务端OpenAPI说明文档](https://www.volcengine.com/docs/6512/75581)。
+
+注：如果不能访问以上 OpenAPI 说明文档，可能是因为你没有权限。请参考 [开通云游戏服务](https://www.volcengine.com/docs/6512/75577) 说明文档，获取相关权限。
