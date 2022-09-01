@@ -1,4 +1,4 @@
-﻿# 云游戏 Web SDK demo
+# 云游戏 Web SDK demo
 
 这个开源项目展示了火山引擎云游戏 Web SDK 的以下功能：
 
@@ -9,7 +9,7 @@
 ## 运行示例程序
 
 1. 将 Web SDK demo 代码下载到本地；
-2. 前往火山引擎 [云游戏文档中心]( https://www.volcengine.com/docs/6512/75594)，下载 Web SDK；将其复制到 `lib` 文件夹下，并重命名为 `veGameSDK-Web.js`；
+2. 前往火山引擎 [云游戏文档中心]( https://www.volcengine.com/docs/6512/75594)，下载 Web SDK；解压后将其复制到 `lib` 文件夹下，并重命名为 `veGameSDK-Web.js`；
 3. 在 `config.js` 中补全以下配置信息：
 
 ```js
@@ -22,9 +22,7 @@ const initConfig = {
 // 调用 veGameSDK.start 的参数
 // 以下只列出调用参数的必传参数，更多参数参考 Web SDK 的使用文档
 const startConfig = {
-    roundId: '',
     gameId: '',
-    rotation: 'landscape', // landscape：横屏启动; portrait：竖屏启动
     token: {
         CurrentTime: '',
         ExpiredTime: '',
@@ -32,6 +30,8 @@ const startConfig = {
         AccessKeyID: '',
         SecretAccessKey: ''
     },
+    roundId: '',
+    rotation: 'landscape', // landscape：横屏启动; portrait：竖屏启动
 };
 
 ```
@@ -45,4 +45,3 @@ const startConfig = {
 客户端 SDK 下载：https://www.volcengine.com/docs/6512/75597
 
 注：如果不能访问以上链接，请参考 [开通云游戏服务](https://www.volcengine.com/docs/6512/75577) 说明文档。
-
