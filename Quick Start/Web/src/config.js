@@ -7,11 +7,11 @@ const initConfig = {
 const startConfig = {
   gameId: '',
   token: {
-      CurrentTime: '',
-      ExpiredTime: '',
-      SessionToken: '',
-      AccessKeyID: '',
-      SecretAccessKey: ''
+    CurrentTime: '',
+    ExpiredTime: '',
+    SessionToken: '',
+    AccessKeyID: '',
+    SecretAccessKey: '',
   },
   roundId: '',
   rotation: 'landscape', // landscape：横屏启动; portrait：竖屏启动

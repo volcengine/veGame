@@ -1,43 +1,46 @@
-const startBtn = document.getElementById("start-btn");
-const stopBtn = document.getElementById("stop-btn");
-const playerEl = document.getElementById("player");
+const startBtn = document.getElementById('start-btn');
+const stopBtn = document.getElementById('stop-btn');
+const playerEl = document.getElementById('player');
 
-const isPC = !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+const isPC =
+  !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
 
 function init() {
   // 引入 lib 下的 火山引擎云游戏 SDK 之后，会在 window 上挂一个全局变量，veGameSDK
   const veGameInstance = new window.veGameSDK({
     ...(window.initConfig || {}),
-    domId: "player",
+    domId: 'player',
     isDebug: true,
     isPC,
   });
-  veGameInstance.on("message-channel-connected", (message) => {
-    console.log("message-channel-connected", message);
+  veGameInstance.on('message-channel-connected', (message) => {
+    console.log('message-channel-connected', message);
   });
 
-  veGameInstance.on("error", (error) => {
-    console.log("error", error);
+  veGameInstance.on('error', (error) => {
+    console.log('error', error);
   });
 
-  veGameInstance.on("message", (message) => {
-    console.log("message", message);
+  veGameInstance.on('message', (message) => {
+    console.log('message', message);
   });
 
-  veGameInstance.on("message-received", ({ msg }) => {
-    console.log("message-received", msg);
+  veGameInstance.on('message-received', ({ msg }) => {
+    console.log('message-received', msg);
     const { command } = msg;
     if (command === 8) {
       veGameInstance?.destory();
-      alert("游戏超时退出");
+      alert('游戏超时退出');
     }
   });
   return veGameInstance;
 }
 
 function bindEventListener(veGameInstance) {
-  startBtn.addEventListener("click", async () => {
-    console.log("start btn click", veGameInstance);
+  startBtn.addEventListener('click', async () => {
+    console.log('start btn click', veGameInstance);
     try {
       await veGameInstance?.start({
         ...(window.startConfig || {}),
@@ -51,8 +54,8 @@ function bindEventListener(veGameInstance) {
     }
   });
 
-  stopBtn.addEventListener("click", async () => {
-    console.log("stop btn click", veGameInstance);
+  stopBtn.addEventListener('click', async () => {
+    console.log('stop btn click', veGameInstance);
     try {
       await veGameInstance?.stop();
       veGameInstance.destroy();
@@ -70,15 +73,7 @@ function toggleDom() {
 }
 
 function toggleHidden(el) {
-  el.classList.toggle("hidden");
-}
-
-function hideDom(el) {
-  el.classList.add("hidden");
-}
-
-function showDom(el) {
-  el.classList.remove("hidden");
+  el.classList.toggle('hidden');
 }
 
 (() => {
