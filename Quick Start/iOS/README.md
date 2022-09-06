@@ -14,8 +14,9 @@
 ## 快速开始
 
 1. 克隆或下载 Demo 工程源文件到本地。
-2. 执行 pod install 指令，成功之后，打开 VeGamePublicDemo.xcworkspace。
-3. 相关的运行信息，在打印的 log 中查看。
+2. 前往火山引擎云游戏产品文档中心下载云游戏 iOS 客户端 SDK 文件。解压后将 veGameSDK 文件夹拷贝到Demo 工程的 VeGameDemo 目录下。 
+3. 执行 pod install 指令，成功之后，打开 VeGamePublicDemo.xcworkspace。
+4. 相关的运行信息，在打印的 log 中查看。
 
 ## 接入的流程
 
