@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+    <Button
+        android:id="@+id/btn_magnetic"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/magnetic" />
+
+    <Button
+        android:id="@+id/btn_acc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/accelerator" />
+
+    <Button
+        android:id="@+id/btn_gravity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gravity" />
+
+    <Button
+        android:id="@+id/btn_orientation_sensor"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/orientation" />
+
+    <Button
+        android:id="@+id/btn_gyroscope"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/gyroscope" />
+
+    <Button
+        android:id="@+id/btn_vibrator"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/vibrator" />
+</LinearLayout>

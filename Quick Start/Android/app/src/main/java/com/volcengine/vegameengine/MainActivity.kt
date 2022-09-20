@@ -39,7 +39,11 @@ class MainActivity : AppCompatActivity() {
     private lateinit var mClarityEditText: EditText
 
     private val testBean =
-        TestBean(gameId = "7112353257888193324", roundId = "123")
+//        TestBean("7101281528306473742", "123")
+        TestBean(gameId = "7141307766504807181", roundId = "123")
+//        TestBean(gameId = "7112353257888193324", roundId = "123")
+//        TestBean(gameId = "7120105339898321695", roundId = "123")
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

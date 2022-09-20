@@ -40,6 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/stop"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="DuplicateSpeakableTextCheck" />
@@ -49,6 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/pause"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_stop" />
 
@@ -57,6 +59,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/resume"
+            android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btn_pause" />
 
@@ -74,40 +77,59 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <Button
-                    android:id="@+id/btn_clarity_0"
+                    android:id="@+id/btn_audio"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="0" />
+                    android:text="@string/audio" />
 
                 <Button
-                    android:id="@+id/btn_clarity_1"
+                    android:id="@+id/btn_camera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="1" />
+                    android:text="@string/camera" />
 
                 <Button
-                    android:id="@+id/btn_clarity_2"
+                    android:id="@+id/btn_clarity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="2" />
+                    android:text="@string/clarity" />
 
                 <Button
-                    android:id="@+id/btn_clarity_3"
+                    android:id="@+id/btn_clipboard"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="3" />
+                    android:text="@string/clipboard" />
 
                 <Button
-                    android:id="@+id/btn_clarity_4"
+                    android:id="@+id/btn_file_channel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="4" />
+                    android:visibility="gone"
+                    android:text="@string/file_channel" />
 
                 <Button
-                    android:id="@+id/btn_clarity_5"
+                    android:id="@+id/btn_ground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="5" />
+                    android:text="@string/ground" />
+
+                <Button
+                    android:id="@+id/btn_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/location" />
+
+                <Button
+                    android:id="@+id/btn_message_channel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/message_channel" />
+
+                <Button
+                    android:id="@+id/btn_pod_control"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/pod_control" />
 
                 <Button
                     android:id="@+id/btn_orientation"
@@ -116,60 +138,16 @@
                     android:text="@string/roll_orientation" />
 
                 <Button
-                    android:id="@+id/btn_throw_exception"
+                    android:id="@+id/btn_sensor"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="test Exception" />
+                    android:text="@string/sensor" />
 
                 <Button
-                    android:id="@+id/btn_restart"
+                    android:id="@+id/btn_unclassified"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/restart" />
-
-                <Button
-                    android:id="@+id/btn_magnetic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/magnetic" />
-
-                <Button
-                    android:id="@+id/btn_acc"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/acc" />
-
-                <Button
-                    android:id="@+id/btn_gravity"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gravity" />
-
-                <Button
-                    android:id="@+id/btn_orientation_sensor"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/orientation_sensor" />
-
-                <Button
-                    android:id="@+id/btn_gyroscope"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/gyroscope" />
-
-                <Button
-                    android:id="@+id/btn_vibrator"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/vibrator" />
-
-                <Button
-                    android:id="@+id/btn_send_clipData"
-                    android:layout_width="wrap_content"
-                    android:visibility="gone"
-                    android:layout_height="wrap_content"
-                    android:text="@string/send_clipboard_data" />
+                    android:text="@string/unclassified" />
 
             </LinearLayout>
 
@@ -188,24 +166,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
 
-
                 <Button
                     android:id="@+id/btn_show_info"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="show Info"/>
+
                 <TextView
                     android:id="@+id/tv_info"
                     android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:textColor="@color/white" />
 
                 <Button
                     android:id="@+id/btn_background"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:text="background"/>
 
             </LinearLayout>

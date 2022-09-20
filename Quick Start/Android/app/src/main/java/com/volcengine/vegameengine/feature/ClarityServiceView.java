@@ -1,0 +1,60 @@
+package com.volcengine.vegameengine.feature;
+
+import android.content.Context;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+
+import com.volcengine.cloudphone.apiservice.StreamProfileManager;
+import com.volcengine.vegameengine.R;
+
+import java.util.Arrays;
+import java.util.List;
+
+public class ClarityServiceView extends LinearLayout {
+
+    private Button btnClarity0, btnClarity1, btnClarity2, btnClarity3, btnClarity4, btnClarity5;
+    private StreamProfileManager mClarityService;
+
+    public ClarityServiceView(Context context, StreamProfileManager clarityService) {
+        super(context);
+        this.mClarityService = clarityService;
+        inflate(context, R.layout.dialog_clarity, this);
+        setOrientation(VERTICAL);
+        btnClarity0 = findViewById(R.id.btn_clarity_0);
+        btnClarity1 = findViewById(R.id.btn_clarity_1);
+        btnClarity2 = findViewById(R.id.btn_clarity_2);
+        btnClarity3 = findViewById(R.id.btn_clarity_3);
+        btnClarity4 = findViewById(R.id.btn_clarity_4);
+        btnClarity5 = findViewById(R.id.btn_clarity_5);
+        findViewById(R.id.btn_send).setOnClickListener(v -> {
+            EditText editText = findViewById(R.id.et_clarity_id);
+            int clarityId = Integer.parseInt(editText.getText().toString());
+            mClarityService.switchVideoStreamProfileId(clarityId);
+        });
+        initClarity();
+    }
+
+    private void initClarity() {
+        List<Button> list = Arrays.asList(btnClarity0, btnClarity1, btnClarity2, btnClarity3, btnClarity4, btnClarity5);
+        for (int i = 0; i < list.size(); i++) {
+            Button button = list.get(i);
+            int id = i;
+            button.setOnClickListener(v -> mClarityService.switchVideoStreamProfileId(id));
+        }
+        btnClarity4.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClarityService.switchVideoStreamProfileId(6);
+
+            }
+        });
+        btnClarity5.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mClarityService.switchVideoStreamProfileId(16);
+            }
+        });
+    }
+}

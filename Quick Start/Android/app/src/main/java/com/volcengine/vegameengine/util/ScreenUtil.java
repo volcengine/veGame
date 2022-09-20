@@ -29,7 +29,9 @@ import android.os.Build;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.volcengine.androidcloud.common.utils.Utils;
+import com.blankj.utilcode.util.Utils;
+
+//import com.volcengine.androidcloud.common.utils.Utils;
 
 public class ScreenUtil {
     public static void adaptHolePhone(Activity activity) {

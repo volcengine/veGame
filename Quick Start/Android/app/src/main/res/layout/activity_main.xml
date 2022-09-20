@@ -16,7 +16,7 @@
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:text="@string/game"
+            android:text="@string/cloud_game"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="20sp" />
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="center"
-                android:text="@string/gameId" />
+                android:text="@string/game_id" />
 
             <EditText
                 android:id="@+id/editText_gameId"
@@ -98,7 +98,7 @@
         android:id="@+id/btn_start_game"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/start"
+        android:text="@string/start_game"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
