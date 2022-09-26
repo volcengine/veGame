@@ -8,6 +8,7 @@ const isPC =
   );
 
 function init() {
+  console.log(window.initConfig)
   // 引入 lib 下的 火山引擎云游戏 SDK 之后，会在 window 上挂一个全局变量，veGameSDK
   const veGameInstance = new window.veGameSDK({
     ...(window.initConfig || {}),
@@ -15,6 +16,8 @@ function init() {
     isDebug: true,
     isPC,
   });
+  console.log('veGameSDK version', veGameInstance.getVersion());
+
   veGameInstance.on('message-channel-connected', (message) => {
     console.log('message-channel-connected', message);
   });
