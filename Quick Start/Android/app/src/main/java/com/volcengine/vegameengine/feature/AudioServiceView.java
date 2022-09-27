@@ -31,7 +31,7 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
     private final Button mBtnLocalAudioPlaybackVolume;
     private final Button mBtnRemoteAudioPlaybackVolume;
     private final Button mBtnLocalAudioCaptureVolume;
-    private final AudioService mAudioManager;
+    private final AudioService mAudioService;
     private static final String TAG = "AudioServiceView";
 
     {
@@ -41,14 +41,14 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         mDeviceArray.put(R.id.rb_bluetooth_headset, AudioPlaybackDevice.HEADSET_BLUETOOTH);
     }
 
-    public AudioServiceView(Context context, AudioService audioManager) {
+    public AudioServiceView(Context context, AudioService audioService) {
         super(context);
-        this.mAudioManager = audioManager;
+        this.mAudioService = audioService;
         inflate(context, R.layout.dialog_audio, this);
 
         setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
-        mAudioManager.setAudioControlListener(this);
+        mAudioService.setAudioControlListener(this);
 
 
         findViewById(R.id.btn_mute).setOnClickListener(v -> {
@@ -65,8 +65,8 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         });
 
         SwitchCompat switchCompat = findViewById(R.id.switch_enable);
-        switchCompat.setChecked(mAudioManager.isEnableSendAudioStream());
-        switchCompat.setOnCheckedChangeListener((compoundButton, b) -> mAudioManager.setEnableSendAudioStream(b));
+        switchCompat.setChecked(mAudioService.isEnableSendAudioStream());
+        switchCompat.setOnCheckedChangeListener((compoundButton, b) -> mAudioService.setEnableSendAudioStream(b));
 
         findViewById(R.id.btn_start_send_audio).setOnClickListener(view -> onRemoteAudioStartRequest());
         findViewById(R.id.btn_stop_send_audio).setOnClickListener(view -> onRemoteAudioStopRequest());
@@ -75,35 +75,35 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         mSbLocalAudioPlaybackVolume = findViewById(R.id.sb_local_audio_playback_volume);
         mBtnLocalAudioPlaybackVolume = findViewById(R.id.btn_local_audio_playback_volume);
         mBtnLocalAudioPlaybackVolume.setOnClickListener(view -> {
-            int volume = mAudioManager.getLocalAudioPlaybackVolume();
+            int volume = mAudioService.getLocalAudioPlaybackVolume();
             mSbLocalAudioPlaybackVolume.setProgress(volume);
             mBtnLocalAudioPlaybackVolume.setText(String.format(Locale.getDefault(), "get[%d]", volume));
         });
-        mSbLocalAudioPlaybackVolume.setProgress(mAudioManager.getLocalAudioPlaybackVolume());
+        mSbLocalAudioPlaybackVolume.setProgress(mAudioService.getLocalAudioPlaybackVolume());
         mSbLocalAudioPlaybackVolume.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
         // 远端音量
         mSbRemoteAudioPlaybackVolume = findViewById(R.id.sb_remote_audio_playback_volume);
-        mSbRemoteAudioPlaybackVolume.setProgress(mAudioManager.getRemoteAudioPlaybackVolume());
+        mSbRemoteAudioPlaybackVolume.setProgress(mAudioService.getRemoteAudioPlaybackVolume());
         mBtnRemoteAudioPlaybackVolume = findViewById(R.id.btn_remote_audio_playback_volume);
         mBtnRemoteAudioPlaybackVolume.setOnClickListener(view -> {
-            int volume = mAudioManager.getRemoteAudioPlaybackVolume();
+            int volume = mAudioService.getRemoteAudioPlaybackVolume();
             mSbRemoteAudioPlaybackVolume.setProgress(volume);
             mBtnRemoteAudioPlaybackVolume.setText(String.format(Locale.getDefault(), "get[%d]", volume));
         });
         mSbRemoteAudioPlaybackVolume.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
         // 本地采集音量
         mSbLocalAudioCaptureVolume = findViewById(R.id.sb_local_audio_capture_volume);
-        mSbLocalAudioCaptureVolume.setProgress(mAudioManager.getLocalAudioCaptureVolume());
+        mSbLocalAudioCaptureVolume.setProgress(mAudioService.getLocalAudioCaptureVolume());
         mBtnLocalAudioCaptureVolume = findViewById(R.id.btn_local_audio_capture_volume);
         mBtnLocalAudioCaptureVolume.setOnClickListener(view -> {
-            int volume = mAudioManager.getLocalAudioCaptureVolume();
+            int volume = mAudioService.getLocalAudioCaptureVolume();
             mSbLocalAudioCaptureVolume.setProgress(volume);
             mBtnLocalAudioCaptureVolume.setText(String.format(Locale.getDefault(), "get[%d]", volume));
         });
         mSbLocalAudioCaptureVolume.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
 
         mRgAudioPlaybackDevice = findViewById(R.id.rg_audio_playback_device);
-        int audioPlaybackDevice = mAudioManager.getAudioPlaybackDevice();
+        int audioPlaybackDevice = mAudioService.getAudioPlaybackDevice();
         for (int i = 0; i < mDeviceArray.size(); i++) {
             int id = mDeviceArray.keyAt(i);
             if (mDeviceArray.get(id) == audioPlaybackDevice) {
@@ -135,11 +135,11 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         public void onStopTrackingTouch(SeekBar seekBar) {
             int i = seekBar.getProgress();
             if (seekBar == mSbLocalAudioCaptureVolume) {
-                mAudioManager.setLocalAudioCaptureVolume(i);
+                mAudioService.setLocalAudioCaptureVolume(i);
             } else if (seekBar == mSbRemoteAudioPlaybackVolume) {
-                mAudioManager.setRemoteAudioPlaybackVolume(i);
+                mAudioService.setRemoteAudioPlaybackVolume(i);
             } else if (seekBar == mSbLocalAudioPlaybackVolume) {
-                mAudioManager.setLocalAudioPlaybackVolume(i);
+                mAudioService.setLocalAudioPlaybackVolume(i);
             }
         }
     };
@@ -149,7 +149,7 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         public void onCheckedChanged(RadioGroup radioGroup, int i) {
             int device = mDeviceArray.get(i);
             Log.d(TAG, "onCheckedChanged: device = " + device);
-            mAudioManager.setAudioPlaybackDevice(device);
+            mAudioService.setAudioPlaybackDevice(device);
         }
     };
 
@@ -168,8 +168,8 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
                     @SuppressLint("MissingPermission")
                     @Override
                     public void onGranted() {
-                        mAudioManager.startSendAudioStream();
-                        Log.d(TAG, "startSendAudioStream: " + mAudioManager.isSendingAudioStream());
+                        mAudioService.startSendAudioStream();
+                        Log.d(TAG, "startSendAudioStream: " + mAudioService.isSendingAudioStream());
                     }
 
                     @Override
@@ -182,8 +182,8 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
     @Override
     public void onRemoteAudioStopRequest() {
         Log.d(TAG, "onRemoteAudioStopRequest() called");
-        mAudioManager.stopSendAudioStream();
-        Log.d(TAG, "stopSendAudioStream: " + mAudioManager.isSendingAudioStream());
+        mAudioService.stopSendAudioStream();
+        Log.d(TAG, "stopSendAudioStream: " + mAudioService.isSendingAudioStream());
     }
 
     @Override

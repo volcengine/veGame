@@ -25,6 +25,16 @@ package com.volcengine.vegameengine;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
 
+import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_CAMERA;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_SENSOR;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
+
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Intent;
@@ -55,6 +65,7 @@ import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.CamaraManagerView;
 import com.volcengine.vegameengine.feature.ClarityServiceView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
+import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.GamePadServiceView;
 import com.volcengine.vegameengine.feature.GroundManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
@@ -63,6 +74,7 @@ import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.SensorView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
 import com.volcengine.vegameengine.util.DialogUtils;
+import com.volcengine.vegameengine.util.Feature;
 import com.volcengine.vegameengine.util.ScreenUtil;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
@@ -83,12 +95,14 @@ public class GameActivity extends AppCompatActivity
     private ViewGroup mContainer;
     public static final String KEY_PARAM_GAME_ID = "gameId";
     public static final String KEY_ROUND_ID = "roundId";
-    public static final String KEY_ClARITY_ID = "clarity_id";
+    public static final String KEY_ClARITY_ID = "clarityId";
+    public static final String KEY_FEATURE_ID = "featureId";
     private ConstraintLayout mContainers;
 
     private boolean mIsHideButtons = false;
     public VeGameEngine veGameEngine = VeGameEngine.getInstance();
     DialogUtils.DialogWrapper mDialogWrapper;
+    FileChannelView mFileChannelView;
 
     private Button btnAudio, btnCamera, btnClarity, btnClipBoard, btnFileChannel, btnGround, btnLocation;
     private Button btnMessageChannel, btnPodControl, btnRotation, btnSensor, btnUnclassified;
@@ -115,15 +129,24 @@ public class GameActivity extends AppCompatActivity
         String sk = "Qd6HIiRCbZT59xQYxJwXzm9ihglPHK4eh4/M2fGME9DQK/Y7+i8L9zoN99j32wyIQ54HSWReGjqjeo7x8BAMzQ==";
         String token = "STS2eyJMVEFjY2Vzc0tleUlkIjoiQUtMVFl6ZzFOMlUyTlRGbVpqZGhORGsyWm1FMU56ZG1ZVFEyTVdGak1EaGlaVGMiLCJBY2Nlc3NLZXlJZCI6IkFLVFBNamN3TTJVeU9UUTVNbUppTkRrNFkyRm1PRFZsT1dRM04yUXlNelE0WVdFIiwiU2lnbmVkU2VjcmV0QWNjZXNzS2V5IjoiU1UxTnZhcFJUTlkzMHVtckR3c2ZTRFFPRDNJUmNNb1lwd2dpVG0vMFptazJJbVlPQy9ZdklNYXk3clpjcUFYTUtwdzcwclFOVTlzQWhHdFdHTU1Ddm9ZMzRqYXNTTFIxSTJabGtEbXphK2xhc1JIRDRDY21ONWsrajJaRUF6T0MiLCJFeHBpcmVkVGltZSI6MTcyMzMyMzE0NywiUG9saWN5U3RyaW5nIjoie1wiU3RhdGVtZW50XCI6W3tcIkVmZmVjdFwiOlwiQWxsb3dcIixcIkFjdGlvblwiOltcIipcIl0sXCJSZXNvdXJjZVwiOltcIipcIl19XX0iLCJTaWduYXR1cmUiOiIzMWE5OGI4YTc1MTFjMTQwMDczOTQ4Yzg0OWI3NjMxMWRkYmZhODQyYTk2ZTg3NDFhNTE2MmQ2Zjk1NWQ2MDM0In0=";
 
-        // ak, sk， token。请通过火山引擎申请ak获得，详情见https://www.volcengine.com/docs/6512/75577
+        // ak, sk, token。请通过火山引擎申请ak获得，详情见https://www.volcengine.com/docs/6512/75577
         builder.userId(userId) // 用户userid
                 .ak(ak) // 必填 ACEP ak
                 .sk(sk)  // 必填 ACEP sk
-                .token(token) // acep session
+                .token(token) // 必填 ACEP session
                 .container(mContainer)//必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
                 .roundId(intent.getStringExtra(KEY_ROUND_ID))//必填参数，自定义roundId
                 .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
-                .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) //必填 gameId
+                .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) //必填, gameId
+                .enableAcceleratorSensor(true)
+                .enableGravitySensor(true)
+                .enableGyroscopeSensor(true)
+                .enableMagneticSensor(true)
+                .enableOrientationSensor(true)
+                .enableVibrator(true)
+                .enableLocationService(true)
+                .enableLocalKeyboard(true)
+                .enableFileChannel(true)
                 .streamListener(GameActivity.this);
 
         GamePlayConfig gamePlayConfig = builder.build();
@@ -154,12 +177,22 @@ public class GameActivity extends AppCompatActivity
     @Override
     protected void onDestroy() {
         veGameEngine.stop();
+        if (mDialogWrapper != null) {
+            mDialogWrapper.release();
+            mDialogWrapper = null;
+        }
+        if (mFileChannelView != null) {
+            mFileChannelView = null;
+        }
         super.onDestroy();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (mFileChannelView != null) {
+            mFileChannelView.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -252,55 +285,22 @@ public class GameActivity extends AppCompatActivity
             mContainers.setVisibility(mIsHideButtons ? View.GONE : View.VISIBLE);
         });
 
-        btnAudio.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new AudioServiceView(this, veGameEngine.getAudioService()));
-            mDialogWrapper.show();
-        });
-
-        btnCamera.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new CamaraManagerView(this, veGameEngine.getCameraManager()));
-            mDialogWrapper.show();
-        });
-
         btnClarity.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new ClarityServiceView(this, veGameEngine.getClarityService()));
-            mDialogWrapper.show();
+            if (veGameEngine.getClarityService() != null) {
+                mDialogWrapper = DialogUtils.wrapper(
+                        new ClarityServiceView(this, veGameEngine.getClarityService()));
+                mDialogWrapper.show();
+            }
+            else {
+                AcLog.d(TAG, "ClarityService is null!");
+            }
         });
 
-        btnClipBoard.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager()));
-            mDialogWrapper.show();
-        });
-        //TODO:添加文件通道接口
-        btnFileChannel.setOnClickListener(view -> {});
-
-        btnGround.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new GroundManagerView(this, veGameEngine.getGameGroundSwitchManager()));
-            mDialogWrapper.show();
-        });
-
-        btnLocation.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new LocationServiceView(this, veGameEngine.getLocationService()));
-            mDialogWrapper.show();
-        });
-
-        btnMessageChannel.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new MessageChannelView(this, veGameEngine.getMessageChannel()));
-            mDialogWrapper.show();
-        });
-
-        btnPodControl.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(
-                    new PodControlServiceView(this, veGameEngine.getPodControlService()));
-            mDialogWrapper.show();
-        });
+//        btnGround.setOnClickListener(view -> {
+//            mDialogWrapper = DialogUtils.wrapper(
+//                    new GroundManagerView(this, veGameEngine.getGameGroundSwitchManager()));
+//            mDialogWrapper.show();
+//        });
 
         btnRotation.setOnClickListener(view -> {
             if (isLand) {
@@ -311,15 +311,115 @@ public class GameActivity extends AppCompatActivity
             isLand = !isLand;
         });
 
-        btnSensor.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(new SensorView(this));
-            mDialogWrapper.show();
-        });
-
-        btnUnclassified.setOnClickListener(view -> {
-            mDialogWrapper = DialogUtils.wrapper(new UnclassifiedView(this));
-            mDialogWrapper.show();
-        });
+        switch (getIntent().getIntExtra(KEY_FEATURE_ID, -1)) {
+            case FEATURE_AUDIO:
+                btnAudio.setVisibility(View.VISIBLE);
+                btnAudio.setOnClickListener(view -> {
+                    if (veGameEngine.getAudioService() != null) {
+                        mDialogWrapper = DialogUtils.wrapper(
+                                new AudioServiceView(this, veGameEngine.getAudioService()));
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "AudioService is null!");
+                    }
+                });
+                break;
+            case FEATURE_CAMERA:
+                btnCamera.setVisibility(View.VISIBLE);
+                btnCamera.setOnClickListener(view -> {
+                    if (veGameEngine.getCameraManager() != null) {
+                        mDialogWrapper = DialogUtils.wrapper(
+                                new CamaraManagerView(this, veGameEngine.getCameraManager()));
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "CameraManager is null!");
+                    }
+                });
+                break;
+            case FEATURE_CLIPBOARD:
+                btnClipBoard.setVisibility(View.VISIBLE);
+                btnClipBoard.setOnClickListener(view -> {
+                    if (veGameEngine.getClipBoardServiceManager() != null) {
+                        mDialogWrapper = DialogUtils.wrapper(
+                                new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager()));
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "ClipBoardServiceManager is null!");
+                    }
+                });
+                break;
+            case FEATURE_FILE_CHANNEL:
+                btnFileChannel.setVisibility(View.VISIBLE);
+                btnFileChannel.setOnClickListener(view -> {
+                    if (veGameEngine.getFileChannel() != null) {
+                        mFileChannelView = new FileChannelView(this, veGameEngine.getFileChannel());
+                        mDialogWrapper = DialogUtils.wrapper(mFileChannelView);
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "FileChannel is null!");
+                    }
+                });
+                break;
+            case FEATURE_LOCATION:
+                btnLocation.setVisibility(View.VISIBLE);
+                btnLocation.setOnClickListener(view -> {
+                    if (veGameEngine.getLocationService() != null) {
+                        mDialogWrapper = DialogUtils.wrapper(
+                                new LocationServiceView(this, veGameEngine.getLocationService()));
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "LocationService is null!");
+                    }
+                });
+                break;
+            case FEATURE_MESSAGE_CHANNEL:
+                btnMessageChannel.setVisibility(View.VISIBLE);
+                btnMessageChannel.setOnClickListener(view -> {
+                    if (veGameEngine.getMessageChannel() != null) {
+                        mDialogWrapper = DialogUtils.wrapper(
+                                new MessageChannelView(this, veGameEngine.getMessageChannel()));
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "MessageChannel is null!");
+                    }
+                });
+                break;
+            case FEATURE_POD_CONTROL:
+                btnPodControl.setVisibility(View.VISIBLE);
+                btnPodControl.setOnClickListener(view -> {
+                    if (veGameEngine.getPodControlService() != null) {
+                        mDialogWrapper = DialogUtils.wrapper(
+                                new PodControlServiceView(this, veGameEngine.getPodControlService()));
+                        mDialogWrapper.show();
+                    }
+                    else {
+                        AcLog.d(TAG, "PodControlService is null!");
+                    }
+                });
+                break;
+            case FEATURE_SENSOR:
+                btnSensor.setVisibility(View.VISIBLE);
+                btnSensor.setOnClickListener(view -> {
+                    mDialogWrapper = DialogUtils.wrapper(new SensorView(this));
+                    mDialogWrapper.show();
+                });
+                break;
+            case FEATURE_UNCLASSIFIED:
+                btnUnclassified.setVisibility(View.VISIBLE);
+                btnUnclassified.setOnClickListener(view -> {
+                    mDialogWrapper = DialogUtils.wrapper(new UnclassifiedView(this));
+                    mDialogWrapper.show();
+                });
+                break;
+            default:
+                break;
+        }
     }
 
     private void setRotation(int rotation) {
@@ -357,12 +457,14 @@ public class GameActivity extends AppCompatActivity
             String gameId,
             String roundId,
             int clarityId,
-            Activity activity) {
+            Activity activity,
+            int featureId) {
         Intent intent = new Intent(activity, GameActivity.class);
         intent.putExtra(GameActivity.KEY_PARAM_GAME_ID, gameId);
         if (roundId.isEmpty() || roundId.equals("")) roundId="123";
         intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
         intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
+        intent.putExtra(GameActivity.KEY_FEATURE_ID, featureId);
         activity.startActivity(intent);
     }
 

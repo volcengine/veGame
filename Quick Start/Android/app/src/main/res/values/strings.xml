@@ -1,7 +1,7 @@
 <resources>
 
-    <string name="app_name">VeGameEngine</string>
-    <string name="start_game">StartGame</string>
+    <string name="app_name">火山引擎云游戏</string>
+    <string name="start_game">开始游戏</string>
     <string name="start_phone">StartPhone</string>
     <string name="cloud_game">云游戏</string>
     <string name="cloud_phone">云手机</string>
@@ -11,6 +11,7 @@
     <string name="game_id">gameId</string>
     <string name="session_id">sessionId</string>
     <string name="round_id">roundId</string>
+    <string name="clarity_id">clarityId</string>
     <string name="hide_or_show">点击隐藏/显示</string>
 
     <!--  音频相关  -->
@@ -29,6 +30,8 @@
     <string name="earpiece">听筒</string>
     <string name="speakerphone">扬声器</string>
     <string name="bluetooth_headset">蓝牙耳机</string>
+    <string name="audio_title">音频</string>
+    <string name="audio_desc">在该演示中你可以体验与音频相关的功能接口</string>
 
     <!--  相机相关  -->
     <string name="camera">相机</string>
@@ -37,6 +40,8 @@
     <string name="push_multiple_streams">推送多路流</string>
     <string name="switch_rear_camera">切换后置相机</string>
     <string name="switch_front_camera">切换前置相机</string>
+    <string name="camera_title">相机</string>
+    <string name="camera_desc">在该演示中你可以体验与相机相关的功能接口</string>
 
     <!--  清晰度相关  -->
     <string name="clarity">清晰度</string>
@@ -44,9 +49,13 @@
     <!--  剪切板相关  -->
     <string name="clipboard">剪切板</string>
     <string name="send_clipboard_data">发送剪切板模拟数据</string>
+    <string name="clipboard_title">剪切板</string>
+    <string name="clipboard_desc">在该演示中你可以体验与剪切板相关的功能接口</string>
 
     <!-- 文件通道相关 -->
     <string name="file_channel">文件通道</string>
+    <string name="file_channel_title">文件通道</string>
+    <string name="file_channel_desc">在该演示中你可以体验与文件通道相关的功能接口</string>
 
     <!-- Ground相关 -->
     <string name="ground">ground</string>
@@ -62,6 +71,8 @@
     <string name="set_remote_location">设置云端位置</string>
     <string name="longitude">经度</string>
     <string name="latitude">纬度</string>
+    <string name="location_title">定位服务</string>
+    <string name="location_desc">在该演示中你可以体验与定位相关的功能接口</string>
 
     <!--消息通道相关-->
     <string name="message_channel">消息通道</string>
@@ -79,6 +90,8 @@
         <item>ACK_MultiChannel</item>
         <item>Timeout_MultiChannel</item>
     </string-array>
+    <string name="message_channel_title">消息通道</string>
+    <string name="message_channel_desc">在该演示中你可以体验与消息通道相关的功能接口</string>
 
     <!--PCTest相关（待添加）-->
 
@@ -87,6 +100,8 @@
     <string name="set_keep_alive_time">设置Pod保活时间3min</string>
     <string name="set_auto_recycle_time">设置无操作3分钟</string>
     <string name="switch_background">开启前后台切换</string>
+    <string name="pod_control_title">Pod控制</string>
+    <string name="pod_control_desc">在该演示中你可以体验与Pod控制相关的功能接口</string>
 
     <!--  旋转相关  -->
     <string name="roll_orientation">旋转</string>
@@ -99,6 +114,8 @@
     <string name="orientation">方向传感器</string>
     <string name="gyroscope">陀螺仪</string>
     <string name="vibrator">振动</string>
+    <string name="sensor_title">传感器</string>
+    <string name="sensor_desc">在该演示中你可以体验与传感器相关的功能接口</string>
 
     <!--  杂项相关  -->
     <string name="unclassified">杂项</string>
@@ -108,5 +125,10 @@
     <string name="resume">恢复拉流</string>
     <string name="back">返回</string>
     <string name="test_exception">异常测试</string>
+    <string name="unclassified_title">其他</string>
+    <string name="unclassified_desc">在该演示中你可以体验其他的功能接口</string>
+
+    <string name="official_website">火山官网</string>
+    <string name="official_website_url">https://www.volcengine.com/docs/6512/75577</string>
 
 </resources>

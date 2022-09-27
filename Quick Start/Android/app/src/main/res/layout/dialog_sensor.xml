@@ -4,40 +4,53 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_enable_magnetic"
+        android:text="@string/magnetic"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_magnetic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/magnetic" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_enable_accelerator"
+        android:text="@string/accelerator"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_acc"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/accelerator" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_enable_gravity"
+        android:text="@string/gravity"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_gravity"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/gravity" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_enable_orientation"
+        android:text="@string/orientation"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_orientation_sensor"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/orientation" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_enable_gyroscope"
+        android:text="@string/gyroscope"
+        android:layout_marginVertical="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_gyroscope"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/gyroscope" />
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/switch_enable_vibrator"
+        android:text="@string/vibrator"
+        android:layout_marginTop="10dp"
+        android:layout_marginHorizontal="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
-    <Button
-        android:id="@+id/btn_vibrator"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/vibrator" />
 </LinearLayout>

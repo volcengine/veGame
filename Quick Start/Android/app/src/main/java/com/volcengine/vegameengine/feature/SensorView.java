@@ -3,52 +3,83 @@ package com.volcengine.vegameengine.feature;
 import android.content.Context;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Toast;
+
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.vegameengine.R;
 
 public class SensorView extends ScrollView {
 
-    private boolean isOpenAcc = true;
-    private boolean isOpenMagnetic = true;
-    private boolean isOpenVibrator = true;
-    private boolean isOpenOrientationSensor = true;
-    private boolean isOpenGravity = true;
-    private boolean isOpenGyroscopeSensor = true;
-
     public SensorView(Context context) {
         super(context);
-//        setOrientation(VERTICAL);
         inflate(context, R.layout.dialog_sensor, this);
 
-        findViewById(R.id.btn_acc).setOnClickListener(v -> {
-            isOpenAcc = !isOpenAcc;
-            VeGameEngine.getInstance().enableAccelSensor(isOpenAcc);
+        SwitchCompat switchCompatAccelSensor = findViewById(R.id.switch_enable_accelerator);
+        switchCompatAccelSensor.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VeGameEngine.getInstance().enableAccelSensor(isChecked);
+            if (isChecked) {
+                Toast.makeText(context, "加速度传感器已开启", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "加速度传感器已关闭", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        findViewById(R.id.btn_magnetic).setOnClickListener(v -> {
-            isOpenMagnetic = !isOpenMagnetic;
-            VeGameEngine.getInstance().enableMagneticSensor(isOpenMagnetic);
+        SwitchCompat switchCompatMagnetic = findViewById(R.id.switch_enable_magnetic);
+        switchCompatMagnetic.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VeGameEngine.getInstance().enableMagneticSensor(isChecked);
+            if (isChecked) {
+                Toast.makeText(context, "磁力传感器已开启", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "磁力传感器已关闭", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        findViewById(R.id.btn_gravity).setOnClickListener(v -> {
-            isOpenGravity = !isOpenGravity;
-            VeGameEngine.getInstance().enableGravitySensor(isOpenGravity);
+        SwitchCompat switchCompatGravity = findViewById(R.id.switch_enable_gravity);
+        switchCompatGravity.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VeGameEngine.getInstance().enableGravitySensor(isChecked);
+            if (isChecked) {
+                Toast.makeText(context, "重力传感器已开启", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "重力传感器已关闭", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        findViewById(R.id.btn_orientation_sensor).setOnClickListener(v -> {
-            isOpenOrientationSensor = !isOpenOrientationSensor;
-            VeGameEngine.getInstance().enableOrientationSensor(isOpenOrientationSensor);
+        SwitchCompat switchCompatOrientation = findViewById(R.id.switch_enable_orientation);
+        switchCompatOrientation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VeGameEngine.getInstance().enableOrientationSensor(isChecked);
+            if (isChecked) {
+                Toast.makeText(context, "方向传感器已开启", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "方向传感器已关闭", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        findViewById(R.id.btn_gyroscope).setOnClickListener(v -> {
-            isOpenGyroscopeSensor = !isOpenGyroscopeSensor;
-            VeGameEngine.getInstance().enableGyroscopeSensor(isOpenGyroscopeSensor);
+        SwitchCompat switchCompatGyroscope = findViewById(R.id.switch_enable_gyroscope);
+        switchCompatGyroscope.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VeGameEngine.getInstance().enableGyroscopeSensor(isChecked);
+            if (isChecked) {
+                Toast.makeText(context, "陀螺仪已开启", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "陀螺仪已关闭", Toast.LENGTH_SHORT).show();
+            }
         });
 
-        findViewById(R.id.btn_vibrator).setOnClickListener(v -> {
-            isOpenVibrator = !isOpenVibrator;
-            VeGameEngine.getInstance().enableVibrator(isOpenVibrator);
+        SwitchCompat switchCompatVibrator = findViewById(R.id.switch_enable_vibrator);
+        switchCompatVibrator.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            VeGameEngine.getInstance().enableVibrator(isChecked);
+            if (isChecked) {
+                Toast.makeText(context, "振动已开启", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(context, "振动已关闭", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
