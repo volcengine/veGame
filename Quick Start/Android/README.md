@@ -106,13 +106,13 @@ android {
 ```
 ### 快速开始
 
-#### 初始化VeGameEngine
+#### 一、初始化VeGameEngine
 
 ```java
 VeGameEngine veGameEngine = VeGameEngine.getInstance();
 ```
 
-#### 配置GamePlayConfig
+#### 二、配置GamePlayConfig
 
 ```java
 GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
@@ -139,7 +139,7 @@ builder.userId(userId) // 用户userid
 GamePlayConfig gamePlayConfig = builder.build();
 ```
 
-#### 开始游戏
+#### 三、开始游戏
 ```java
 veGameEngine.start(gamePlayConfig, IGamePlayerListener playerListener);
 ```
