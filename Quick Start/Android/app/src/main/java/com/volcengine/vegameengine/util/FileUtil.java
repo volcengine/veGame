@@ -1,4 +1,4 @@
-package com.volcengine.vegameengine.filechannel;
+package com.volcengine.vegameengine.util;
 
 import android.content.Context;
 import android.database.Cursor;

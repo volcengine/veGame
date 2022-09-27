@@ -4,6 +4,7 @@ import android.Manifest
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
 import com.blankj.utilcode.util.PermissionUtils
 import com.volcengine.vegameengine.base.BaseSampleActivity
 import com.volcengine.vegameengine.util.Feature
@@ -36,13 +37,18 @@ class FeatureActivity : BaseSampleActivity() {
 
         btnStartGame = findViewById(R.id.btn_start_game)
         btnStartGame.setOnClickListener{
-            GameActivity.startGame(
-                etGameId.text.toString(),
-                etRoundId.text.toString(),
-                etClarityId.text.toString().toIntOrNull() ?: 1,
-                this,
-                mFeatureId
-            )
+            if (etGameId.text.isNotEmpty()) {
+                GameActivity.startGame(
+                    etGameId.text.toString(),
+                    etRoundId.text.toString(),
+                    etClarityId.text.toString().toIntOrNull() ?: 1,
+                    this,
+                    mFeatureId
+                )
+            }
+            else {
+                Toast.makeText(this, "请输入gameId", Toast.LENGTH_SHORT).show()
+            }
         }
 
         PermissionUtils.permission(
