@@ -304,9 +304,9 @@ public class GameActivity extends AppCompatActivity
 
         btnRotation.setOnClickListener(view -> {
             if (isLand) {
-                onRotation(270);
+                setRotation(270);
             } else {
-                onRotation(0);
+                setRotation(0);
             }
             isLand = !isLand;
         });
@@ -518,7 +518,8 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        AcLog.d(TAG, "onConfigurationChanged newConfig " + newConfig);
+        AcLog.d(TAG, "onConfigurationChanged newConfig " + newConfig.orientation);
+        VeGameEngine.getInstance().rotate(newConfig.orientation);
     }
 
     @Override

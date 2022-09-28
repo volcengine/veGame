@@ -18,7 +18,9 @@ class FeatureActivity : BaseSampleActivity() {
     private lateinit var etClarityId: EditText
     private lateinit var btnStartGame: Button
 
-    private val testBean = TestBean("7104356860098059039")
+//    private val testBean = TestBean("7104356860098059039") // 抖音
+    private val testBean = TestBean("7137612624056851237") // 桌面宠物
+//    private val testBean = TestBean("7068174254205967111") // 汤姆猫
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mFeatureId = intent.getIntExtra("featureId", -1)
