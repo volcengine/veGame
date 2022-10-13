@@ -125,9 +125,9 @@ public class GameActivity extends AppCompatActivity
         String userId = "userid" + System.currentTimeMillis();
         AcLog.d(TAG, "userId: " + userId);
         Intent intent = getIntent();
-        String ak = "AKTPMjcwM2UyOTQ5MmJiNDk4Y2FmODVlOWQ3N2QyMzQ4YWE";
-        String sk = "Qd6HIiRCbZT59xQYxJwXzm9ihglPHK4eh4/M2fGME9DQK/Y7+i8L9zoN99j32wyIQ54HSWReGjqjeo7x8BAMzQ==";
-        String token = "STS2eyJMVEFjY2Vzc0tleUlkIjoiQUtMVFl6ZzFOMlUyTlRGbVpqZGhORGsyWm1FMU56ZG1ZVFEyTVdGak1EaGlaVGMiLCJBY2Nlc3NLZXlJZCI6IkFLVFBNamN3TTJVeU9UUTVNbUppTkRrNFkyRm1PRFZsT1dRM04yUXlNelE0WVdFIiwiU2lnbmVkU2VjcmV0QWNjZXNzS2V5IjoiU1UxTnZhcFJUTlkzMHVtckR3c2ZTRFFPRDNJUmNNb1lwd2dpVG0vMFptazJJbVlPQy9ZdklNYXk3clpjcUFYTUtwdzcwclFOVTlzQWhHdFdHTU1Ddm9ZMzRqYXNTTFIxSTJabGtEbXphK2xhc1JIRDRDY21ONWsrajJaRUF6T0MiLCJFeHBpcmVkVGltZSI6MTcyMzMyMzE0NywiUG9saWN5U3RyaW5nIjoie1wiU3RhdGVtZW50XCI6W3tcIkVmZmVjdFwiOlwiQWxsb3dcIixcIkFjdGlvblwiOltcIipcIl0sXCJSZXNvdXJjZVwiOltcIipcIl19XX0iLCJTaWduYXR1cmUiOiIzMWE5OGI4YTc1MTFjMTQwMDczOTQ4Yzg0OWI3NjMxMWRkYmZhODQyYTk2ZTg3NDFhNTE2MmQ2Zjk1NWQ2MDM0In0=";
+        String ak = "your_ak";
+        String sk = "your_sk";
+        String token = "your_token";
 
         // ak, sk, token: 请通过火山引擎申请ak获得，详情见https://www.volcengine.com/docs/6512/75577
         builder.userId(userId) // 用户userid
