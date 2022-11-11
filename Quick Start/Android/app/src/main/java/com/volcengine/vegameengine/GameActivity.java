@@ -298,21 +298,12 @@ public class GameActivity extends AppCompatActivity
             mContainers.setVisibility(mIsHideButtons ? View.GONE : View.VISIBLE);
         });
 
-        btnClarity.setOnClickListener(view -> {
-            if (veGameEngine.getClarityService() != null) {
-                mDialogWrapper = DialogUtils.wrapper(
-                        new ClarityServiceView(this, veGameEngine.getClarityService()));
-                mDialogWrapper.show();
-            }
-            else {
-                AcLog.d(TAG, "ClarityService is null!");
-            }
-        });
-//        btnGround.setOnClickListener(view -> {
-//            mDialogWrapper = DialogUtils.wrapper(
-//                    new GroundManagerView(this, veGameEngine.getGameGroundSwitchManager()));
-//            mDialogWrapper.show();
-//        });
+        if (veGameEngine.getClarityService() != null) {
+            new ClarityServiceView(this, veGameEngine.getClarityService(), btnClarity);
+        }
+        else {
+            AcLog.d(TAG, "ClarityService is null!");
+        }
 
         btnRotation.setOnClickListener(view -> {
             if (isLand) {
@@ -338,30 +329,20 @@ public class GameActivity extends AppCompatActivity
                 });
                 break;
             case FEATURE_CAMERA:
-                btnCamera.setVisibility(View.VISIBLE);
-                btnCamera.setOnClickListener(view -> {
-                    if (veGameEngine.getCameraManager() != null) {
-                        mDialogWrapper = DialogUtils.wrapper(
-                                new CamaraManagerView(this, veGameEngine.getCameraManager()));
-                        mDialogWrapper.show();
-                    }
-                    else {
-                        AcLog.d(TAG, "CameraManager is null!");
-                    }
-                });
+                if (veGameEngine.getCameraManager() != null) {
+                    new CamaraManagerView(this, veGameEngine.getCameraManager(), btnCamera);
+                }
+                else {
+                    AcLog.d(TAG, "CameraManager is null!");
+                }
                 break;
             case FEATURE_CLIPBOARD:
-                btnClipBoard.setVisibility(View.VISIBLE);
-                btnClipBoard.setOnClickListener(view -> {
-                    if (veGameEngine.getClipBoardServiceManager() != null) {
-                        mDialogWrapper = DialogUtils.wrapper(
-                                new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager()));
-                        mDialogWrapper.show();
-                    }
-                    else {
-                        AcLog.d(TAG, "ClipBoardServiceManager is null!");
-                    }
-                });
+                if (veGameEngine.getClipBoardServiceManager() != null) {
+                    new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager(), btnClipBoard);
+                }
+                else {
+                    AcLog.d(TAG, "ClipBoardServiceManager is null!");
+                }
                 break;
             case FEATURE_FILE_CHANNEL:
                 btnFileChannel.setVisibility(View.VISIBLE);
@@ -376,58 +357,37 @@ public class GameActivity extends AppCompatActivity
                     }
                 });
                 break;
+            case FEATURE_LOCAL_INPUT:
+                if (veGameEngine.getLocalInputManager() != null) {
+                    new LocalInputManagerView(this, veGameEngine.getLocalInputManager(), btnLocalInput);
+                }
+                else {
+                    AcLog.d(TAG, "LocalInputManager is null!");
+                }
+                break;
             case FEATURE_LOCATION:
-                btnLocation.setVisibility(View.VISIBLE);
-                btnLocation.setOnClickListener(view -> {
-                    if (veGameEngine.getLocationService() != null) {
-                        mDialogWrapper = DialogUtils.wrapper(
-                                new LocationServiceView(this, veGameEngine.getLocationService()));
-                        mDialogWrapper.show();
-                    }
-                    else {
-                        AcLog.d(TAG, "LocationService is null!");
-                    }
-                });
+                if (veGameEngine.getLocationService() != null) {
+                    new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
+                }
+                else {
+                    AcLog.d(TAG, "LocationService is null!");
+                }
                 break;
             case FEATURE_MESSAGE_CHANNEL:
-                btnMessageChannel.setVisibility(View.VISIBLE);
-                btnMessageChannel.setOnClickListener(view -> {
-                    if (veGameEngine.getMessageChannel() != null) {
-                        mDialogWrapper = DialogUtils.wrapper(
-                                new MessageChannelView(this, veGameEngine.getMessageChannel()));
-                        mDialogWrapper.show();
-                    }
-                    else {
-                        AcLog.d(TAG, "MessageChannel is null!");
-                    }
-                });
+                if (veGameEngine.getMessageChannel() != null) {
+                    new MessageChannelView(this, veGameEngine.getMessageChannel(), btnMessageChannel);
+                }
+                else {
+                    AcLog.d(TAG, "MessageChannel is null!");
+                }
                 break;
             case FEATURE_POD_CONTROL:
-                btnPodControl.setVisibility(View.VISIBLE);
-                btnPodControl.setOnClickListener(view -> {
-                    if (veGameEngine.getPodControlService() != null) {
-                        mDialogWrapper = DialogUtils.wrapper(
-                                new PodControlServiceView(this, veGameEngine.getPodControlService()));
-                        mDialogWrapper.show();
-                    }
-                    else {
-                        AcLog.d(TAG, "PodControlService is null!");
-                    }
-                });
-                break;
-            case FEATURE_SENSOR:
-                btnSensor.setVisibility(View.VISIBLE);
-                btnSensor.setOnClickListener(view -> {
-                    mDialogWrapper = DialogUtils.wrapper(new SensorView(this));
-                    mDialogWrapper.show();
-                });
-                break;
-            case FEATURE_UNCLASSIFIED:
-                btnUnclassified.setVisibility(View.VISIBLE);
-                btnUnclassified.setOnClickListener(view -> {
-                    mDialogWrapper = DialogUtils.wrapper(new UnclassifiedView(this));
-                    mDialogWrapper.show();
-                });
+                if (veGameEngine.getPodControlService() != null) {
+                    new PodControlServiceView(this, veGameEngine.getPodControlService(), btnPodControl);
+                }
+                else {
+                    AcLog.d(TAG, "PodControlService is null!");
+                }
                 break;
             case FEATURE_PROBE_NETWORK:
                 btnProbeNetwork.setVisibility(View.VISIBLE);
@@ -436,13 +396,12 @@ public class GameActivity extends AppCompatActivity
                     dialog.showProbeNetworkDialogForGame(mGamePlayConfig);
                 });
                 break;
-            case FEATURE_LOCAL_INPUT:
-                if (veGameEngine.getLocalInputManager() != null) {
-                    new LocalInputManagerView(this, veGameEngine.getLocalInputManager(), btnLocalInput);
-                }
-                else {
-                    AcLog.d(TAG, "LocalInputManager is null!");
-                }
+            case FEATURE_SENSOR:
+                new SensorView(this, btnSensor);
+                break;
+            case FEATURE_UNCLASSIFIED:
+                new UnclassifiedView(this, btnUnclassified);
+                break;
             default:
                 break;
         }
