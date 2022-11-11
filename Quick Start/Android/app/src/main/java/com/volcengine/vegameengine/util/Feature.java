@@ -10,4 +10,6 @@ public class Feature {
     public static final int FEATURE_POD_CONTROL = 7;
     public static final int FEATURE_SENSOR = 8;
     public static final int FEATURE_UNCLASSIFIED = 9;
+    public static final int FEATURE_PROBE_NETWORK = 10;
+    public static final int FEATURE_LOCAL_INPUT = 11;
 }

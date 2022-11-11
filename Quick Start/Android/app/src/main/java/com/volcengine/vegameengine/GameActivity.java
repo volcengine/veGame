@@ -29,9 +29,11 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CAMERA;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_SENSOR;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
 
@@ -58,6 +60,8 @@ import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
 import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.IProbeNetworkListener;
+import com.volcengine.cloudphone.apiservice.ProbeStats;
 import com.volcengine.cloudphone.apiservice.StreamProfileChangeCallBack;
 import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
@@ -68,9 +72,11 @@ import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.GamePadServiceView;
 import com.volcengine.vegameengine.feature.GroundManagerView;
+import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.feature.MessageChannelView;
 import com.volcengine.vegameengine.feature.PodControlServiceView;
+import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.SensorView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
 import com.volcengine.vegameengine.util.DialogUtils;
@@ -103,9 +109,11 @@ public class GameActivity extends AppCompatActivity
     public VeGameEngine veGameEngine = VeGameEngine.getInstance();
     DialogUtils.DialogWrapper mDialogWrapper;
     FileChannelView mFileChannelView;
+    private GamePlayConfig mGamePlayConfig;
 
     private Button btnAudio, btnCamera, btnClarity, btnClipBoard, btnFileChannel, btnGround, btnLocation;
     private Button btnMessageChannel, btnPodControl, btnRotation, btnSensor, btnUnclassified;
+    private Button btnProbeNetwork, btnLocalInput;
     private TextView tvInfo;
     private boolean isLand = false;
     private boolean isShowInfo = false;
@@ -125,9 +133,12 @@ public class GameActivity extends AppCompatActivity
         String userId = "userid" + System.currentTimeMillis();
         AcLog.d(TAG, "userId: " + userId);
         Intent intent = getIntent();
-        String ak = "your_ak";
-        String sk = "your_sk";
-        String token = "your_token";
+        String ak = "AKTPMjcwM2UyOTQ5MmJiNDk4Y2FmODVlOWQ3N2QyMzQ4YWE";
+        String sk = "Qd6HIiRCbZT59xQYxJwXzm9ihglPHK4eh4/M2fGME9DQK/Y7+i8L9zoN99j32wyIQ54HSWReGjqjeo7x8BAMzQ==";
+        String token = "STS2eyJMVEFjY2Vzc0tleUlkIjoiQUtMVFl6ZzFOMlUyTlRGbVpqZGhORGsyWm1FMU56ZG1ZVFEyTVdGak1EaGlaVGMiLCJBY2Nlc3NLZXlJZCI6IkFLVFBNamN3TTJVeU9UUTVNbUppTkRrNFkyRm1PRFZsT1dRM04yUXlNelE0WVdFIiwiU2lnbmVkU2VjcmV0QWNjZXNzS2V5IjoiU1UxTnZhcFJUTlkzMHVtckR3c2ZTRFFPRDNJUmNNb1lwd2dpVG0vMFptazJJbVlPQy9ZdklNYXk3clpjcUFYTUtwdzcwclFOVTlzQWhHdFdHTU1Ddm9ZMzRqYXNTTFIxSTJabGtEbXphK2xhc1JIRDRDY21ONWsrajJaRUF6T0MiLCJFeHBpcmVkVGltZSI6MTcyMzMyMzE0NywiUG9saWN5U3RyaW5nIjoie1wiU3RhdGVtZW50XCI6W3tcIkVmZmVjdFwiOlwiQWxsb3dcIixcIkFjdGlvblwiOltcIipcIl0sXCJSZXNvdXJjZVwiOltcIipcIl19XX0iLCJTaWduYXR1cmUiOiIzMWE5OGI4YTc1MTFjMTQwMDczOTQ4Yzg0OWI3NjMxMWRkYmZhODQyYTk2ZTg3NDFhNTE2MmQ2Zjk1NWQ2MDM0In0=";
+//        String ak = "your_ak";
+//        String sk = "your_sk";
+//        String token = "your_token";
 
         // ak, sk, token: 请通过火山引擎申请ak获得，详情见https://www.volcengine.com/docs/6512/75577
         builder.userId(userId) // 用户userid
@@ -149,9 +160,9 @@ public class GameActivity extends AppCompatActivity
                 .enableFileChannel(true)
                 .streamListener(GameActivity.this);
 
-        GamePlayConfig gamePlayConfig = builder.build();
+        mGamePlayConfig = builder.build();
         // 初始化成功才可以调用
-        veGameEngine.start(gamePlayConfig, GameActivity.this);
+        veGameEngine.start(mGamePlayConfig, GameActivity.this);
     }
 
     @Override
@@ -274,6 +285,8 @@ public class GameActivity extends AppCompatActivity
         btnRotation = findViewById(R.id.btn_orientation);
         btnSensor = findViewById(R.id.btn_sensor);
         btnUnclassified = findViewById(R.id.btn_unclassified);
+        btnProbeNetwork = findViewById(R.id.btn_probe_network);
+        btnLocalInput = findViewById(R.id.btn_local_input);
 
         findViewById(R.id.btn_show_info).setOnClickListener(v -> {
             isShowInfo = !isShowInfo;
@@ -295,7 +308,6 @@ public class GameActivity extends AppCompatActivity
                 AcLog.d(TAG, "ClarityService is null!");
             }
         });
-
 //        btnGround.setOnClickListener(view -> {
 //            mDialogWrapper = DialogUtils.wrapper(
 //                    new GroundManagerView(this, veGameEngine.getGameGroundSwitchManager()));
@@ -417,6 +429,19 @@ public class GameActivity extends AppCompatActivity
                     mDialogWrapper.show();
                 });
                 break;
+            case FEATURE_PROBE_NETWORK:
+                btnProbeNetwork.setVisibility(View.VISIBLE);
+                btnProbeNetwork.setOnClickListener(view -> {
+                    final ProbeNetworkView dialog = new ProbeNetworkView(this, v -> veGameEngine.probeInterrupt());
+                    dialog.showProbeNetworkDialogForGame(mGamePlayConfig);
+                });
+                break;
+            case FEATURE_LOCAL_INPUT:
+                btnLocalInput.setVisibility(View.VISIBLE);
+                btnLocalInput.setOnClickListener(view -> {
+                    mDialogWrapper = DialogUtils.wrapper(new LocalInputManagerView(this, veGameEngine.getLocalInputManager()));
+                    mDialogWrapper.show();
+                });
             default:
                 break;
         }

@@ -47,7 +47,7 @@ dependencies {
     implementation 'com.google.android.material:material:1.4.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
 
-    implementation 'com.volcengine.vegame:vegame:1.13.0'
+    implementation 'com.volcengine.vegame:vegame:1.14.3'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'

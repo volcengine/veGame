@@ -130,6 +130,20 @@
                     android:visibility="gone"
                     android:text="@string/unclassified" />
 
+                <Button
+                    android:id="@+id/btn_probe_network"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/probe_network" />
+
+                <Button
+                    android:id="@+id/btn_local_input"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/local_input" />
+
             </LinearLayout>
 
 

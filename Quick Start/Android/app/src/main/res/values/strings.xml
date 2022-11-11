@@ -128,6 +128,16 @@
     <string name="unclassified_title">其他</string>
     <string name="unclassified_desc">在该演示中你可以体验其他的功能接口</string>
 
+    <!--  网络探测相关-->
+    <string name="probe_network">网络探测</string>
+    <string name="probe_network_title">网络探测</string>
+    <string name="probe_network_desc">在该演示中你可以体验与网络探测相关的功能接口</string>
+
+    <!--  本地输入-->
+    <string name="local_input">本地输入</string>
+    <string name="local_input_title">本地输入</string>
+    <string name="local_input_desc">在该演示中你可以体验与本地输入相关的功能接口</string>
+
     <string name="official_website">火山官网</string>
     <string name="official_website_url">https://www.volcengine.com/docs/6512/75577</string>
 

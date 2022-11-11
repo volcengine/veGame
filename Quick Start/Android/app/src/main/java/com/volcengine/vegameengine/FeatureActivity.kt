@@ -19,7 +19,7 @@ class FeatureActivity : BaseSampleActivity() {
     private lateinit var btnStartGame: Button
 
 //    private val testBean = TestBean("7104356860098059039") // 抖音
-    private val testBean = TestBean("7137612624056851237") // 桌面宠物
+    private val testBean = TestBean("7153954521692003079") // 原神
 //    private val testBean = TestBean("7148631686065052446") // 光遇
 //    private val testBean = TestBean("7068174254205967111") // 汤姆猫
 
@@ -75,6 +75,9 @@ class FeatureActivity : BaseSampleActivity() {
             Feature.FEATURE_FILE_CHANNEL -> {
                 return R.string.file_channel_title
             }
+            Feature.FEATURE_LOCAL_INPUT -> {
+                return R.string.local_input
+            }
             Feature.FEATURE_LOCATION -> {
                 return R.string.location_title
             }
@@ -83,6 +86,9 @@ class FeatureActivity : BaseSampleActivity() {
             }
             Feature.FEATURE_POD_CONTROL -> {
                 return R.string.pod_control_title
+            }
+            Feature.FEATURE_PROBE_NETWORK -> {
+                return R.string.probe_network
             }
             Feature.FEATURE_SENSOR -> {
                 return R.string.sensor_title
