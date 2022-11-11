@@ -23,18 +23,9 @@ public abstract class BaseListActivity extends BaseSampleActivity {
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        final RecyclerView recyclerView = new RecyclerView(this);
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-
-            @Override
-            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-            }
-        });
+        final RecyclerView recyclerView = (RecyclerView) LayoutInflater.from(this).inflate(R.layout.vertical_recycler_iew, null);
+        recyclerView.setVerticalFadingEdgeEnabled(false);
+        recyclerView.setScrollBarFadeDuration(0);
         recyclerView.setLayoutManager(
                 new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         setContentView(recyclerView);
