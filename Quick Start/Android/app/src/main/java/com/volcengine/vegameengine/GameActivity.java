@@ -437,11 +437,12 @@ public class GameActivity extends AppCompatActivity
                 });
                 break;
             case FEATURE_LOCAL_INPUT:
-                btnLocalInput.setVisibility(View.VISIBLE);
-                btnLocalInput.setOnClickListener(view -> {
-                    mDialogWrapper = DialogUtils.wrapper(new LocalInputManagerView(this, veGameEngine.getLocalInputManager()));
-                    mDialogWrapper.show();
-                });
+                if (veGameEngine.getLocalInputManager() != null) {
+                    new LocalInputManagerView(this, veGameEngine.getLocalInputManager(), btnLocalInput);
+                }
+                else {
+                    AcLog.d(TAG, "LocalInputManager is null!");
+                }
             default:
                 break;
         }
