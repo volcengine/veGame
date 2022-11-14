@@ -15,7 +15,8 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
-    <!-- 摄像头权限 -->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" /> <!-- 摄像头权限 -->
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
@@ -24,7 +25,7 @@
         android:required="false" />
 
     <application
-        android:name="com.volcengine.vegameengine.InitApplication"
+        android:name=".InitApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -33,16 +34,29 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.SDKDemo"
         tools:replace="android:label">
+        <activity
+            android:name=".FeatureActivity"
+            android:exported="false" />
+        <activity
+            android:name=".WebViewActivity"
+            android:exported="false" />
+
         <meta-data
             android:name="VOLC_ENV"
             android:value="online" />
+
+        <meta-data
+            android:name="VOLC_ACCOUNT_ID"
+            android:value="github_demo" />
+
         <activity
-            android:name="com.volcengine.vegameengine.GameActivity"
+            android:name=".GameActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:launchMode="singleTask"
             android:screenOrientation="landscape"
             android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
-        <activity android:name="com.volcengine.vegameengine.MainActivity">
+        <activity android:name=".MainActivity"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

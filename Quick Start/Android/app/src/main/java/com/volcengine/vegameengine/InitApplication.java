@@ -41,6 +41,7 @@ public class InitApplication extends Application {
         super.onCreate();
         instance = this;
         CrashUtils.init(); //默认日志目录：/storage/emulated/0/Android/data/com.example.sdkdemo/files/crash/
+        VeGameEngine.getInstance().init(this);
         VeGameEngine.setDebug(true);
         VeGameEngine.setLogger(new AcLog.ILogger() {
             @Override

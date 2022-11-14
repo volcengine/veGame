@@ -25,7 +25,8 @@ package com.volcengine.vegameengine;
 import com.google.gson.Gson;
 import com.google.gson.internal.Primitives;
 import com.google.gson.stream.JsonReader;
-import com.volcengine.androidcloud.common.api.IJsonConverter;
+import com.volcengine.common.innerapi.IJsonConverter;
+//import com.volcengine.androidcloud.common.api.IJsonConverter;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -52,16 +53,16 @@ public class GsonConverter implements IJsonConverter {
         }
     }
 
-    @Override
-    public <T> T fromJson(InputStream json, Class<T> cls) {
-        try {
-            JsonReader reader = new JsonReader(new InputStreamReader(json));
-            return Primitives.wrap(cls).cast(gson.fromJson(reader, cls));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
+//    @Override
+//    public <T> T fromJson(InputStream json, Class<T> cls) {
+//        try {
+//            JsonReader reader = new JsonReader(new InputStreamReader(json));
+//            return Primitives.wrap(cls).cast(gson.fromJson(reader, cls));
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return null;
+//    }
 
     @Override
     public <T> String toJson(T object) {
