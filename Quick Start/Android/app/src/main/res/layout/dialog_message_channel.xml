@@ -1,49 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <EditText
-        android:id="@+id/et_message_payload"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:hint="请输入要发送的消息内容(上限60KB)"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="40dp"
+        android:orientation="horizontal">
 
-    <CheckBox
-        android:id="@+id/cb_ack"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="是否需要回执(默认超时时长为:30s)"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_message_payload" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:text="@string/type_of_send_message"/>
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/group_timeout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:constraint_referenced_ids="cb_timeout,et_timeout" />
 
-    <CheckBox
-        android:id="@+id/cb_timeout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cb_ack" />
+        <Spinner
+            android:id="@+id/spinner_send_message2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_margin="5dp"
+            android:gravity="center"
+            android:background="#E5E5E5"
+            android:spinnerMode="dropdown"
+            android:entries="@array/send_message_type"/>
+
+    </LinearLayout>
 
     <EditText
-        android:id="@+id/et_timeout"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:hint="设置超时(单位：ms)"
-        android:inputType="numberDecimal"
-        app:layout_constraintBottom_toBottomOf="@id/cb_timeout"
-        app:layout_constraintLeft_toRightOf="@id/cb_timeout"
-        app:layout_constraintTop_toTopOf="@id/cb_timeout" />
+        android:id="@+id/et_send_payload2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/content_of_message"/>
+
+    <EditText
+        android:id="@+id/et_channel_uid2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:hint="@string/dst_channel_uid"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_ack2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/need_ack" />
+
+        <CheckBox
+            android:id="@+id/cb_pressure_test2"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"/>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <EditText
+            android:id="@+id/et_pressure_test2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:visibility="gone"
+            android:hint="@string/period_pressure_test"
+            android:inputType="numberDecimal"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <CheckBox
+            android:id="@+id/cb_timeout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <EditText
+            android:id="@+id/et_timeout2"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/timeout"
+            android:inputType="numberDecimal" />
+
+        <Button
+            android:id="@+id/btn_send_message2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="@string/send_message"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/display_panel2"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        android:visibility="gone"
+        android:background="#E5E5E5"/>
+
+    <TextView
+        android:id="@+id/stats_info2"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"/>
+
+</LinearLayout>

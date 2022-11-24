@@ -13,44 +13,177 @@
 ### 软件要求
 
 - IDE：Android Studio（推荐使用最新版本）
-- 搭建 Java 环境，使用 Java 作为开发语言
+- 搭建 Java 环境，使用 Java 作为开发语言，JDK版本需要1.8+
 
-## 快速开始
+## 接入流程
 
-1. 克隆或下载 demo 源文件到本地；
-2. 在 Android Studio 中引入项目；运行工程文件，编译生成 APK 文件，在 Android 设备上运行预览；
-3. 相关的运行信息，在打印的log中查看。
+### 添加Maven仓库地址
+
+1. 在project根目录下的build.gradle文件中的repositories闭包中配置Maven仓库地址
+
+```java
+buildscript {
+    repositories {
+        maven {
+            url 'https://artifact.bytedance.com/repository/Volcengine/'
+        }
+    }
+}
+allprojects {
+    repositories {
+        maven {
+            url 'https://artifact.bytedance.com/repository/Volcengine/'
+        }
+    }
+}
+```
+
+2. 在应用模块的build.gradle文件中的dependencies中加入依赖项
+
+```java
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    // 云游戏 SDK
+    implementation 'com.volcengine.vegame:vegame:1.13.0'
+    implementation 'androidx.annotation:annotation:1.1.0'
+        
+    // 选择引用以下三种框架中的任意一种
+    implementation 'com.google.code.gson:gson:2.8.5' // gson
+        
+    implementation 'com.alibaba:fastjson:1.1.72.android' // fastjson
+        
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1' // jackson
+    implementation 'com.fasterxml.jackson.core:jackson-core:2.11.1' //jackson
+}
+```
+
+3. 设置java版本到1.8
+
+```java
+android {
+    // ...
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+```
+
+### 权限声明
+
+根据实际使用场景在AndroidManifest.xml文件中声明SDK需要的权限
+
+```java
+//网络权限，使用场景：音视频传输等
+<uses-permission android:name="android.permission.INTERNET" />
+//WiFi网络状态，使用场景：用户手机网络状态变化监听
+<uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+<uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+//录音权限，使用场景：[开启/关闭] 麦克风
+<uses-permission android:name="android.permission.RECORD_AUDIO" />
+//设置播放模式的权限：外放 / 听筒
+<uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+//同步定位信息，使用场景：当有些游戏需要获取用户的地理位置时，需要获取用户的地理位置信息
+//并传送给远端Pod
+<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+<uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
+//读写存储
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+```
+
+#### 说明
+1. 存储写入权限需动态申请。参考：https://developer.android.com/training/permissions/requesting
+2. 如果APP指向Android 10及以上（targetSdkVersion >= 29），而且并未适配 Scoped Storage，那么需要
+    将AndroidManifest.xml文件中的requestLegacyExternalStorage设置为true。参考：https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
+```java
+<manifest>
+    <application android:requestLegacyExternalStorage="true">
+    </application>
+</manifest>
+```
+### 快速开始
+
+#### 一、初始化VeGameEngine
+
+```java
+VeGameEngine veGameEngine = VeGameEngine.getInstance();
+```
+
+#### 二、配置GamePlayConfig
+
+```java
+GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
+
+builder.userId(userId) // 用户userid
+    .ak(ak) // 必填参数 ACEP ak
+    .sk(sk)  // 必填参数 ACEP sk
+    .token(token) // 必填参数 ACEP session
+    .container(mContainer) // 必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
+    .roundId(intent.getStringExtra(KEY_ROUND_ID)) // 必填参数，自定义roundId
+    .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
+    .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) // 必填, gameId
+    .enableAcceleratorSensor(true) // 打开加速度传感器开关
+    .enableGravitySensor(true) // 打开重力传感器开关
+    .enableGyroscopeSensor(true) // 打开陀螺仪开关
+    .enableMagneticSensor(true) // 打开磁力传感器开关
+    .enableOrientationSensor(true) // 打开方向传感器开关
+    .enableVibrator(true) // 打开本地振动开关
+    .enableLocationService(true) // 打开本地定位功能开关
+    .enableLocalKeyboard(true) // 打开本地键盘开关
+    .enableFileChannel(true) // 打开文件通道开关
+    .streamListener(IStreamListener streamListener); // 获取音视频流信息回调监听
+
+GamePlayConfig gamePlayConfig = builder.build();
+```
+
+#### 三、开始游戏
+```java
+veGameEngine.start(gamePlayConfig, IGamePlayerListener playerListener);
+```
+
 
 ## 目录结构
 
 ```
-├── main
-│       │   ├── AndroidManifest.xml
-│       │   ├── java
-│       │   │   └── com
-│       │   │       └── volcengine
-│       │   │           └── vegameengine
-│       │   │               ├── GameActivity.java  //显示游戏的Activity
-│       │   │               ├── GsonConverter.java  // 用于SDK 传入的JSON转换的实现 
-│       │   │               ├── InitApplication.java // 工程的Application 负责初始化SDK等
-│       │   │               ├── MainActivity.kt // 首页指定 gameId、ak、sk、token
-│       │   │               ├── ui
-│       │   │               │   └── MessageChannelDialog.java
-│       │   │               └── util
-│       │   │                   ├── DialogUtils.java
-│       │   │                   ├── ScreenUtil.java  //屏幕工具类用于适配挖孔屏
-│       │   │                   └── SizeUtils.java
-     
+main
+├── AndroidManifest.xml
+├── java
+│   └── com
+│       └── volcengine
+│           └── vegameengine
+│               ├── FeatureActivity.kt // 用于指定gameId以体验SDK的不同特性
+│               ├── GameActivity.java // 显示游戏的Activity
+│               ├── GsonConverter.java // 用于SDK 传入的JSON转换的实现 
+│               ├── InitApplication.java // 工程的Application 负责初始化SDK等
+│               ├── MainActivity.java // 用于展示SDK的特性列表
+│               ├── TestBean.kt
+│               ├── WebViewActivity.kt // 用于展示火山引擎的官网
+│               ├── base
+│               │   ├── BaseListActivity.java
+│               │   └── BaseSampleActivity.kt
+│               ├── feature // 用于体验SDK不同的特性
+│               │   ├── AudioServiceView.java
+│               │   ├── CamaraManagerView.java
+│               │   ├── ClarityServiceView.java
+│               │   ├── ClipBoardServiceManagerView.java
+│               │   ├── FileChannelView.java
+│               │   ├── GamePadServiceView.java
+│               │   ├── GroundManagerView.java
+│               │   ├── LocationServiceView.java
+│               │   ├── MessageChannelView.java
+│               │   ├── PodControlServiceView.java
+│               │   ├── SensorView.java
+│               │   └── UnclassifiedView.java
+│               └── util
+│                   ├── DialogUtils.java 
+│                   ├── Feature.java // 声明不同的特性id
+│                   ├── FileUtil.java
+│                   ├── ScreenUtil.java // 屏幕工具类，用于适配挖孔屏
+│                   └── SizeUtils.java 
 ```
-
-## 接入的流程
-
-1. 在 Application 中可以选择初始化一些埋点信息；
-2. 在 MainActivity 中填写游戏的 gameId、ak、sk 和 token，并初始化云游戏 SDK 实例（`veGameEngine`）；
-3. 初始化成功后，调用 `start()` 接口开始播放；
-4. 切到后台，可以选择调用 `pause()` 接口停止音视屏流；
-5. 切回前台，可以选择调用 `resume()` 接口恢复音视频流；
-6. 结束，调用`stop()` 接口结束游戏并释放资源。
 
 ## 参考资料
 
