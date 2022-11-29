@@ -17,7 +17,7 @@
 // 实例化 veGameSDK 的参数
 const initConfig = {
     userId: ''
-    accountId: ''
+    accountId: ''，// 必填参数，请填入火山账号ID，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
     enableLocalKeyboard: true, // 是否开启本地键盘输入。前提：需要联系运营同学给游戏所在业务开启「拉起本地输入法配置」
 };
 
