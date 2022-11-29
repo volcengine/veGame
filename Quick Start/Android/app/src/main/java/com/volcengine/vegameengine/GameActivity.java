@@ -32,6 +32,10 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
+<<<<<<< HEAD
+=======
+import static com.volcengine.vegameengine.util.Feature.FEATURE_PAD_CONSOLE;
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_SENSOR;
@@ -70,11 +74,18 @@ import com.volcengine.vegameengine.feature.CamaraManagerView;
 import com.volcengine.vegameengine.feature.ClarityServiceView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelView;
+<<<<<<< HEAD
 import com.volcengine.vegameengine.feature.GamePadServiceView;
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 import com.volcengine.vegameengine.feature.GroundManagerView;
 import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.feature.MessageChannelView;
+<<<<<<< HEAD
+=======
+import com.volcengine.vegameengine.feature.PadConsoleManagerView;
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.SensorView;
@@ -113,10 +124,18 @@ public class GameActivity extends AppCompatActivity
 
     private Button btnAudio, btnCamera, btnClarity, btnClipBoard, btnFileChannel, btnGround, btnLocation;
     private Button btnMessageChannel, btnPodControl, btnRotation, btnSensor, btnUnclassified;
+<<<<<<< HEAD
     private Button btnProbeNetwork, btnLocalInput;
     private TextView tvInfo;
     private boolean isLand = false;
     private boolean isShowInfo = false;
+=======
+    private Button btnProbeNetwork, btnLocalInput, btnPadConsole;
+    private TextView tvInfo;
+    private boolean isLand = false;
+    private boolean isShowInfo = false;
+    private long lastBackPress;
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -279,6 +298,10 @@ public class GameActivity extends AppCompatActivity
         btnLocation = findViewById(R.id.btn_location);
         btnMessageChannel = findViewById(R.id.btn_message_channel);
         btnPodControl = findViewById(R.id.btn_pod_control);
+<<<<<<< HEAD
+=======
+        btnPadConsole = findViewById(R.id.btn_pad_console);
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
         btnRotation = findViewById(R.id.btn_orientation);
         btnSensor = findViewById(R.id.btn_sensor);
         btnUnclassified = findViewById(R.id.btn_unclassified);
@@ -297,8 +320,12 @@ public class GameActivity extends AppCompatActivity
 
         if (veGameEngine.getClarityService() != null) {
             new ClarityServiceView(this, veGameEngine.getClarityService(), btnClarity);
+<<<<<<< HEAD
         }
         else {
+=======
+        } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
             AcLog.d(TAG, "ClarityService is null!");
         }
 
@@ -319,8 +346,12 @@ public class GameActivity extends AppCompatActivity
                         mDialogWrapper = DialogUtils.wrapper(
                                 new AudioServiceView(this, veGameEngine.getAudioService()));
                         mDialogWrapper.show();
+<<<<<<< HEAD
                     }
                     else {
+=======
+                    } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                         AcLog.d(TAG, "AudioService is null!");
                     }
                 });
@@ -328,16 +359,24 @@ public class GameActivity extends AppCompatActivity
             case FEATURE_CAMERA:
                 if (veGameEngine.getCameraManager() != null) {
                     new CamaraManagerView(this, veGameEngine.getCameraManager(), btnCamera);
+<<<<<<< HEAD
                 }
                 else {
+=======
+                } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                     AcLog.d(TAG, "CameraManager is null!");
                 }
                 break;
             case FEATURE_CLIPBOARD:
                 if (veGameEngine.getClipBoardServiceManager() != null) {
                     new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager(), btnClipBoard);
+<<<<<<< HEAD
                 }
                 else {
+=======
+                } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                     AcLog.d(TAG, "ClipBoardServiceManager is null!");
                 }
                 break;
@@ -348,8 +387,12 @@ public class GameActivity extends AppCompatActivity
                         mFileChannelView = new FileChannelView(this, veGameEngine.getFileChannel());
                         mDialogWrapper = DialogUtils.wrapper(mFileChannelView);
                         mDialogWrapper.show();
+<<<<<<< HEAD
                     }
                     else {
+=======
+                    } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                         AcLog.d(TAG, "FileChannel is null!");
                     }
                 });
@@ -357,22 +400,31 @@ public class GameActivity extends AppCompatActivity
             case FEATURE_LOCAL_INPUT:
                 if (veGameEngine.getLocalInputManager() != null) {
                     new LocalInputManagerView(this, veGameEngine.getLocalInputManager(), btnLocalInput);
+<<<<<<< HEAD
                 }
                 else {
+=======
+                } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                     AcLog.d(TAG, "LocalInputManager is null!");
                 }
                 break;
             case FEATURE_LOCATION:
                 if (veGameEngine.getLocationService() != null) {
                     new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
+<<<<<<< HEAD
                 }
                 else {
+=======
+                } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                     AcLog.d(TAG, "LocationService is null!");
                 }
                 break;
             case FEATURE_MESSAGE_CHANNEL:
                 if (veGameEngine.getMessageChannel() != null) {
                     new MessageChannelView(this, veGameEngine.getMessageChannel(), btnMessageChannel);
+<<<<<<< HEAD
                 }
                 else {
                     AcLog.d(TAG, "MessageChannel is null!");
@@ -383,6 +435,23 @@ public class GameActivity extends AppCompatActivity
                     new PodControlServiceView(this, veGameEngine.getPodControlService(), btnPodControl);
                 }
                 else {
+=======
+                } else {
+                    AcLog.d(TAG, "MessageChannel is null!");
+                }
+                break;
+            case FEATURE_PAD_CONSOLE:
+                if (veGameEngine.getGamePadService() != null) {
+                    new PadConsoleManagerView(this, veGameEngine.getGamePadService(), btnPadConsole);
+                } else {
+                    AcLog.d(TAG, "GamePadService is null!");
+                }
+                break;
+            case FEATURE_POD_CONTROL:
+                if (veGameEngine.getPodControlService() != null) {
+                    new PodControlServiceView(this, veGameEngine.getPodControlService(), btnPodControl);
+                } else {
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
                     AcLog.d(TAG, "PodControlService is null!");
                 }
                 break;
@@ -443,7 +512,7 @@ public class GameActivity extends AppCompatActivity
             int featureId) {
         Intent intent = new Intent(activity, GameActivity.class);
         intent.putExtra(GameActivity.KEY_PARAM_GAME_ID, gameId);
-        if (roundId.isEmpty() || roundId.equals("")) roundId="123";
+        if (roundId.isEmpty() || roundId.equals("")) roundId = "123";
         intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
         intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
         intent.putExtra(GameActivity.KEY_FEATURE_ID, featureId);
@@ -518,5 +587,17 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onPodExit(int i, String s) {
         Log.d(TAG, "onPodExit" + i + " ,msg:" + s);
+    }
+
+    @Override
+    public void onBackPressed() {
+        long current = System.currentTimeMillis();
+        if (current - lastBackPress < 1000L) {
+            super.onBackPressed();
+        }
+        else {
+            Toast.makeText(this, getString(R.string.back_again_to_exit), Toast.LENGTH_SHORT).show();
+            lastBackPress = current;
+        }
     }
 }

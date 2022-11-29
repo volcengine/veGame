@@ -12,4 +12,8 @@ public class Feature {
     public static final int FEATURE_UNCLASSIFIED = 9;
     public static final int FEATURE_PROBE_NETWORK = 10;
     public static final int FEATURE_LOCAL_INPUT = 11;
+<<<<<<< HEAD
+=======
+    public static final int FEATURE_PAD_CONSOLE = 12;
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 }

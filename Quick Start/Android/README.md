@@ -108,23 +108,39 @@ android {
 
 #### 一、初始化VeGameEngine
 
+建议在 Application 初始的时候调用。
+
 ```java
-VeGameEngine veGameEngine = VeGameEngine.getInstance();
+/**
+ * veGameEngine class 
+ * @param application Android上下文
+ */
+public void init(Application application)
 ```
 
-#### 二、配置GamePlayConfig
+#### 二、配置火山引擎账号ID
+
+在申请云游戏服务之前，需要在 \app\src\main\AndroidManifest.xml 文件的 meta-data 中填入注册的火山引擎用户账号（VOLC_ACCOUNT_ID）。参考以下示例：
+
+```xml
+<meta-data
+    android:name="VOLC_ACCOUNT_ID"
+    android:value="21000xxxxx" />
+````
+
+#### 三、配置GamePlayConfig
 
 ```java
 GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
 
 builder.userId(userId) // 用户userid
-    .ak(ak) // 必填参数 ACEP ak
-    .sk(sk)  // 必填参数 ACEP sk
-    .token(token) // 必填参数 ACEP session
+    .ak(ak) // 必填参数，用于鉴权的 ak
+    .sk(sk)  // 必填参数，用于鉴权的 sk
+    .token(token) // 必填参数，用于鉴权的 session
     .container(mContainer) // 必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
     .roundId(intent.getStringExtra(KEY_ROUND_ID)) // 必填参数，自定义roundId
     .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
-    .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) // 必填, gameId
+    .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) // 必填, 游戏Id
     .enableAcceleratorSensor(true) // 打开加速度传感器开关
     .enableGravitySensor(true) // 打开重力传感器开关
     .enableGyroscopeSensor(true) // 打开陀螺仪开关
@@ -139,7 +155,7 @@ builder.userId(userId) // 用户userid
 GamePlayConfig gamePlayConfig = builder.build();
 ```
 
-#### 三、开始游戏
+#### 四、开始游戏
 ```java
 veGameEngine.start(gamePlayConfig, IGamePlayerListener playerListener);
 ```

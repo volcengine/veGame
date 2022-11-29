@@ -1,4 +1,4 @@
-# 云游戏 Web SDK demo
+﻿# 云游戏 Web SDK demo
 
 这个开源项目展示了火山引擎云游戏 Web SDK 的以下功能：
 
@@ -17,6 +17,7 @@
 // 实例化 veGameSDK 的参数
 const initConfig = {
     userId: ''
+    accountId: ''
     enableLocalKeyboard: true, // 是否开启本地键盘输入。前提：需要联系运营同学给游戏所在业务开启「拉起本地输入法配置」
 };
 

@@ -64,6 +64,7 @@ class FeatureActivity : BaseSampleActivity() {
     override fun titleRes(): Int {
         when (mFeatureId) {
             Feature.FEATURE_AUDIO -> {
+<<<<<<< HEAD
                 return R.string.audio_title
             }
             Feature.FEATURE_CAMERA -> {
@@ -74,11 +75,24 @@ class FeatureActivity : BaseSampleActivity() {
             }
             Feature.FEATURE_FILE_CHANNEL -> {
                 return R.string.file_channel_title
+=======
+                return R.string.audio
+            }
+            Feature.FEATURE_CAMERA -> {
+                return R.string.camera
+            }
+            Feature.FEATURE_CLIPBOARD -> {
+                return R.string.clipboard
+            }
+            Feature.FEATURE_FILE_CHANNEL -> {
+                return R.string.file_channel
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
             }
             Feature.FEATURE_LOCAL_INPUT -> {
                 return R.string.local_input
             }
             Feature.FEATURE_LOCATION -> {
+<<<<<<< HEAD
                 return R.string.location_title
             }
             Feature.FEATURE_MESSAGE_CHANNEL -> {
@@ -86,15 +100,34 @@ class FeatureActivity : BaseSampleActivity() {
             }
             Feature.FEATURE_POD_CONTROL -> {
                 return R.string.pod_control_title
+=======
+                return R.string.location
+            }
+            Feature.FEATURE_MESSAGE_CHANNEL -> {
+                return R.string.message_channel
+            }
+            Feature.FEATURE_PAD_CONSOLE -> {
+                return R.string.pad_console
+            }
+            Feature.FEATURE_POD_CONTROL -> {
+                return R.string.pod_control
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
             }
             Feature.FEATURE_PROBE_NETWORK -> {
                 return R.string.probe_network
             }
             Feature.FEATURE_SENSOR -> {
+<<<<<<< HEAD
                 return R.string.sensor_title
             }
             Feature.FEATURE_UNCLASSIFIED -> {
                 return R.string.unclassified_title
+=======
+                return R.string.sensor
+            }
+            Feature.FEATURE_UNCLASSIFIED -> {
+                return R.string.unclassified
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
             }
             else -> {
                 return -1

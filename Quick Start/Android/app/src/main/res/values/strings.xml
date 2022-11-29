@@ -13,6 +13,10 @@
     <string name="round_id">roundId</string>
     <string name="clarity_id">clarityId</string>
     <string name="hide_or_show">点击隐藏/显示</string>
+<<<<<<< HEAD
+=======
+    <string name="back_again_to_exit">连按两次退出</string>
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 
     <!--  音频相关  -->
     <string name="audio">音频</string>
@@ -30,7 +34,10 @@
     <string name="earpiece">听筒</string>
     <string name="speakerphone">扬声器</string>
     <string name="bluetooth_headset">蓝牙耳机</string>
+<<<<<<< HEAD
     <string name="audio_title">音频</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="audio_desc">在该演示中你可以体验与音频相关的功能接口</string>
 
     <!--  相机相关  -->
@@ -40,7 +47,10 @@
     <string name="push_multiple_streams">推送多路流</string>
     <string name="switch_rear_camera">切换后置相机</string>
     <string name="switch_front_camera">切换前置相机</string>
+<<<<<<< HEAD
     <string name="camera_title">相机</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="camera_desc">在该演示中你可以体验与相机相关的功能接口</string>
 
     <!--  清晰度相关  -->
@@ -49,12 +59,18 @@
     <!--  剪切板相关  -->
     <string name="clipboard">剪切板</string>
     <string name="send_clipboard_data">发送剪切板模拟数据</string>
+<<<<<<< HEAD
     <string name="clipboard_title">剪切板</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="clipboard_desc">在该演示中你可以体验与剪切板相关的功能接口</string>
 
     <!-- 文件通道相关 -->
     <string name="file_channel">文件通道</string>
+<<<<<<< HEAD
     <string name="file_channel_title">文件通道</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="file_channel_desc">在该演示中你可以体验与文件通道相关的功能接口</string>
 
     <!-- Ground相关 -->
@@ -71,7 +87,10 @@
     <string name="set_remote_location">设置云端位置</string>
     <string name="longitude">经度</string>
     <string name="latitude">纬度</string>
+<<<<<<< HEAD
     <string name="location_title">定位服务</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="location_desc">在该演示中你可以体验与定位相关的功能接口</string>
 
     <!--消息通道相关-->
@@ -90,17 +109,32 @@
         <item>ACK_MultiChannel</item>
         <item>Timeout_MultiChannel</item>
     </string-array>
+<<<<<<< HEAD
     <string name="message_channel_title">消息通道</string>
     <string name="message_channel_desc">在该演示中你可以体验与消息通道相关的功能接口</string>
 
     <!--PCTest相关（待添加）-->
+=======
+    <string name="message_channel_desc">在该演示中你可以体验与消息通道相关的功能接口</string>
+
+    <!--PadConsole相关-->
+    <string name="pad_console">游戏手柄</string>
+    <string name="init_game_pad">初始化手柄</string>
+    <string name="show_game_pad">显示手柄</string>
+    <string name="hide_game_pad">隐藏手柄</string>
+    <string name="release_game_pad">销毁手柄</string>
+    <string name="pad_console_desc">在该演示中你可以体验与游戏手柄相关的功能接口</string>
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 
     <!--Pod控制相关-->
     <string name="pod_control">Pod控制</string>
     <string name="set_keep_alive_time">设置Pod保活时间3min</string>
     <string name="set_auto_recycle_time">设置无操作3分钟</string>
     <string name="switch_background">开启前后台切换</string>
+<<<<<<< HEAD
     <string name="pod_control_title">Pod控制</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="pod_control_desc">在该演示中你可以体验与Pod控制相关的功能接口</string>
 
     <!--  旋转相关  -->
@@ -114,7 +148,10 @@
     <string name="orientation">方向传感器</string>
     <string name="gyroscope">陀螺仪</string>
     <string name="vibrator">振动</string>
+<<<<<<< HEAD
     <string name="sensor_title">传感器</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="sensor_desc">在该演示中你可以体验与传感器相关的功能接口</string>
 
     <!--  杂项相关  -->
@@ -125,17 +162,26 @@
     <string name="resume">恢复拉流</string>
     <string name="back">返回</string>
     <string name="test_exception">异常测试</string>
+<<<<<<< HEAD
     <string name="unclassified_title">其他</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="unclassified_desc">在该演示中你可以体验其他的功能接口</string>
 
     <!--  网络探测相关-->
     <string name="probe_network">网络探测</string>
+<<<<<<< HEAD
     <string name="probe_network_title">网络探测</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="probe_network_desc">在该演示中你可以体验与网络探测相关的功能接口</string>
 
     <!--  本地输入-->
     <string name="local_input">本地输入</string>
+<<<<<<< HEAD
     <string name="local_input_title">本地输入</string>
+=======
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
     <string name="local_input_desc">在该演示中你可以体验与本地输入相关的功能接口</string>
 
     <string name="official_website">火山官网</string>

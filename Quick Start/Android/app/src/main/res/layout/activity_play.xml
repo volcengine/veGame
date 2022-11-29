@@ -50,6 +50,7 @@
 
                 <Button
                     android:id="@+id/btn_orientation"
+<<<<<<< HEAD
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/roll_orientation" />
@@ -108,6 +109,73 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone"
                     android:text="@string/message_channel" />
+=======
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/roll_orientation" />
+
+                <Button
+                    android:id="@+id/btn_clarity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/clarity" />
+
+                <Button
+                    android:id="@+id/btn_audio"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/audio" />
+
+                <Button
+                    android:id="@+id/btn_camera"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/camera" />
+
+                <Button
+                    android:id="@+id/btn_clipboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/clipboard" />
+
+                <Button
+                    android:id="@+id/btn_file_channel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/file_channel" />
+
+                <Button
+                    android:id="@+id/btn_ground"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/ground" />
+
+                <Button
+                    android:id="@+id/btn_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/location" />
+
+                <Button
+                    android:id="@+id/btn_message_channel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/message_channel" />
+
+                <Button
+                    android:id="@+id/btn_pad_console"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/pad_console" />
+>>>>>>> 5e12d0d119070e715d34f95477594d850204a3fb
 
                 <Button
                     android:id="@+id/btn_pod_control"
