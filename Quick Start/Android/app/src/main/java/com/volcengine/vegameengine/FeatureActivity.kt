@@ -84,6 +84,9 @@ class FeatureActivity : BaseSampleActivity() {
             Feature.FEATURE_MESSAGE_CHANNEL -> {
                 return R.string.message_channel
             }
+            Feature.FEATURE_MULTI_USER -> {
+                return R.string.multi_user
+            }
             Feature.FEATURE_PAD_CONSOLE -> {
                 return R.string.pad_console
             }

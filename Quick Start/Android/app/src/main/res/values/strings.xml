@@ -126,13 +126,22 @@
     <string name="test_exception">异常测试</string>
     <string name="unclassified_desc">在该演示中你可以体验其他的功能接口</string>
 
-    <!--  网络探测相关-->
+    <!--  网络探测相关  -->
     <string name="probe_network">网络探测</string>
     <string name="probe_network_desc">在该演示中你可以体验与网络探测相关的功能接口</string>
 
-    <!--  本地输入-->
+    <!--  本地输入  -->
     <string name="local_input">本地输入</string>
     <string name="local_input_desc">在该演示中你可以体验与本地输入相关的功能接口</string>
+
+    <!--  多用户  -->
+    <string name="multi_user">多用户</string>
+    <string name="player">player</string>
+    <string name="viewer">viewer</string>
+    <string name="player_user_id">需要改变的用户id</string>
+    <string name="send">发送</string>
+    <string name="get_current_role">获取当前角色</string>
+    <string name="multi_user_desc">在该演示中你可以体验与多用户相关的功能接口</string>
 
     <string name="official_website">火山官网</string>
     <string name="official_website_url">https://www.volcengine.com/docs/6512/75577</string>

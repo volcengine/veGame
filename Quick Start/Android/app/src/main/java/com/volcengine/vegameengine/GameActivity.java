@@ -32,6 +32,7 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_MULTI_USER;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PAD_CONSOLE;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
@@ -59,6 +60,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.volcengine.cloudcore.common.mode.CameraId;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
+import com.volcengine.cloudcore.common.mode.Role;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
 import com.volcengine.cloudphone.apiservice.IMessageChannel;
 import com.volcengine.cloudphone.apiservice.IProbeNetworkListener;
@@ -75,6 +77,7 @@ import com.volcengine.vegameengine.feature.GroundManagerView;
 import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.feature.MessageChannelView;
+import com.volcengine.vegameengine.feature.MultiUserManagerView;
 import com.volcengine.vegameengine.feature.PadConsoleManagerView;
 import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
@@ -114,7 +117,7 @@ public class GameActivity extends AppCompatActivity
 
     private Button btnAudio, btnCamera, btnClarity, btnClipBoard, btnFileChannel, btnGround, btnLocation;
     private Button btnMessageChannel, btnPodControl, btnRotation, btnSensor, btnUnclassified;
-    private Button btnProbeNetwork, btnLocalInput, btnPadConsole;
+    private Button btnProbeNetwork, btnLocalInput, btnPadConsole, btnMultiUser;
     private TextView tvInfo;
     private boolean isLand = false;
     private boolean isShowInfo = false;
@@ -157,6 +160,8 @@ public class GameActivity extends AppCompatActivity
                 .enableLocationService(true)
                 .enableLocalKeyboard(true)
                 .enableFileChannel(true)
+                .role(Role.PLAYER)
+                .roomType(0)
                 .streamListener(GameActivity.this);
 
         mGamePlayConfig = builder.build();
@@ -287,6 +292,7 @@ public class GameActivity extends AppCompatActivity
         btnUnclassified = findViewById(R.id.btn_unclassified);
         btnProbeNetwork = findViewById(R.id.btn_probe_network);
         btnLocalInput = findViewById(R.id.btn_local_input);
+        btnMultiUser = findViewById(R.id.btn_multi_user);
 
         findViewById(R.id.btn_show_info).setOnClickListener(v -> {
             isShowInfo = !isShowInfo;
@@ -371,6 +377,13 @@ public class GameActivity extends AppCompatActivity
                     new MessageChannelView(this, veGameEngine.getMessageChannel(), btnMessageChannel);
                 } else {
                     AcLog.d(TAG, "MessageChannel is null!");
+                }
+                break;
+            case FEATURE_MULTI_USER:
+                if (veGameEngine.getMultiUserService() != null) {
+                    new MultiUserManagerView(this, veGameEngine.getMultiUserService(), btnMultiUser);
+                } else {
+                    AcLog.d(TAG, "MultiUserService is null!");
                 }
                 break;
             case FEATURE_PAD_CONSOLE:
