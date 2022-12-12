@@ -1,18 +1,21 @@
 // 实例化 veGameSDK 的参数
 const initConfig = {
-  userId: '',
+  userId: '', // 必填参数，开发者可进行自定义，可以用来标识游戏玩家或账号等
+  accountId:'', // 必填参数，火山引擎账号ID，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
   enableLocalKeyboard: true, // 是否开启本地键盘输入。前提：需要联系运营同学给游戏所在业务开启「拉起本地输入法配置」
+  mode: window.veGameSDK.MODE.CLOUD_PHONE_GAME, // 默认为云游戏手游，如果需要控制云游戏端游，请传 MODE.CLOUD_PC 
+  isPC: false, // 默认为：移动端运行SDK，如果需要在桌面应用程序运行SDK，请传true
 };
 
 // 调用 veGameSDK.start 的参数
 const startConfig = {
-  gameId: '',
+  gameId: '', // 游戏ID
   token: {
-      CurrentTime: '',
-      ExpiredTime: '',
-      SessionToken: '',
-      AccessKeyID: '',
-      SecretAccessKey: ''
+      CurrentTime: '',    // Token创建时间
+      ExpiredTime: '',    // Token过期时间
+      SessionToken: '',   // 用于鉴权的临时Token
+      AccessKeyID: '',    // 用于鉴权的临时AccessKey
+      SecretAccessKey: '' // 用于鉴权的临时SecretKey
   },
   roundId: '',
   rotation: 'landscape', // landscape：横屏启动; portrait：竖屏启动
