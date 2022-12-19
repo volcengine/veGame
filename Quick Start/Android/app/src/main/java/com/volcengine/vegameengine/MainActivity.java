@@ -20,6 +20,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.local_input, R.string.local_input_desc, FeatureActivity.class, Feature.FEATURE_LOCAL_INPUT);
         holder.addItem(R.string.location, R.string.location_desc, FeatureActivity.class, Feature.FEATURE_LOCATION);
         holder.addItem(R.string.message_channel, R.string.message_channel_desc, FeatureActivity.class, Feature.FEATURE_MESSAGE_CHANNEL);
+        holder.addItem(R.string.multi_user, R.string.multi_user_desc, FeatureActivity.class, Feature.FEATURE_MULTI_USER);
         holder.addItem(R.string.pad_console, R.string.pad_console_desc, FeatureActivity.class, Feature.FEATURE_PAD_CONSOLE);
         holder.addItem(R.string.pod_control, R.string.pod_control_desc, FeatureActivity.class, Feature.FEATURE_POD_CONTROL);
         holder.addItem(R.string.probe_network, R.string.probe_network_desc, FeatureActivity.class, Feature.FEATURE_PROBE_NETWORK);
