@@ -14,3 +14,4 @@
 .cxx
 local.properties
 .idea
+/app/src/main/java/com/volcengine/vegameengine/AuthUtils.java
