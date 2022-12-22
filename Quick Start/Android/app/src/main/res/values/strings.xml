@@ -98,8 +98,12 @@
 
     <!--Pod控制相关-->
     <string name="pod_control">Pod控制</string>
+    <string name="hint_idle_time">保活时长/秒</string>
+    <string name="set_idle_time">设置保活时长</string>
+    <string name="hint_auto_recycle_time">无操作回收时长/秒</string>
+    <string name="set_auto_recycle_time">设置无操作回收时长</string>
+    <string name="get_auto_recycle_time">查询无操作回收时长</string>
     <string name="set_keep_alive_time">设置Pod保活时间3min</string>
-    <string name="set_auto_recycle_time">设置无操作3分钟</string>
     <string name="switch_background">开启前后台切换</string>
     <string name="pod_control_desc">在该演示中你可以体验与Pod控制相关的功能接口</string>
 

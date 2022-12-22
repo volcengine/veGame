@@ -44,12 +44,34 @@ public class PodControlServiceView {
         });
         mPodControlService.setUserProfilePathListener((isSuccess, type)
                 -> ToastUtils.showShort("isSuccess:" + isSuccess + " type :" + type));
+        mPodControlService.setScreenShotListener((code, savePath, msg) -> {
+            if (!TextUtils.isEmpty(savePath)) {
+                mTestView.mTvSnapshotPath.setText(savePath);
+            } else {
+                mTestView.mTvSnapshotPath.setText(MessageFormat.format("code = [{0}], msg = [{1}]", code, msg));
+            }
+        });
+        mPodControlService.setFocusedWindowAppListener(new PodControlService.FocusedWindowAppListener() {
+            @Override
+            public void onResult(int code, String packageName, String msg) {
+                Log.d(TAG, "onResult: code = [" + code + "], packageName = [" + packageName + "], msg = [" + msg + "]");
+                if (mTestView != null) {
+                    mTestView.mTvAppPackage.setText(MessageFormat.format("code = [{0}], packageName = [{1}], msg = [{2}]", code, packageName, msg));
+                }
+            }
+
+            @Override
+            public void onFocusedWindowAppChanged(String packageName) {
+                Log.d(TAG, "onFocusedWindowAppChanged: packageName = [" + packageName + "]");
+            }
+        });
     }
 
     private class TestView extends ScrollView {
 
         private final Consumer<CharSequence> textConsumer;
         private final SwitchCompat mSwitchCompat;
+        private final TextView mTvSnapshotPath, mTvAppPackage;
         private final EditText mEtAutoRecycleTime, mEtIdleTime;
 
         public TestView(Context context) {
@@ -71,6 +93,7 @@ public class PodControlServiceView {
 
             findViewById(R.id.btn_background).setOnClickListener(view -> mPodControlService.switchBackground(true));
             findViewById(R.id.btn_foreground).setOnClickListener(view -> mPodControlService.switchBackground(false));
+            findViewById(R.id.btn_send_idle_time).setOnClickListener(v -> mPodControlService.setIdleTime(3 * 60));
             findViewById(R.id.btn_send_idle_time).setOnClickListener(v -> {
                 int idleTime = 3 * 60;
                 if (!TextUtils.isEmpty(mEtIdleTime.getText())) {
@@ -105,6 +128,7 @@ public class PodControlServiceView {
                 });
             });
 
+
             findViewById(R.id.btn_setUserProfile).setOnClickListener(v -> {
                 EditText editText = findViewById(R.id.et_user_profile_input);
                 List<String> list = new ArrayList<>();
@@ -112,6 +136,11 @@ public class PodControlServiceView {
                 mPodControlService.setUserProfilePath(list);
             });
 
+            findViewById(R.id.btn_snapshot).setOnClickListener(v -> mPodControlService.screenShot());
+            mTvSnapshotPath = findViewById(R.id.tv_snapshot_path);
+
+            mTvAppPackage = findViewById(R.id.tv_app_package);
+            findViewById(R.id.btn_get_focus_window).setOnClickListener(v -> mPodControlService.getFocusedWindowApp());
         }
 
         boolean mWithoutCallback;
