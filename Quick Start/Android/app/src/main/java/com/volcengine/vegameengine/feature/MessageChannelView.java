@@ -26,20 +26,69 @@ import java.util.HashMap;
 
 public class MessageChannelView {
 
+    private final int REMOTE_ONLINE = 1;
+    private final int REMOTE_OFFLINE = 2;
+
+    private int mRemoteState = REMOTE_OFFLINE;
+
     private final IMessageChannel mMessageChannel;
     private static final String TAG = "MessageChannelView";
     private DialogUtils.DialogWrapper mDialogWrapper;
 
-    private HashMap<String, Boolean> channelMap;
-    private HashMap<String, Integer> numOfMessageOnChannelMap;
-    private StringBuilder log;
-    private Handler mHandler;
-
     public MessageChannelView(Context context, IMessageChannel messageChannel, Button button) {
-        channelMap = new HashMap<>();
-        numOfMessageOnChannelMap = new HashMap<>();
-        log = new StringBuilder();
         this.mMessageChannel = messageChannel;
+        mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+            @Override
+            public void onReceiveMessage(IMessageChannel.IChannelMessage message) {
+                AcLog.v(TAG, "onReceiveMessage: " + message.toString());
+            }
+
+            /**
+             *
+             * @param result false: 发送失败; true: 发送成功。
+             * @param mid 消息id，IChannelMessage#getMid() 对应，可通过和IMessageChannel.sendMessage 的返回值获取。
+             */
+            @Override
+            public void onSentResult(boolean result, String mid) {
+                AcLog.v(TAG, "onSentResult, " + "result: " + result + ", mid: " + mid);
+
+            }
+
+            @Override
+            public void ready() {
+                // 已废弃，可忽略
+            }
+
+            /**
+             * 接口参数或者使用方式错误
+             * @param errorCode
+             * @param message
+             */
+            @Override
+            public void onError(int errorCode, String message) {
+                AcLog.e(TAG, "onError, errorCode: " + errorCode + ", message: " + message);
+            }
+
+            /**
+             * 云端消息Client上线
+             * @param channelUid 消息通道Uid，云端消息SDK初始化时填入的Uid
+             */
+            @Override
+            public void onRemoteOnline(String channelUid) {
+                AcLog.v(TAG, "onRemoteOnline, channelUid: " + channelUid);
+                mRemoteState = REMOTE_ONLINE;
+            }
+
+            /**
+             * 云端消息Client离线
+             * @param channelUid 消息通道Uid，云端消息SDK初始化时填入的Uid
+             */
+            @Override
+            public void onRemoteOffline(String channelUid) {
+                AcLog.w(TAG, "onRemoteOffline, channelUid: " + channelUid);
+                mRemoteState = REMOTE_OFFLINE;
+            }
+        });
         mDialogWrapper = DialogUtils.wrapper(new TestView(context));
         button.setVisibility(View.VISIBLE);
         button.setOnClickListener(v -> mDialogWrapper.show());
@@ -70,6 +119,11 @@ public class MessageChannelView {
             btnSend.setOnClickListener(view -> {
                 if (mMessageChannel == null) {
                     Log.d(TAG, "TestView2: " + "mMessageChannel == null");
+                    return;
+                }
+
+                if (mRemoteState == REMOTE_OFFLINE) {
+                    Toast.makeText(_context, "remote state is offline, please wait...", Toast.LENGTH_SHORT).show();
                     return;
                 }
 
