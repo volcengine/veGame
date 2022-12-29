@@ -89,6 +89,13 @@
                     android:text="@string/file_channel" />
 
                 <Button
+                    android:id="@+id/btn_file_channel_ext"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:text="@string/file_channel_ext" />
+
+                <Button
                     android:id="@+id/btn_ground"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
