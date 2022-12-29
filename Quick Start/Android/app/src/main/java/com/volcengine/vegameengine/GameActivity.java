@@ -166,6 +166,7 @@ public class GameActivity extends AppCompatActivity
                 .enableVibrator(true)
                 .enableLocationService(true)
                 .enableLocalKeyboard(true)
+                .keyBoardEnable(true)
                 .enableFileChannel(true)
                 .role(Role.PLAYER)
                 .roomType(0)
@@ -500,6 +501,11 @@ public class GameActivity extends AppCompatActivity
                 streamStats.getDecoderOutputFrameRate() + " " +
                 streamStats.getReceivedAudioBitRate() + " " +
                 streamStats.getReceivedVideoBitRate());
+    }
+
+    @Override
+    public void onNetworkQuality(int quality) {
+        AcLog.d(TAG, "onNetworkQuality() called with: quality = [" + quality + "]");
     }
 
     @Override
