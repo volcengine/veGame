@@ -44,7 +44,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 云游戏 SDK
-    implementation 'com.volcengine.vegame:vegame:1.13.0'
+    implementation 'com.volcengine.vegame:vegame:1.18.0'
     implementation 'androidx.annotation:annotation:1.1.0'
         
     // 选择引用以下三种框架中的任意一种
@@ -106,6 +106,21 @@ android {
 ```
 ### 快速开始
 
+#### 零、鉴权相关
+
+在接入云游戏SDK之前，需要获取火山引擎账号对应的 AccessKey（ak）和 SecretKey（sk），
+调用签发临时Token接口，获取用于鉴权的临时 Token（token）, ak/sk/token 的获取方式请参考 [快速入门](https://www.volcengine.com/docs/6512/75577)。
+
+获取到 ak/sk/token 之后，将其填入 [二、配置GamePlayConfig](#二、配置GamePlayConfig) 的对应位置。
+
+除此之外，需要在 [app/src/main/AndroidManifest.xml](app/src/main/AndroidManifest.xml) 文件的meta-data中填入注册的火山引擎用户账号，参考以下示例：
+
+```java
+<meta-data
+    android:name="VOLC_ACCOUNT_ID"
+    android:value="21000xxxxx" />
+```
+
 #### 一、初始化VeGameEngine
 
 ```java
@@ -120,7 +135,7 @@ GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
 builder.userId(userId) // 用户userid
     .ak(ak) // 必填参数 ACEP ak
     .sk(sk)  // 必填参数 ACEP sk
-    .token(token) // 必填参数 ACEP session
+    .token(token) // 必填参数 ACEP token
     .container(mContainer) // 必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
     .roundId(intent.getStringExtra(KEY_ROUND_ID)) // 必填参数，自定义roundId
     .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
