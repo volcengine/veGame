@@ -136,7 +136,7 @@ public class GameActivity extends AppCompatActivity
         AcLog.d(TAG, "userId: " + userId);
         Intent intent = getIntent();
 
-        String ak = "", sk = "", token = "";
+        String ak = "", sk = "", token = "";  // 这里需要替换成你的 ak/sk/token
         String sts = AssetsUtil.getTextFromAssets(this.getApplicationContext(), "sts.json");
         try {
             JSONObject stsJObj = new JSONObject(sts);
@@ -153,7 +153,7 @@ public class GameActivity extends AppCompatActivity
         builder.userId(userId) // 用户userid
                 .ak(ak) // 必填 ACEP ak
                 .sk(sk)  // 必填 ACEP sk
-                .token(token) // 必填 ACEP session
+                .token(token) // 必填 ACEP token
                 .container(mContainer)//必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
                 .roundId(intent.getStringExtra(KEY_ROUND_ID))//必填参数，自定义roundId
                 .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
@@ -166,6 +166,7 @@ public class GameActivity extends AppCompatActivity
                 .enableVibrator(true)
                 .enableLocationService(true)
                 .enableLocalKeyboard(true)
+                .keyBoardEnable(true)
                 .enableFileChannel(true)
                 .role(Role.PLAYER)
                 .roomType(0)
@@ -500,6 +501,11 @@ public class GameActivity extends AppCompatActivity
                 streamStats.getDecoderOutputFrameRate() + " " +
                 streamStats.getReceivedAudioBitRate() + " " +
                 streamStats.getReceivedVideoBitRate());
+    }
+
+    @Override
+    public void onNetworkQuality(int quality) {
+        AcLog.d(TAG, "onNetworkQuality() called with: quality = [" + quality + "]");
     }
 
     @Override

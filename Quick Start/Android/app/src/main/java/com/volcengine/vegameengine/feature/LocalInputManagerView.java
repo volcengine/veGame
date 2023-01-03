@@ -3,13 +3,16 @@ package com.volcengine.vegameengine.feature;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.cloudphone.apiservice.LocalInputManager;
 import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.util.DialogUtils;
@@ -48,6 +51,19 @@ public class LocalInputManagerView {
             enableAutoKeyBoard.setOnCheckedChangeListener((buttonView, isChecked) ->
                     localInputManager.closeAutoKeyBoard(isChecked)
             );
+
+            SwitchCompat enableKeyBoard = findViewById(R.id.switch_close_input_keyboard);
+            enableKeyBoard.setChecked(localInputManager.getKeyboardEnable());
+            enableKeyBoard.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (!isChecked) {
+                    InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(this.getWindowToken(), 0);
+                }
+                localInputManager.setKeyBoardEnable(isChecked);
+            });
+            findViewById(R.id.btn_get_keyboardEnable).setOnClickListener(v -> {
+                Toast.makeText(context, "" + localInputManager.getKeyboardEnable(), Toast.LENGTH_SHORT).show();
+            });
         }
     }
 }
