@@ -24,21 +24,21 @@
 
 #import <UIKit/UIKit.h>
 
-@protocol VeGameDisplayViewControllerDelegate <NSObject>
-// 退出
-- (void)gameDisplayViewDidStopGame;
+@interface VeCloudGameConfigObject : NSObject
+
+@property (nonatomic, copy) NSString *ak;
+@property (nonatomic, copy) NSString *sk;
+@property (nonatomic, copy) NSString *token;
+@property (nonatomic, copy) NSString *gameId;
+@property (nonatomic, copy) NSString *userId;
+@property (nonatomic, copy) NSString *roundId;
+@property (nonatomic, assign) NSInteger rotation;
+@property (nonatomic, assign) NSInteger videoStreamProfileId;
 
 @end
 
 @interface VeGameDisplayViewController : UIViewController
 
-/** 旋转度 */
-@property (nonatomic, assign) NSInteger rotation;
-
-@property (nonatomic, strong, readonly) UIView *containerView;
-
-/// 初始化构造函数
-/// @param delegate 代理
-- (instancetype)initWithDelegate:(id<VeGameDisplayViewControllerDelegate>)delegate;
+@property (nonatomic, strong) VeCloudGameConfigObject *configObj;
 
 @end
