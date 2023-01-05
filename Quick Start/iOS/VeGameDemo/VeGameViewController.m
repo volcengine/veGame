@@ -27,9 +27,8 @@
 #import <VeGame/VeGame.h>
 #import "VeGameViewController.h"
 #import "VeGameDisplayViewController.h"
-#import <SVProgressHUD/SVProgressHUD.h>
 
-@interface VeGameViewController () <VeGameManagerDelegate, VeGameDisplayViewControllerDelegate>
+@interface VeGameViewController ()
 
 @property (weak, nonatomic) IBOutlet UILabel *versionLabel;
 @property (weak, nonatomic) IBOutlet UITextField *akTextField;
@@ -39,7 +38,6 @@
 @property (weak, nonatomic) IBOutlet UITextField *gameIdTextField;
 @property (weak, nonatomic) IBOutlet UITextField *roundIdTextField;
 @property (weak, nonatomic) IBOutlet UITextField *rotationTextField;
-@property (nonatomic, strong) VeGameDisplayViewController *gameDisplayVc;
 
 @end
 
@@ -48,26 +46,26 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-
+    
     self.navigationItem.title = @"云游戏演示";
     
-    self.akTextField.text = @"";
-    self.skTextField.text = @"";
-    self.tokenTextField.text = @"";
+    self.akTextField.text = @"AKTPNDIwNmM3NmQ2NGNkNDMzYmJjMDYxYTM5ZGQzYjMxZjQ";
+    self.skTextField.text = @"n9McNIFfQSxwYMrwgPlZuxhcx8BRcipos6OJx/Etlx82szngFv5MSSvqpydRdb3WglHiYPcTcbs160nG+69Mng==";
+    self.tokenTextField.text = @"STS2eyJMVEFjY2Vzc0tleUlkIjoiQUtMVFl6ZzFOMlUyTlRGbVpqZGhORGsyWm1FMU56ZG1ZVFEyTVdGak1EaGlaVGMiLCJBY2Nlc3NLZXlJZCI6IkFLVFBOREl3Tm1NM05tUTJOR05rTkRNelltSmpNRFl4WVRNNVpHUXpZak14WmpRIiwiU2lnbmVkU2VjcmV0QWNjZXNzS2V5IjoiZGNFc0lnS3Y0aEhIeTR5cTlBZTZza1MrRlFFSTVFcXE5WFI2clprOGE4OWYyd3NnUE5jcTZaNnBhUmRCWU51dGt1aGFiK05LMlhBTDExY0xRS3c2SERjWng0OFJmSkxnSytTOENPM25NUnZrcXZmUk12L3dpdTdySklSTk1lZm0iLCJFeHBpcmVkVGltZSI6MTcxNTY5NDc2OCwiUG9saWN5U3RyaW5nIjoie1wiU3RhdGVtZW50XCI6W3tcIkVmZmVjdFwiOlwiQWxsb3dcIixcIkFjdGlvblwiOltcIipcIl0sXCJSZXNvdXJjZVwiOltcIipcIl19XX0iLCJTaWduYXR1cmUiOiI4NjllMzllMmY5YWI4MTBhMjJhY2RiOTAzYTg4YjVjMmYwNTkxNWI5MzQ0NDI2Yjg0NjM1ZWI1OWJhOGY4YTE5In0=";
     
-    self.gameIdTextField.text = @"";
-    self.userIdTextField.text = @"";
-    self.roundIdTextField.text = @"";
-    self.rotationTextField.text = @"0"; // 竖屏：0 横屏：270
+    self.rotationTextField.text = @"270";
+    self.userIdTextField.text = @"888765";
+    self.gameIdTextField.text = @"7123103365327903518"; // 王者荣耀
+    self.roundIdTextField.text = [NSString stringWithFormat: @"round_id_%@", self.userIdTextField.text];
     
     // 版本号
-    self.versionLabel.text = [NSString stringWithFormat: @"VeGameSDK 版本: V%@", [VeGameManager currentVersion]];
+    self.versionLabel.text = [NSString stringWithFormat: @"VeGameSDK版本: V%@\nDeviceId: %@", [VeGameManager currentVersion], [VeGameManager currentDeviceId]];
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear: animated];
-
+    
     [Utils rotateDeviceToOrientation: UIDeviceOrientationPortrait];
 }
 
@@ -96,65 +94,18 @@
         [self.view makeToast: str duration: 2.0f position: CSToastPositionCenter];
         return;
     }
-    
-    [SVProgressHUD showWithStatus: @"正在启动云游戏..."];
     // 显示控制器
-    [self.navigationController pushViewController: self.gameDisplayVc animated: YES];
-    [self.gameDisplayVc setRotation: self.rotationTextField.text.integerValue];
-    // 初始化云游戏实例
-    [VeGameManager sharedManagerWithContainerView: self.gameDisplayVc.containerView delegate: self];
-    // 配置信息
-    VeGameConfigObject *configObj = [VeGameConfigObject new];
-    configObj.ak = self.akTextField.text;
-    configObj.sk = self.skTextField.text;
-    configObj.token = self.tokenTextField.text;
-    configObj.userId = self.userIdTextField.text;
-    configObj.gameId = self.gameIdTextField.text;
-    configObj.roundId = self.roundIdTextField.text;
-    // 启动
-    [[VeGameManager sharedInstance] startWithConfig: configObj];
-}
-
-#pragma mark - VeGameDisplayViewControllerDelegate
-
-- (void)gameDisplayViewDidStopGame
-{
-    [SVProgressHUD dismiss];
-    
-    [[VeGameManager sharedInstance] stop];
-    [self.navigationController popViewControllerAnimated: YES];
-    self.gameDisplayVc = nil;
-}
-
-#pragma mark - VeGameManagerDelegate
-
-- (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId extra:(NSDictionary *)extra
-{
-    [SVProgressHUD dismiss];
-}
-
-- (void)gameManager:(VeGameManager *)manager changedDeviceRotation:(NSInteger)rotation
-{
-    [self.gameDisplayVc setRotation: rotation];
-}
-
-- (void)gameManager:(VeGameManager *)manager onError:(VeGameErrorCode)errorCode
-{
-    [SVProgressHUD dismiss];
-    
-    [[Utils getCurrentViewController].view makeToast: [NSString stringWithFormat: @"Error Code: %ld", errorCode]
-                                            duration: 2.0f
-                                            position: CSToastPositionCenter];
-}
-
-#pragma mark - getter
-
-- (VeGameDisplayViewController *)gameDisplayVc
-{
-    if (_gameDisplayVc == nil) {
-        _gameDisplayVc= [[VeGameDisplayViewController alloc] initWithDelegate: self];
-    }
-    return _gameDisplayVc;
+    VeGameDisplayViewController *gameDisplayVc = [[VeGameDisplayViewController alloc] init];
+    VeCloudGameConfigObject *obj = [[VeCloudGameConfigObject alloc] init];
+    obj.ak = self.akTextField.text;
+    obj.sk = self.skTextField.text;
+    obj.token = self.tokenTextField.text;
+    obj.userId = self.userIdTextField.text;
+    obj.gameId = self.gameIdTextField.text;
+    obj.roundId = self.roundIdTextField.text;
+    obj.rotation = self.rotationTextField.text.integerValue;
+    gameDisplayVc.configObj = obj;
+    [self.navigationController pushViewController: gameDisplayVc animated: YES];
 }
 
 @end

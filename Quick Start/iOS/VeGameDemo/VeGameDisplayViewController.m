@@ -23,29 +23,47 @@
 // SOFTWARE.
 
 #import "Masonry.h"
+#import <Toast/Toast.h>
+#import <VeGame/VeGame.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "VeGameDisplayViewController.h"
 
-@interface VeGameDisplayViewController ()
+@implementation VeCloudGameConfigObject
 
-@property (nonatomic, strong, readwrite) UIView *containerView;
-@property (nonatomic, weak) id <VeGameDisplayViewControllerDelegate> delegate;
+@end
+
+@interface VeGameDisplayViewController () <VeGameManagerDelegate>
+
+@property (nonatomic, assign) NSInteger rotation;
+@property (nonatomic, strong) UIView *containerView;
 
 @end
 
 @implementation VeGameDisplayViewController
 
-- (instancetype)initWithDelegate:(id<VeGameDisplayViewControllerDelegate>)delegate
+- (void)viewDidLoad
 {
-    if (self = [super init]) {
-        self.hidesBottomBarWhenPushed = YES;
-        self.view.backgroundColor = [UIColor blackColor];
-        
-        _rotation = 0;
-        _delegate = delegate;
-        
-        [self configUI];
-    }
-    return self;
+    [super viewDidLoad];
+    
+    self.hidesBottomBarWhenPushed = YES;
+    self.view.backgroundColor = [UIColor blackColor];
+    
+    self.rotation = self.configObj.rotation;
+    
+    [self configUI];
+    [SVProgressHUD showWithStatus: @"正在启动..."];
+    // 初始化云游戏实例
+    [VeGameManager sharedManagerWithContainerView: self.containerView delegate: self];
+    // 配置信息
+    VeGameConfigObject *configObj = [VeGameConfigObject new];
+    configObj.ak = self.configObj.ak;
+    configObj.sk = self.configObj.sk;
+    configObj.token = self.configObj.token;
+    configObj.userId = self.configObj.userId;
+    configObj.gameId = self.configObj.gameId;
+    configObj.roundId = self.configObj.roundId;
+    // 启动
+    [[VeGameManager sharedInstance] startWithConfig: configObj];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -98,13 +116,43 @@
     }];
 }
 
+#pragma mark - VeGameDisplayViewControllerDelegate
+
+- (void)gameDisplayViewDidStopGame
+{
+    [SVProgressHUD dismiss];
+    [[VeGameManager sharedInstance] stop];
+    [self.navigationController popViewControllerAnimated: YES];
+}
+
+#pragma mark - VeGameManagerDelegate
+
+- (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId extra:(NSDictionary *)extra
+{
+    [SVProgressHUD dismiss];
+}
+
+- (void)gameManager:(VeGameManager *)manager changedDeviceRotation:(NSInteger)rotation
+{
+    [self setRotation: rotation];
+}
+
+- (void)gameManager:(VeGameManager *)manager onError:(VeGameErrorCode)errorCode
+{
+    [SVProgressHUD dismiss];
+    
+    [self.view makeToast: [NSString stringWithFormat: @"Error Code: %ld", errorCode]
+                duration: 2.0f
+                position: CSToastPositionCenter];
+}
+
 #pragma mark - button action
 
 - (void)tappedExitButton:(UIButton *)btn
 {
-    if ([self.delegate respondsToSelector: @selector(gameDisplayViewDidStopGame)]) {
-        [self.delegate gameDisplayViewDidStopGame];
-    }
+    [SVProgressHUD dismiss];
+    [[VeGameManager sharedInstance] stop];
+    [self.navigationController popViewControllerAnimated: YES];
 }
 
 #pragma mark - setter

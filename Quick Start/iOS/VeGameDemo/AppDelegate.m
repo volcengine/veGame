@@ -23,7 +23,7 @@
 // SOFTWARE.
 
 #import "AppDelegate.h"
-#import <VeGame/VeGame.h>
+#import "VeGame/VeGameManager.h"
 #import "VeGameViewController.h"
 #import "VeNavigationController.h"
 #import <SVProgressHUD/SVProgressHUD.h>
@@ -76,7 +76,7 @@
 
 - (void)configVeGame
 {
-    [VeGameManager setConfigInfo];
+    [VeGameManager setupConfigWithAccountId: @"2100052949"];
 }
 
 @end
