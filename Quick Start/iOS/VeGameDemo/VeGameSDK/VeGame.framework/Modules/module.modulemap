@@ -1,6 +1,0 @@
-framework module VeGame {
-  umbrella header "VeGame.h"
-
-  export *
-  module * { export * }
-}

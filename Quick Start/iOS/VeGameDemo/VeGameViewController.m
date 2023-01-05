@@ -49,10 +49,6 @@
     
     self.navigationItem.title = @"云游戏演示";
     
-    self.akTextField.text = @"AKTPNDIwNmM3NmQ2NGNkNDMzYmJjMDYxYTM5ZGQzYjMxZjQ";
-    self.skTextField.text = @"n9McNIFfQSxwYMrwgPlZuxhcx8BRcipos6OJx/Etlx82szngFv5MSSvqpydRdb3WglHiYPcTcbs160nG+69Mng==";
-    self.tokenTextField.text = @"STS2eyJMVEFjY2Vzc0tleUlkIjoiQUtMVFl6ZzFOMlUyTlRGbVpqZGhORGsyWm1FMU56ZG1ZVFEyTVdGak1EaGlaVGMiLCJBY2Nlc3NLZXlJZCI6IkFLVFBOREl3Tm1NM05tUTJOR05rTkRNelltSmpNRFl4WVRNNVpHUXpZak14WmpRIiwiU2lnbmVkU2VjcmV0QWNjZXNzS2V5IjoiZGNFc0lnS3Y0aEhIeTR5cTlBZTZza1MrRlFFSTVFcXE5WFI2clprOGE4OWYyd3NnUE5jcTZaNnBhUmRCWU51dGt1aGFiK05LMlhBTDExY0xRS3c2SERjWng0OFJmSkxnSytTOENPM25NUnZrcXZmUk12L3dpdTdySklSTk1lZm0iLCJFeHBpcmVkVGltZSI6MTcxNTY5NDc2OCwiUG9saWN5U3RyaW5nIjoie1wiU3RhdGVtZW50XCI6W3tcIkVmZmVjdFwiOlwiQWxsb3dcIixcIkFjdGlvblwiOltcIipcIl0sXCJSZXNvdXJjZVwiOltcIipcIl19XX0iLCJTaWduYXR1cmUiOiI4NjllMzllMmY5YWI4MTBhMjJhY2RiOTAzYTg4YjVjMmYwNTkxNWI5MzQ0NDI2Yjg0NjM1ZWI1OWJhOGY4YTE5In0=";
-    
     self.rotationTextField.text = @"270";
     self.userIdTextField.text = @"888765";
     self.gameIdTextField.text = @"7123103365327903518"; // 王者荣耀
