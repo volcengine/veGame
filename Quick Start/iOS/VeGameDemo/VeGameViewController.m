@@ -52,8 +52,6 @@
 
     
     self.rotationTextField.text = @"270";
-    self.userIdTextField.text = @"888765";
-    self.gameIdTextField.text = @"7123103365327903518"; // 王者荣耀
     self.roundIdTextField.text = [NSString stringWithFormat: @"round_id_%@", self.userIdTextField.text];
     
     // 版本号
