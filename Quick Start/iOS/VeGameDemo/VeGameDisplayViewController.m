@@ -204,7 +204,7 @@
     file.name = fileName;
     file.md5 = [self md5StringOfData: imageData];
     [[VeGameManager sharedInstance] startSendFile: file onProgress:^(VeFile *file, NSInteger progress) {
-        NSLog(@"上传进度--------%ld\n", progress / 2 + 50);
+        NSLog(@"上传进度--------%ld\n", progress);
     } onComplete:^(VeFile *file) {
         NSLog(@"上传完成--------%@\n", file.name);
     } onCancel:^(VeFile *file) {
