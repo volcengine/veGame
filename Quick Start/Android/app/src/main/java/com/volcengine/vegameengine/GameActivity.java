@@ -29,6 +29,7 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CAMERA;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
+import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
@@ -69,6 +70,7 @@ import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.CamaraManagerView;
 import com.volcengine.vegameengine.feature.ClarityServiceView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
+import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
@@ -114,7 +116,7 @@ public class GameActivity extends AppCompatActivity
 
     private Button btnAudio, btnCamera, btnClarity, btnClipBoard, btnFileChannel, btnGround, btnLocation;
     private Button btnMessageChannel, btnPodControl, btnRotation, btnSensor, btnUnclassified;
-    private Button btnProbeNetwork, btnLocalInput, btnPadConsole, btnMultiUser;
+    private Button btnProbeNetwork, btnLocalInput, btnPadConsole, btnMultiUser, btnFileChannelExt;
     private TextView tvInfo;
     private boolean isLand = false;
     private boolean isShowInfo = false;
@@ -295,6 +297,7 @@ public class GameActivity extends AppCompatActivity
         btnClarity = findViewById(R.id.btn_clarity);
         btnClipBoard = findViewById(R.id.btn_clipboard);
         btnFileChannel = findViewById(R.id.btn_file_channel);
+        btnFileChannelExt = findViewById(R.id.btn_file_channel_ext);
         btnGround = findViewById(R.id.btn_ground);
         btnLocation = findViewById(R.id.btn_location);
         btnMessageChannel = findViewById(R.id.btn_message_channel);
@@ -370,6 +373,14 @@ public class GameActivity extends AppCompatActivity
                         AcLog.d(TAG, "FileChannel is null!");
                     }
                 });
+                break;
+            case FEATURE_FILE_CHANNEL_EXT:
+                if (veGameEngine.getFileChannelExt() != null) {
+                    new FileChannelExtView(this, veGameEngine.getFileChannelExt(), btnFileChannelExt);
+                }
+                else {
+                    AcLog.d(TAG, "FileChannelExt is null!");
+                }
                 break;
             case FEATURE_LOCAL_INPUT:
                 if (veGameEngine.getLocalInputManager() != null) {

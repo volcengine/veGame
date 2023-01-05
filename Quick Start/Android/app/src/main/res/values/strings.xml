@@ -54,6 +54,11 @@
     <string name="file_channel">文件通道</string>
     <string name="file_channel_desc">在该演示中你可以体验与文件通道相关的功能接口</string>
 
+    <!-- 大文件通道相关 -->
+    <string name="file_channel_ext">大文件通道</string>
+    <string name="input_filepath">请输入文件路径</string>
+    <string name="file_channel_ext_desc">在该演示中你可以体验与大文件通道相关的功能接口</string>
+
     <!-- Ground相关 -->
     <string name="ground">ground</string>
 
@@ -134,11 +139,11 @@
     <string name="probe_network">网络探测</string>
     <string name="probe_network_desc">在该演示中你可以体验与网络探测相关的功能接口</string>
 
-    <!--  本地输入  -->
+    <!--  本地输入相关  -->
     <string name="local_input">本地输入</string>
     <string name="local_input_desc">在该演示中你可以体验与本地输入相关的功能接口</string>
 
-    <!--  多用户  -->
+    <!--  多用户相关  -->
     <string name="multi_user">多用户</string>
     <string name="player">player</string>
     <string name="viewer">viewer</string>

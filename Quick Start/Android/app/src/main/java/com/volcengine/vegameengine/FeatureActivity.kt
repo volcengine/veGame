@@ -18,8 +18,10 @@ class FeatureActivity : BaseSampleActivity() {
     private lateinit var etClarityId: EditText
     private lateinit var btnStartGame: Button
 
+    // 这里请输入你的gameId
 //    private val testBean = TestBean("7104356860098059039") // 抖音
-    private val testBean = TestBean("7153954521692003079") // 原神
+    private val testBean = TestBean("7179188860214188837") //弹弹弹
+//    private val testBean = TestBean("7153954521692003079") // 原神
 //    private val testBean = TestBean("7148631686065052446") // 光遇
 //    private val testBean = TestBean("7068174254205967111") // 汤姆猫
 
@@ -58,6 +60,10 @@ class FeatureActivity : BaseSampleActivity() {
             Manifest.permission.CAMERA,
             Manifest.permission.RECORD_AUDIO,
             Manifest.permission.BLUETOOTH,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
         ).request()
     }
 
@@ -74,6 +80,9 @@ class FeatureActivity : BaseSampleActivity() {
             }
             Feature.FEATURE_FILE_CHANNEL -> {
                 return R.string.file_channel
+            }
+            Feature.FEATURE_FILE_CHANNEL_EXT -> {
+                return R.string.file_channel_ext
             }
             Feature.FEATURE_LOCAL_INPUT -> {
                 return R.string.local_input

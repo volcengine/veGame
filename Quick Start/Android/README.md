@@ -44,7 +44,8 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 云游戏 SDK
-    implementation 'com.volcengine.vegame:vegame:1.18.0'
+    implementation 'com.volcengine.vegame:vegame:1.19.0'
+    
     implementation 'androidx.annotation:annotation:1.1.0'
         
     // 选择引用以下三种框架中的任意一种
@@ -54,6 +55,9 @@ dependencies {
         
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1' // jackson
     implementation 'com.fasterxml.jackson.core:jackson-core:2.11.1' //jackson
+
+    // 大文件传输特性(FileChannelExt)需要以下依赖项
+    implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }
 ```
 
