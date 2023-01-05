@@ -10,7 +10,7 @@ function createBtn(text, fn){
     return btn
 }
 
-function initTosFileChannel(veGameInstance){
+function initTosFileChannel(bytePlay){
 
     const wrapper = document.createElement('span');
     wrapper.style.display = 'block';
@@ -25,22 +25,22 @@ function initTosFileChannel(veGameInstance){
 
     wrapper.appendChild(createBtn(
         '暂停上传', ()=>{
-            veGameInstance.pauseSendFile()
+            bytePlay.pauseSendFile()
             dom.value=''
         }
     ));
 
     wrapper.appendChild(createBtn(
-        '取消上传', ()=>{veGameInstance.stopSendFile()}
+        '取消上传', ()=>{bytePlay.stopSendFile()}
     ));
     wrapper.appendChild(createBtn(
         '暂停下载', ()=>{
-            veGameInstance.pauseReceiveFile()
+            bytePlay.pauseReceiveFile()
         }
     ));
 
     wrapper.appendChild(createBtn(
-        '取消下载', ()=>{veGameInstance.stopReceiveFile()}
+        '取消下载', ()=>{bytePlay.stopReceiveFile()}
     ));
 
     wrapper.appendChild(createBtn(
@@ -50,7 +50,7 @@ function initTosFileChannel(veGameInstance){
     document.querySelector('.func-area').appendChild(wrapper);
 
     dom.onchange = (e)=>{
-        veGameInstance.startSendFile(e.target.files[0], {
+        bytePlay.startSendFile(e.target.files[0], {
             name: '1.mp4',
             folder: '/sdcard/Download',
         });
@@ -68,7 +68,7 @@ function initTosFileChannel(veGameInstance){
         'on-download-file-done',
     ].forEach(name=>{
 
-        veGameInstance.on(name, d=>{
+        bytePlay.on(name, d=>{
             console.warn(name, d);
             if(name === 'on-download-file-done'){
                 const a = document.createElement('a');
