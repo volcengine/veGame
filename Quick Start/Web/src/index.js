@@ -1,3 +1,8 @@
+/*
+ * @Author: chenzhongsheng
+ * @Date: 2023-01-05 18:31:22
+ * @Description: Coding something
+ */
 const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
 const playerEl = document.getElementById('player');
@@ -38,6 +43,9 @@ function init() {
       alert('游戏超时退出');
     }
   });
+
+  initTosFileChannel(veGameInstance);
+
   return veGameInstance;
 }
 
