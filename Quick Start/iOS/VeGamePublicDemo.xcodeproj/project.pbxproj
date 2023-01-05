@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */; };
+		2B40BCE428D9E934009B17C8 /* VolcEngineRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */; };
+		2B40BCE628D9E93C009B17C8 /* VeGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE328D9E934009B17C8 /* VeGame.framework */; };
+		2B40BCE728D9E93C009B17C8 /* VeGame.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE328D9E934009B17C8 /* VeGame.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		2B40BCE828D9EA51009B17C8 /* VolcEngineRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2B6D6C3426E63E080073011E /* VeNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3326E63E080073011E /* VeNavigationController.m */; };
 		2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3B26E642FA0073011E /* VeGameViewController.m */; };
 		2B6D6C3E26E642FA0073011E /* VeGameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */; };
@@ -19,8 +24,27 @@
 		C8B7E3F11E27698700EAD131 /* image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8B7E3F01E27698700EAD131 /* image.xcassets */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		2B26FE4B28AB8BD300F39BF4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				2B40BCE828D9EA51009B17C8 /* VolcEngineRTC.framework in Embed Frameworks */,
+				2B40BCE728D9E93C009B17C8 /* VeGame.framework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VeGamePublicDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SVProgressHUD+Category.m"; sourceTree = "<group>"; };
+		2B148BF32953FCD4004F396F /* SVProgressHUD+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+Category.h"; sourceTree = "<group>"; };
+		2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VolcEngineRTC.framework; sourceTree = "<group>"; };
+		2B40BCE328D9E934009B17C8 /* VeGame.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VeGame.framework; sourceTree = "<group>"; };
 		2B6D6C3226E63E080073011E /* VeNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeNavigationController.h; sourceTree = "<group>"; };
 		2B6D6C3326E63E080073011E /* VeNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeNavigationController.m; sourceTree = "<group>"; };
 		2B6D6C3A26E642FA0073011E /* VeGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VeGameViewController.h; sourceTree = "<group>"; };
@@ -49,6 +73,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2B40BCE428D9E934009B17C8 /* VolcEngineRTC.framework in Frameworks */,
+				2B40BCE628D9E93C009B17C8 /* VeGame.framework in Frameworks */,
 				3B226FAEC41B5F36464D454E /* libPods-VeGamePublicDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -56,6 +82,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B0C8D6D26E0B38400753D2A /* VeGameSDK */ = {
+			isa = PBXGroup;
+			children = (
+				2B40BCE328D9E934009B17C8 /* VeGame.framework */,
+				2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */,
+			);
+			path = VeGameSDK;
+			sourceTree = "<group>";
+		};
 		764F4351218F646FDEC60CD6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -95,9 +130,12 @@
 				2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */,
 				2B6D6C3226E63E080073011E /* VeNavigationController.h */,
 				2B6D6C3326E63E080073011E /* VeNavigationController.m */,
+				2B148BF32953FCD4004F396F /* SVProgressHUD+Category.h */,
+				2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */,
 				2B6D6C4026E645C70073011E /* VeGameDisplayViewController.h */,
 				2B6D6C3F26E645C70073011E /* VeGameDisplayViewController.m */,
 				C83BF0111E1234250016E53D /* LaunchScreen.storyboard */,
+				2B0C8D6D26E0B38400753D2A /* VeGameSDK */,
 				C83BF0031E1234250016E53D /* Supporting Files */,
 			);
 			path = VeGameDemo;
@@ -131,10 +169,13 @@
 			buildConfigurationList = C83BF0171E1234250016E53D /* Build configuration list for PBXNativeTarget "VeGamePublicDemo" */;
 			buildPhases = (
 				FEB2921AD8ED7988BC459C38 /* [CP] Check Pods Manifest.lock */,
+				FBC0837D07C2667539238D6B /* [CP-User] Hummer-before-hooks */,
 				C83BEFFC1E1234250016E53D /* Sources */,
 				C83BEFFD1E1234250016E53D /* Frameworks */,
 				C83BEFFE1E1234250016E53D /* Resources */,
 				39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */,
+				2B26FE4B28AB8BD300F39BF4 /* Embed Frameworks */,
+				33BAEA01C6709CF66568A700 /* [CP-User] Hummer-after-hooks */,
 			);
 			buildRules = (
 			);
@@ -194,6 +235,16 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
+		33BAEA01C6709CF66568A700 /* [CP-User] Hummer-after-hooks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] Hummer-after-hooks";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f \"${PODS_ROOT}/hummer_after_hooks.sh\" ];then\n  bash \"${PODS_ROOT}/hummer_after_hooks.sh\"\nfi\n";
+		};
 		39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -211,6 +262,16 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VeGamePublicDemo/Pods-VeGamePublicDemo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		FBC0837D07C2667539238D6B /* [CP-User] Hummer-before-hooks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			name = "[CP-User] Hummer-before-hooks";
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f \"${PODS_ROOT}/hummer_before_hooks.sh\" ];then\n  bash \"${PODS_ROOT}/hummer_before_hooks.sh\"\nfi\n";
 		};
 		FEB2921AD8ED7988BC459C38 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -238,6 +299,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */,
+				2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */,
 				C83BF0081E1234250016E53D /* AppDelegate.m in Sources */,
 				2B6D6C4126E645C70073011E /* VeGameDisplayViewController.m in Sources */,
 				C83BF0051E1234250016E53D /* main.m in Sources */,
@@ -383,6 +445,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6N49VPDU43;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 6N49VPDU43;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -422,6 +485,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/VeGamePublicDemo",
 				);
+				MARKETING_VERSION = 1.18.0;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -439,6 +503,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.deviceservice.cloudgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = dev_common;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dev_common;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
@@ -450,8 +515,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
 				DEVELOPMENT_TEAM = 6N49VPDU43;
+				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = X46375UBYG;
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -482,6 +549,7 @@
 					"$(inherited)",
 					"$(PROJECT_DIR)/VeGamePublicDemo",
 				);
+				MARKETING_VERSION = 1.18.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
@@ -496,9 +564,10 @@
 					"\"UIKit\"",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.deviceservice.cloudgame;
+				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.deviceservice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = dev_common;
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = DeviceManagerServiceInHouse.dist;
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
