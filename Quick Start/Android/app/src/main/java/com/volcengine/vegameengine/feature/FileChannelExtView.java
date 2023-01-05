@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ScrollView;
+import android.widget.Toast;
 
 import com.volcengine.cloudphone.apiservice.IFileChannelExt;
 import com.volcengine.vegameengine.R;
@@ -125,13 +126,23 @@ public class FileChannelExtView {
                 if (mFileChannelExt != null) {
                     String filePathString = mFilePathEditText.getText().toString();
                     File file = new File(filePathString);
-                    mFileChannelExt.startSendFile(file, this);
+                    if (file.exists()) {
+                        mFileChannelExt.startSendFile(file, this);
+                    }
+                    else {
+                        Toast.makeText(mContext, "文件不存在", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else if (view.getId() == R.id.btn_stop_send_file) {
                 if (mFileChannelExt != null) {
                     String filePathString = mFilePathEditText.getText().toString();
                     File file = new File(filePathString);
-                    mFileChannelExt.stopSendFile(file);
+                    if (file.exists()) {
+                        mFileChannelExt.stopSendFile(file);
+                    }
+                    else {
+                        Toast.makeText(mContext, "文件不存在", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else if (view.getId() == R.id.btn_stop_receive_file) {
                 if (mFileChannelExt != null && mReceiveFile != null) {
