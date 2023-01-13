@@ -1,8 +1,3 @@
-<!--
- * @Author: chenzhongsheng
- * @Date: 2023-01-05 19:15:07
- * @Description: Coding something
--->
 <!doctype html>
 <html lang="en">
 <head>
@@ -11,14 +6,18 @@
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="index.css" />
-    <title>云游戏 Web SDK quick start demo</title>
+    <title>云游戏 大文件传输 Web SDK quick start demo</title>
 </head>
 <body>
-    <button id="start-btn" class="fixed">开始游戏</button>
+    <div class="fixed" >
+        <button id="start-btn" class="">开始游戏</button>
+        <button id="stop-btn" class="hidden">结束游戏</button>
+        <div class="func-area"></div>
+    </div>
     <div id="player"></div>
-    <button id="stop-btn" class="hidden fixed">结束游戏</button>
     <script src="../lib/veGameSDK-Web.js"></script>
     <script src="./config.js"></script>
     <script src="./index.js"></script>
+    <script src="./samples/file-channel.js"></script>
 </body>
 </html>

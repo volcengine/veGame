@@ -43,9 +43,6 @@ function init() {
       alert('游戏超时退出');
     }
   });
-
-  initTosFileChannel(veGameInstance);
-
   return veGameInstance;
 }
 
@@ -90,4 +87,5 @@ function toggleHidden(el) {
 (() => {
   const veGameInstance = init();
   bindEventListener(veGameInstance);
+  window.veGameInstance = veGameInstance;
 })();

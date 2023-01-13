@@ -10,7 +10,9 @@ function createBtn(text, fn){
     return btn
 }
 
-function initTosFileChannel(veGameInstance){
+(function initTosFileChannel(){
+
+    const veGameInstance = window.veGameInstance;
 
     const wrapper = document.createElement('span');
     wrapper.style.display = 'block';
@@ -79,4 +81,4 @@ function initTosFileChannel(veGameInstance){
             }
         });
     })
-}
+})()
