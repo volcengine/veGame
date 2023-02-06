@@ -30,68 +30,56 @@ public class SensorView {
 
             SwitchCompat switchCompatAccelSensor = findViewById(R.id.switch_enable_accelerator);
             switchCompatAccelSensor.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                /**
+                 * enableAccelSensor(boolean enable) -- 本地加速度传感器开关
+                 */
                 VeGameEngine.getInstance().enableAccelSensor(isChecked);
-                if (isChecked) {
-                    Toast.makeText(context, "加速度传感器已开启", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "加速度传感器已关闭", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "本地加速度传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
             });
 
             SwitchCompat switchCompatMagnetic = findViewById(R.id.switch_enable_magnetic);
             switchCompatMagnetic.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                /**
+                 * enableMagneticSensor(boolean enable) -- 本地磁力传感器开关
+                 */
                 VeGameEngine.getInstance().enableMagneticSensor(isChecked);
-                if (isChecked) {
-                    Toast.makeText(context, "磁力传感器已开启", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "磁力传感器已关闭", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "本地磁力传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
             });
 
             SwitchCompat switchCompatGravity = findViewById(R.id.switch_enable_gravity);
             switchCompatGravity.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                /**
+                 * enableGravitySensor(boolean enable) -- 本地重力传感器开关
+                 */
                 VeGameEngine.getInstance().enableGravitySensor(isChecked);
-                if (isChecked) {
-                    Toast.makeText(context, "重力传感器已开启", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "重力传感器已关闭", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "本地重力传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
             });
 
             SwitchCompat switchCompatOrientation = findViewById(R.id.switch_enable_orientation);
             switchCompatOrientation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                /**
+                 * enableOrientationSensor(boolean enable) -- 本地方向传感器开关
+                 */
                 VeGameEngine.getInstance().enableOrientationSensor(isChecked);
-                if (isChecked) {
-                    Toast.makeText(context, "方向传感器已开启", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "方向传感器已关闭", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "本地方向传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
             });
 
             SwitchCompat switchCompatGyroscope = findViewById(R.id.switch_enable_gyroscope);
             switchCompatGyroscope.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                /**
+                 * enableGyroscopeSensor(boolean enable) -- 本地陀螺仪传感器开关
+                 */
                 VeGameEngine.getInstance().enableGyroscopeSensor(isChecked);
-                if (isChecked) {
-                    Toast.makeText(context, "陀螺仪已开启", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "陀螺仪已关闭", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "本地陀螺仪传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
             });
 
             SwitchCompat switchCompatVibrator = findViewById(R.id.switch_enable_vibrator);
             switchCompatVibrator.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                /**
+                 * enableVibrator(boolean enable) -- 本地振动传感器开关
+                 */
                 VeGameEngine.getInstance().enableVibrator(isChecked);
-                if (isChecked) {
-                    Toast.makeText(context, "振动已开启", Toast.LENGTH_SHORT).show();
-                }
-                else {
-                    Toast.makeText(context, "振动已关闭", Toast.LENGTH_SHORT).show();
-                }
+                Toast.makeText(context, "本地振动传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
             });
         }
     }

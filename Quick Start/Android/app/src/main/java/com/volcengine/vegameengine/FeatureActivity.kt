@@ -20,7 +20,7 @@ class FeatureActivity : BaseSampleActivity() {
 
     // 这里请输入你的gameId
 //    private val testBean = TestBean("7104356860098059039") // 抖音
-    private val testBean = TestBean("7179188860214188837") //弹弹弹
+    private val testBean = TestBean("7189585825691147067") // 弹弹弹
 //    private val testBean = TestBean("7153954521692003079") // 原神
 //    private val testBean = TestBean("7148631686065052446") // 光遇
 //    private val testBean = TestBean("7068174254205967111") // 汤姆猫
