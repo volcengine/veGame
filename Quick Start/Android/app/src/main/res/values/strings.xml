@@ -125,8 +125,8 @@
     <string name="vibrator">振动</string>
     <string name="sensor_desc">在该演示中你可以体验与传感器相关的功能接口</string>
 
-    <!--  杂项相关  -->
-    <string name="unclassified">杂项</string>
+    <!--  其他  -->
+    <string name="unclassified">其他</string>
     <string name="restart">重启云游戏</string>
     <string name="stop">关闭云游戏</string>
     <string name="pause">暂停拉流</string>

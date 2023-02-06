@@ -48,22 +48,37 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
 
         setLayoutParams(new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
 
+        /**
+         * setAudioControlListener(AudioService.AudioControlListener listener) -- 设置音频控制监听器
+         */
         mAudioService.setAudioControlListener(this);
+        VeGameEngine engine = VeGameEngine.getInstance();
 
-
+        /**
+         * muteAudio(boolean mute) -- 云端实例静音开关
+         */
         findViewById(R.id.btn_mute).setOnClickListener(v -> {
-            VeGameEngine engine = VeGameEngine.getInstance();
             engine.muteAudio(!engine.isAudioMuted());
         });
 
+        /**
+         * volumeDown() -- 降低云端实例音量大小
+         */
         findViewById(R.id.btn_volumeDown).setOnClickListener(v -> {
-            VeGameEngine.getInstance().volumeDown();
+            engine.volumeDown();
         });
 
+        /**
+         * volumeUp() -- 升高云端实例音量大小
+         */
         findViewById(R.id.btn_volumeUp).setOnClickListener(v -> {
-            VeGameEngine.getInstance().volumeUp();
+            engine.volumeUp();
         });
 
+        /**
+         * isEnableSendAudioStream() -- 是否发送音频流至云端实例
+         * setEnableSendAudioStream(boolean enable) -- 设置是否发送音频流至云端实例
+         */
         SwitchCompat switchCompat = findViewById(R.id.switch_enable);
         switchCompat.setChecked(mAudioService.isEnableSendAudioStream());
         switchCompat.setOnCheckedChangeListener((compoundButton, b) -> mAudioService.setEnableSendAudioStream(b));
@@ -71,7 +86,9 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         findViewById(R.id.btn_start_send_audio).setOnClickListener(view -> onRemoteAudioStartRequest());
         findViewById(R.id.btn_stop_send_audio).setOnClickListener(view -> onRemoteAudioStopRequest());
 
-        // 本地播放音量
+        /**
+         * getLocalAudioPlaybackVolume() -- 获取本地设备播放音量
+         */
         mSbLocalAudioPlaybackVolume = findViewById(R.id.sb_local_audio_playback_volume);
         mBtnLocalAudioPlaybackVolume = findViewById(R.id.btn_local_audio_playback_volume);
         mBtnLocalAudioPlaybackVolume.setOnClickListener(view -> {
@@ -81,7 +98,10 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         });
         mSbLocalAudioPlaybackVolume.setProgress(mAudioService.getLocalAudioPlaybackVolume());
         mSbLocalAudioPlaybackVolume.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
-        // 远端音量
+
+        /**
+         * getRemoteAudioPlaybackVolume() -- 获取远端实例播放音量
+         */
         mSbRemoteAudioPlaybackVolume = findViewById(R.id.sb_remote_audio_playback_volume);
         mSbRemoteAudioPlaybackVolume.setProgress(mAudioService.getRemoteAudioPlaybackVolume());
         mBtnRemoteAudioPlaybackVolume = findViewById(R.id.btn_remote_audio_playback_volume);
@@ -91,7 +111,10 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
             mBtnRemoteAudioPlaybackVolume.setText(String.format(Locale.getDefault(), "get[%d]", volume));
         });
         mSbRemoteAudioPlaybackVolume.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
-        // 本地采集音量
+
+        /**
+         * getLocalAudioCaptureVolume() -- 获取本地设备采集音量
+         */
         mSbLocalAudioCaptureVolume = findViewById(R.id.sb_local_audio_capture_volume);
         mSbLocalAudioCaptureVolume.setProgress(mAudioService.getLocalAudioCaptureVolume());
         mBtnLocalAudioCaptureVolume = findViewById(R.id.btn_local_audio_capture_volume);
@@ -102,6 +125,9 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         });
         mSbLocalAudioCaptureVolume.setOnSeekBarChangeListener(mOnSeekBarChangeListener);
 
+        /**
+         * getAudioPlaybackDevice() -- 获取本地音频播放设备
+         */
         mRgAudioPlaybackDevice = findViewById(R.id.rg_audio_playback_device);
         int audioPlaybackDevice = mAudioService.getAudioPlaybackDevice();
         for (int i = 0; i < mDeviceArray.size(); i++) {
@@ -110,9 +136,7 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
                 mRgAudioPlaybackDevice.check(id);
             }
         }
-
         mRgAudioPlaybackDevice.setOnCheckedChangeListener(mOnCheckedChangeListener);
-
     }
 
     private final SeekBar.OnSeekBarChangeListener mOnSeekBarChangeListener = new SeekBar.OnSeekBarChangeListener() {
@@ -133,6 +157,13 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
 
         @Override
         public void onStopTrackingTouch(SeekBar seekBar) {
+            /**
+             * setLocalAudioCaptureVolume(int volume) -- 设置本地设备采集音量
+             * setRemoteAudioPlaybackVolume(int volume) -- 设置远端实例播放音量
+             * setLocalAudioPlaybackVolume(int volume) -- 设置本地设备播放音量
+             *
+             * @param volume 音量大小，[0, 100]
+             */
             int i = seekBar.getProgress();
             if (seekBar == mSbLocalAudioCaptureVolume) {
                 mAudioService.setLocalAudioCaptureVolume(i);
@@ -144,6 +175,11 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         }
     };
 
+    /**
+     * setAudioPlaybackDevice(int device) -- 设置本地音频输出设备，包含不限于系统扬声器和外接扬声器和耳机(有线耳机、蓝牙耳机)
+     *
+     * @param device 音频输出设备ID
+     */
     private final RadioGroup.OnCheckedChangeListener mOnCheckedChangeListener = new RadioGroup.OnCheckedChangeListener() {
         @Override
         public void onCheckedChanged(RadioGroup radioGroup, int i) {
@@ -154,12 +190,20 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
     };
 
 
+    /**
+     * 远端实例音量大小改变回调
+     *
+     * @param volume 返回的远端实例音量大小，[0,100]
+     */
     @Override
     public void onRemoteAudioPlaybackVolumeChanged(int volume) {
         Log.d(TAG, "onRemoteAudioPlaybackVolumeChanged() called with: volume = [" + volume + "]");
         mSbRemoteAudioPlaybackVolume.setProgress(volume);
     }
 
+    /**
+     * 远端实例请求开启本地音频推流回调
+     */
     @Override
     public void onRemoteAudioStartRequest() {
         Log.d(TAG, "onRemoteAudioStartRequest() called");
@@ -179,6 +223,9 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
                 }).request();
     }
 
+    /**
+     * 远端实例请求关闭本地音频推流回调
+     */
     @Override
     public void onRemoteAudioStopRequest() {
         Log.d(TAG, "onRemoteAudioStopRequest() called");
@@ -186,6 +233,17 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
         Log.d(TAG, "stopSendAudioStream: " + mAudioService.isSendingAudioStream());
     }
 
+    /**
+     * 本地音频播放设备改变回调
+     *
+     * @param device 本地音频播放设备
+     *              -1 -- 未知
+     *               1 -- 有线耳机
+     *               2 -- 听筒
+     *               3 -- 扬声器
+     *               4 -- 蓝牙耳机
+     *               5 -- USB设备
+     */
     @Override
     public void onAudioPlaybackDeviceChanged(int device) {
         Log.d(TAG, "onAudioPlaybackDeviceChanged() called with: device = [" + device + "]");
