@@ -9,12 +9,14 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.core.util.Consumer;
 
 import com.blankj.utilcode.util.ToastUtils;
 import com.volcengine.cloudphone.apiservice.PodControlService;
+import com.volcengine.common.SDKContext;
 import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.util.DialogUtils;
 
@@ -69,8 +71,20 @@ public class PodControlServiceView {
             mEtAutoRecycleTime = findViewById(R.id.et_auto_recycle_time);
             mEtIdleTime = findViewById(R.id.et_idle_time);
 
+            /**
+             * switchBackground(boolean on) -- 设置客户端应用或游戏切换前后台的状态
+             *
+             * @param on true -- 切后台
+             *           false -- 切前台
+             */
             findViewById(R.id.btn_background).setOnClickListener(view -> mPodControlService.switchBackground(true));
             findViewById(R.id.btn_foreground).setOnClickListener(view -> mPodControlService.switchBackground(false));
+
+            /**
+             * setIdleTime(long time) -- 设置客户端切后台之后，云端游戏的保活时间
+             *
+             * @param time 保活时长，单位秒
+             */
             findViewById(R.id.btn_send_idle_time).setOnClickListener(v -> {
                 int idleTime = 3 * 60;
                 if (!TextUtils.isEmpty(mEtIdleTime.getText())) {
@@ -78,6 +92,16 @@ public class PodControlServiceView {
                 }
                 mPodControlService.setIdleTime(idleTime);
             });
+
+            /**
+             * setAutoRecycleTime(int time, SetAutoRecycleTimeCallback callback) -- 设置无操作回收服务时长
+             *
+             * @param time 无操作回收服务时长，单位秒
+             * @param callback 设置无操作回收服务时长的回调
+             * @return 0 -- 正常返回
+             *        -1 -- 内部错误
+             *        -2 -- time参数小于0
+             */
             findViewById(R.id.btn_set_auto_recycle_time).setOnClickListener(v -> {
                 int autoRecycleTime = 3 * 60;
                 if (!TextUtils.isEmpty(mEtAutoRecycleTime.getText())) {
@@ -87,24 +111,46 @@ public class PodControlServiceView {
                     @Override
                     public void onResult(int i, long l) {
                         Log.d(TAG, "setAutoRecycleTimeResult" + i + "time" + l);
+                        ToastUtils.showShort("setAutoRecycleTimeResult" + i + "time" + l);
                     }
                 });
             });
+
+            /**
+             * getAutoRecycleTime(GetAutoRecycleTimeCallback callback) -- 查询无操作回收服务时长
+             *
+             * @param callback 查询无操作回收服务时长的回调
+             * @return 0 -- 正常返回
+             *        -1 -- 内部错误
+             */
             findViewById(R.id.btn_get_auto_recycle_time).setOnClickListener(v -> {
                 mPodControlService.getAutoRecycleTime(new PodControlService.GetAutoRecycleTimeCallback() {
                     @Override
                     public void onResult(int code, long time) {
                         Log.d(TAG, "getAutoRecycleTimeResult" + code + "time" + time);
+                        ToastUtils.showShort("getAutoRecycleTimeResult" + code + "time" + time);
                     }
                 });
             });
 
+            /**
+             * getUserProfilePath(GetUserProfilePathListener userProfilePathListener) -- 获取保存游戏云端配置文件的路径
+             *
+             * @param userProfilePathListener 获取保存游戏云端配置文件的路径的监听器
+             * @return 0 -- 成功返回
+             *         else -- 发生错误
+             */
             findViewById(R.id.btn_getUserProfile).setOnClickListener(v -> {
                 mPodControlService.getUserProfilePath(list -> {
                     ToastUtils.showShort(list.toString());
                 });
             });
 
+            /**
+             * setUserProfilePath(String[] userProfilePath) -- 设置保存游戏云端配置文件的路径
+             *
+             * @param userProfilePath 保存配置文件的路径列表
+             */
             findViewById(R.id.btn_setUserProfile).setOnClickListener(v -> {
                 EditText editText = findViewById(R.id.et_user_profile_input);
                 List<String> list = new ArrayList<>();

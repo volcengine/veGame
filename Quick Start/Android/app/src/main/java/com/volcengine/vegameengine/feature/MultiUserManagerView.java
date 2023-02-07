@@ -36,12 +36,25 @@ public class MultiUserManagerView {
         mDialogWrapper = DialogUtils.wrapper(new TestView(context));
         mMultiUserManager.setRoomListener(new MultiUserService.RoomListener() {
 
+            /**
+             * 用户角色发生变化时的回调
+             *
+             * @param userId 发生变化的用户ID
+             */
             @Override
             public void onPlayerChanged(String userId) {
                 AcLog.d(TAG, "onPlayerChanged " + userId);
                 showToast("onPlayerChanged" + userId);
             }
 
+            /**
+             * 用户加入房间并收到首帧后，获得用户角色的回调
+             *
+             * @param role 用户获得的角色
+             * @param reason 0 -- 成功，获得角色与请求的一致
+             *               else -- 失败的具体原因
+             * @param playerUid 当前的操作者ID
+             */
             @Override
             public void onJoinRoomRoleResult(Role role, int reason, String playerUid) {
                 AcLog.d(TAG, "onJoinRoomRoleResult " + role + "，reason " + reason + " ,PlayerUid " + playerUid);
@@ -71,6 +84,15 @@ public class MultiUserManagerView {
                 }
             });
 
+            /**
+             * changeRole(String userId, Role role, ChangeRoleCallback callback) -- 修改用户的角色
+             *
+             * @param userId 用户ID
+             * @param role 用户角色
+             *             VIEWER(0) -- 观看者
+             *             PLAYER(1) -- 操作者
+             * @param callback 用户角色修改的回调
+             */
             findViewById(R.id.btn_change_update).setOnClickListener(v -> {
                 mMultiUserManager.changeRole(editText.getText().toString(), mRole, (userId, role, result) -> {
                     Toast.makeText(context, "result " + result + ", userId " + userId + ", role " + role,
@@ -79,6 +101,9 @@ public class MultiUserManagerView {
                 });
             });
 
+            /**
+             * getCurrentRole() -- 获取当前用户的角色
+             */
             findViewById(R.id.btn_get_role).setOnClickListener(v -> {
                 TextView textView = findViewById(R.id.tv_current_role);
                 textView.setText("" + mMultiUserManager.getCurrentRole());

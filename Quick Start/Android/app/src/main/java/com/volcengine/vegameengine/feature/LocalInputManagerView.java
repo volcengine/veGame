@@ -35,23 +35,40 @@ public class LocalInputManagerView {
             super(context);
             inflate(context, R.layout.dialog_local_input, this);
             setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+
+            /**
+             * coverCurrentEditTextMessage(String text) -- 设置当前输入框的内容
+             */
             EditText inputView = findViewById(R.id.et_text_input);
-            SwitchCompat enableInput = findViewById(R.id.switch_show_local_data);
             findViewById(R.id.btn_send_input_data).setOnClickListener(v -> {
                 localInputManager.coverCurrentEditTextMessage(inputView.getText().toString());
             });
 
+            /**
+             * enableShowCurrentInputText(boolean enable) -- 显示当前输入框内容
+             */
+            SwitchCompat enableInput = findViewById(R.id.switch_show_local_data);
             enableInput.setChecked(false);
             enableInput.setOnCheckedChangeListener((buttonView, isChecked) ->
                     localInputManager.enableShowCurrentInputText(isChecked)
             );
 
+            /**
+             * closeAutoKeyBoard(boolean isIntercept) -- 是否拦截SDK调起本地键盘
+             *
+             * @param isIntercept false -- 不拦截
+             *                    true -- 拦截，由用户自行处理本地键盘的调起和内容的发送
+             */
             SwitchCompat enableAutoKeyBoard = findViewById(R.id.switch_close_input_manager);
             enableAutoKeyBoard.setChecked(false);
             enableAutoKeyBoard.setOnCheckedChangeListener((buttonView, isChecked) ->
                     localInputManager.closeAutoKeyBoard(isChecked)
             );
 
+            /**
+             * getKeyboardEnable() -- 获取远端实例输入法开关状态
+             * setKeyBoardEnable(boolean enable) -- 设置远端实例输入法开关状态
+             */
             SwitchCompat enableKeyBoard = findViewById(R.id.switch_close_input_keyboard);
             enableKeyBoard.setChecked(localInputManager.getKeyboardEnable());
             enableKeyBoard.setOnCheckedChangeListener((buttonView, isChecked) -> {
