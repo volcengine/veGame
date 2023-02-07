@@ -31,24 +31,40 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
-public class FileChannelView extends ScrollView implements View.OnClickListener, Runnable, IFileChannel.IChannelStatusListener, IFileChannel.IReceiveDataListener {
+public class FileChannelView extends ScrollView implements View.OnClickListener {
 
     private EditText mFilePathEditText, mLogcatEditText;
     private IFileChannel mFileChannelImpl;
     private File mFile;
     private Context mContext;
     private SeekBar mSeekBar;
-    private boolean isRunning = false;
     private final List<FileChannelView.LogcatInfo> mLogcatList = new ArrayList();
-    private final CountDownLatch mCountDown = new CountDownLatch(1);
     private static final String TAG = "FileChannelView";
 
     public FileChannelView(Context context, IFileChannel iFileChannel) {
         super(context);
         this.mContext = context;
         this.mFileChannelImpl = iFileChannel;
+        /**
+         * setReceiveDataListener(IReceiveDataListener listener) -- 设置接收数据回调监听器
+         */
+        mFileChannelImpl.setReceiveDataListener(new IFileChannel.IReceiveDataListener() {
+            @Override
+            public void onDataReceived(byte[] payload) {
+                addLog("duplex", "#Receive payload " + payload.length + " bytes size of data.");
+            }
+        });
+
+        /**
+         * setStatusListener(IChannelStatusListener listener) -- 设置文件传输通道内部状态回调监听器
+         */
+        mFileChannelImpl.setStatusListener(new IFileChannel.IChannelStatusListener() {
+            @Override
+            public void onStateUpdated(int status) {
+                addLog("duplex", "#Status change to " + getStatusString(status) + ".");
+            }
+        });
         inflate(context, R.layout.dialog_file_channel, this);
         findViewById(R.id.btn_send_data).setOnClickListener(this);
         findViewById(R.id.btn_send_ack_data).setOnClickListener(this);
@@ -72,76 +88,7 @@ public class FileChannelView extends ScrollView implements View.OnClickListener,
                 return false;
             }
         });
-        startLogcat();
-        updateLogcat();
     }
-
-
-
-    public void onDataReceived(@NonNull byte[] payload) {
-//        Log.d(TAG, "onDataReceived: " + "#Receive payload " + payload.length + " bytes size of data.");
-        addLog("duplex", "#Receive payload " + payload.length + " bytes size of data.");
-    }
-
-    public void onStateUpdated(int status) {
-        addLog("duplex", "#Status change to " + getStatusString(status) + ".");
-    }
-
-    public void run() {
-        Object os = null;
-
-        try {
-            Process exec = Runtime.getRuntime().exec("logcat -s duplex:D");
-            InputStream is = exec.getInputStream();
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(is));
-            mCountDown.countDown();
-
-            while(isRunning) {
-                String line;
-                while((line = bufferedReader.readLine()) != null) {
-                    int index = line.indexOf("duplex  : ");
-                    if (index >= 0) {
-                        addLog("duplex", line.substring(index + "duplex  : ".length()));
-                    }
-                }
-
-                SystemClock.sleep(333L);
-            }
-        } catch (Exception var15) {
-            var15.printStackTrace();
-        } finally {
-            if (null != os) {
-                try {
-                    ((FileOutputStream)os).close();
-                } catch (IOException var14) {
-                }
-            }
-
-        }
-
-    }
-
-    public void startLogcat() {
-        try {
-            if (!isRunning) {
-                isRunning = true;
-                Runtime.getRuntime().exec("logcat -c");
-                new Thread(this).start();
-                waitForLogcatReady();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void waitForLogcatReady() {
-        try {
-            mCountDown.await();
-        } catch (InterruptedException e){
-            e.printStackTrace();
-        }
-    }
-
 
     private void updateLogcat() {
         ((Activity) mContext).runOnUiThread(() -> {
@@ -227,18 +174,31 @@ public class FileChannelView extends ScrollView implements View.OnClickListener,
             try {
                 if (mFile != null && mFile.exists()) {
                     payload = getPayload();
+                    /**
+                     * sendData(byte[] payload) -- 发送数据包到云端游戏，无数据发送到达回执
+                     *
+                     * @param payload 发送的数据包(支持发送的数据包不大于5MB，
+                     *                如果发送的数据大于5MB，将抛出 IllegalArgumentException 异常)
+                     */
                     mFileChannelImpl.sendData(payload);
                 } else {
                     addLog("duplex", "#The file does not exist.");
                 }
-            } catch (Exception var5) {
-                addLog("duplex", "#" + var5.getMessage());
+            } catch (Exception e) {
+                addLog("duplex", "#" + e.getMessage());
             }
         } else if (view.getId() == R.id.btn_send_ack_data) {
             try {
                 if (mFile != null && mFile.exists()) {
                     payload = getPayload();
                     int timeout = mSeekBar.getProgress() * 1000;
+                    /**
+                     * sendData(byte[] payload, long timeout, ISendDataListener listener) -- 发送数据包到云端游戏，有数据发送到达回执
+                     *
+                     * @param payload 发送的数据包
+                     * @param timeout 接收回执超时时长，单位毫秒
+                     * @param listener 用于接收数据发送到达回执
+                     */
                     mFileChannelImpl.sendData(payload, (long)timeout, new IFileChannel.ISendDataListener() {
                         public void onDataSend() {
                             addLog("duplex", "#Send payload and receive ACK success!!!");
@@ -251,10 +211,13 @@ public class FileChannelView extends ScrollView implements View.OnClickListener,
                 } else {
                     addLog("duplex", "#The file does not exist.");
                 }
-            } catch (Exception var4) {
-                addLog("duplex", "#" + var4.getMessage());
+            } catch (Exception e) {
+                addLog("duplex", "#" + e.getMessage());
             }
         } else if (view.getId() == R.id.btn_get_status) {
+            /**
+             * getStatus() -- 获取当前FileChannelEngine的内部状态
+             */
             addLog("duplex", "#Status is " + getStatusString(mFileChannelImpl.getStatus()) + ".");
         } else if (view.getId() == R.id.btn_choose_file) {
             Intent intent = new Intent("android.intent.action.GET_CONTENT");
@@ -308,68 +271,4 @@ public class FileChannelView extends ScrollView implements View.OnClickListener,
         }
     }
 
-    public class FileChannelImpl implements IFileChannel {
-
-        private IFileChannel mFileChannel;
-
-        public FileChannelImpl(IFileChannel fileChannel) {
-            mFileChannel = fileChannel;
-        }
-
-        @Override
-        public void sendData(byte[] bytes) {
-            if (mFileChannel != null) {
-                mFileChannel.sendData(bytes);
-            }
-        }
-
-        @Override
-        public void sendData(byte[] bytes, long timeout, ISendDataListener listener) {
-            if (mFileChannel != null) {
-                mFileChannel.sendData(bytes, timeout, new IFileChannel.ISendDataListener() {
-                    @Override
-                    public void onDataSend() {
-                        listener.onDataSend();
-                    }
-
-                    @Override
-                    public void onError(int err) {
-                        listener.onError(err);
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void setReceiveDataListener(IReceiveDataListener listener) {
-            if (mFileChannel != null) {
-                mFileChannel.setReceiveDataListener(new IFileChannel.IReceiveDataListener() {
-                    @Override
-                    public void onDataReceived(byte[] payload) {
-                        listener.onDataReceived(payload);
-                    }
-                });
-            }
-        }
-
-        @Override
-        public void setStatusListener(IChannelStatusListener listener) {
-            if (mFileChannel != null) {
-                mFileChannel.setStatusListener(new IFileChannel.IChannelStatusListener() {
-                    @Override
-                    public void onStateUpdated(int status) {
-                        listener.onStateUpdated(status);
-                    }
-                });
-            }
-        }
-
-        @Override
-        public int getStatus() {
-            if (mFileChannel != null) {
-                return mFileChannel.getStatus();
-            }
-            return -1;
-        }
-    }
 }

@@ -118,7 +118,7 @@ public class MessageChannelView {
             initView();
             btnSend.setOnClickListener(view -> {
                 if (mMessageChannel == null) {
-                    Log.d(TAG, "TestView2: " + "mMessageChannel == null");
+                    Log.d(TAG, "TestView: " + "mMessageChannel == null");
                     return;
                 }
 

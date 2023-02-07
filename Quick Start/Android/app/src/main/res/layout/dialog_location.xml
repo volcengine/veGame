@@ -57,7 +57,7 @@
 
         <Button
             android:id="@+id/btn_setRemoteLocation"
-            android:text="@string/request_remote_location"
+            android:text="@string/set_remote_location"
             android:textAllCaps="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />

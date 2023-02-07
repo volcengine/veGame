@@ -6,12 +6,6 @@
     android:layout_height="wrap_content">
 
     <Button
-        android:id="@+id/btn_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/back" />
-
-    <Button
         android:id="@+id/btn_throw_exception"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
