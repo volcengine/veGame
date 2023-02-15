@@ -9,8 +9,8 @@
 ## 运行示例程序
 
 1. 将 Web SDK demo 代码下载到本地；
-2. 前往火山引擎 [云游戏文档中心]( https://www.volcengine.com/docs/6512/75594)，下载 Web SDK；解压后将其复制到 `lib` 文件夹下，并重命名为 `veGameSDK-Web.js`；
-3. 在 `config.js` 中补全以下配置信息：
+2. 前往火山引擎 [云游戏文档中心]( https://www.volcengine.com/docs/6512/75594)，下载 Web/H5 SDK；解压后将其复制到 `lib` 文件夹下，并确认文件名为 `veGameSDK-Web.js`；
+3. 在 `src/config.js` 配置文件中补全以下配置信息：
 
 ```js
 
@@ -19,27 +19,26 @@ const initConfig = {
     userId: '', // 必填参数，开发者可进行自定义，可以用来标识游戏玩家或账号等
     accountId: '', // 必填参数，火山引擎账号ID，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
     enableLocalKeyboard: true, // 是否开启本地键盘输入。前提：需要联系运营同学给游戏所在业务开启「拉起本地输入法配置」
-    accountId:'' // 必填参数，请填入火山账号ID，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
 };
 
 // 调用 veGameSDK.start 的参数
 // 以下只列出调用参数的必传参数，更多参数参考 Web SDK 的使用文档
 const startConfig = {
-    gameId: '',
+    gameId: '', // 游戏 ID，通过云游戏控制台上传游戏后生成
     token: {
-        CurrentTime: '',
-        ExpiredTime: '',
-        SessionToken: '',
-        AccessKeyID: '',
-        SecretAccessKey: ''
+        CurrentTime: '', // Token 创建时间
+        ExpiredTime: '', // Token 过期时间
+        SessionToken: '', // 用于鉴权的临时 Token
+        AccessKeyID: '', // 用于鉴权的临时 Access Key
+        SecretAccessKey: '' // 用于鉴权的临时 Secret Key
     },
-    roundId: '',
+    roundId: '', // 当次游戏生命周期标识符，开发者可进行自定义
     rotation: 'landscape', // landscape：横屏启动; portrait：竖屏启动
 };
 
 ```
 
-3. 在浏览器中打开 `index.html` 文件；
+3. 在浏览器中打开 `src/index.html` 文件；
    
 4. 点击开始游戏。
 
