@@ -128,7 +128,7 @@ android {
 #### 一、初始化VeGameEngine
 
 ```java
-VeGameEngine veGameEngine = VeGameEngine.getInstance();
+VeGameEngine.getInstance().init();
 ```
 
 #### 二、配置GamePlayConfig
