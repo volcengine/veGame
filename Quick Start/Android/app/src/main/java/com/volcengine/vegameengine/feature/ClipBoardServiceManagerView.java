@@ -29,6 +29,11 @@ public class ClipBoardServiceManagerView {
             setOrientation(VERTICAL);
             inflate(context, R.layout.dialog_clipboard, this);
 
+            /**
+             * sendClipBoardMessage(ClipData data) -- 发送本地剪切板消息到云端实例
+             *
+             * @param data 剪切板数据
+             */
             findViewById(R.id.btn_send_clipData).setOnClickListener(v -> {
                 mClipBoardServiceManager.sendClipBoardMessage(ClipData.newPlainText("test", "test data"));
             });

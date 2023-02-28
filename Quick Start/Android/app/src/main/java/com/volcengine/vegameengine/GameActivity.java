@@ -105,6 +105,7 @@ public class GameActivity extends AppCompatActivity
     public static final String KEY_PARAM_GAME_ID = "gameId";
     public static final String KEY_ROUND_ID = "roundId";
     public static final String KEY_ClARITY_ID = "clarityId";
+    public static final String KEY_RESERVED_ID = "reservedId";
     public static final String KEY_FEATURE_ID = "featureId";
     private ConstraintLayout mContainers;
 
@@ -172,6 +173,7 @@ public class GameActivity extends AppCompatActivity
                 .enableFileChannel(true)
                 .role(Role.PLAYER)
                 .roomType(0)
+                .reservedId(intent.getStringExtra(KEY_RESERVED_ID))
                 .streamListener(GameActivity.this);
 
         mGamePlayConfig = builder.build();
@@ -220,6 +222,15 @@ public class GameActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 播放成功回调
+     *
+     * @param roundId 当次游戏生命周期标识符
+     * @param clarityId 当前游戏画面的清晰度，首帧渲染到画面时触发该回调
+     * @param extraMap 自定义的扩展参数
+     * @param gameId 游戏ID
+     * @param reservedId 资源预锁定ID
+     */
     @Override
     public void onPlaySuccess(String roundId, int clarityId, Map<String, String> extraMap, String gameId,
                               String reservedId) {
@@ -336,7 +347,7 @@ public class GameActivity extends AppCompatActivity
         });
 
         switch (getIntent().getIntExtra(KEY_FEATURE_ID, -1)) {
-            case FEATURE_AUDIO:
+            case FEATURE_AUDIO: // 音频
                 btnAudio.setVisibility(View.VISIBLE);
                 btnAudio.setOnClickListener(view -> {
                     if (veGameEngine.getAudioService() != null) {
@@ -348,21 +359,21 @@ public class GameActivity extends AppCompatActivity
                     }
                 });
                 break;
-            case FEATURE_CAMERA:
+            case FEATURE_CAMERA: // 相机
                 if (veGameEngine.getCameraManager() != null) {
                     new CamaraManagerView(this, veGameEngine.getCameraManager(), btnCamera);
                 } else {
                     AcLog.d(TAG, "CameraManager is null!");
                 }
                 break;
-            case FEATURE_CLIPBOARD:
+            case FEATURE_CLIPBOARD: // 剪切板
                 if (veGameEngine.getClipBoardServiceManager() != null) {
                     new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager(), btnClipBoard);
                 } else {
                     AcLog.d(TAG, "ClipBoardServiceManager is null!");
                 }
                 break;
-            case FEATURE_FILE_CHANNEL:
+            case FEATURE_FILE_CHANNEL: // 文件通道
                 btnFileChannel.setVisibility(View.VISIBLE);
                 btnFileChannel.setOnClickListener(view -> {
                     if (veGameEngine.getFileChannel() != null) {
@@ -374,7 +385,7 @@ public class GameActivity extends AppCompatActivity
                     }
                 });
                 break;
-            case FEATURE_FILE_CHANNEL_EXT:
+            case FEATURE_FILE_CHANNEL_EXT: // 大文件通道
                 if (veGameEngine.getFileChannelExt() != null) {
                     new FileChannelExtView(this, veGameEngine.getFileChannelExt(), btnFileChannelExt);
                 }
@@ -382,59 +393,59 @@ public class GameActivity extends AppCompatActivity
                     AcLog.d(TAG, "FileChannelExt is null!");
                 }
                 break;
-            case FEATURE_LOCAL_INPUT:
+            case FEATURE_LOCAL_INPUT: // 本地输入
                 if (veGameEngine.getLocalInputManager() != null) {
                     new LocalInputManagerView(this, veGameEngine.getLocalInputManager(), btnLocalInput);
                 } else {
                     AcLog.d(TAG, "LocalInputManager is null!");
                 }
                 break;
-            case FEATURE_LOCATION:
+            case FEATURE_LOCATION: // 定位服务
                 if (veGameEngine.getLocationService() != null) {
                     new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
                 } else {
                     AcLog.d(TAG, "LocationService is null!");
                 }
                 break;
-            case FEATURE_MESSAGE_CHANNEL:
+            case FEATURE_MESSAGE_CHANNEL: // 消息通道
                 if (veGameEngine.getMessageChannel() != null) {
                     new MessageChannelView(this, veGameEngine.getMessageChannel(), btnMessageChannel);
                 } else {
                     AcLog.d(TAG, "MessageChannel is null!");
                 }
                 break;
-            case FEATURE_MULTI_USER:
+            case FEATURE_MULTI_USER: // 多用户
                 if (veGameEngine.getMultiUserService() != null) {
                     new MultiUserManagerView(this, veGameEngine.getMultiUserService(), btnMultiUser);
                 } else {
                     AcLog.d(TAG, "MultiUserService is null!");
                 }
                 break;
-            case FEATURE_PAD_CONSOLE:
+            case FEATURE_PAD_CONSOLE: // 游戏手柄
                 if (veGameEngine.getGamePadService() != null) {
                     new PadConsoleManagerView(this, veGameEngine.getGamePadService(), btnPadConsole);
                 } else {
                     AcLog.d(TAG, "GamePadService is null!");
                 }
                 break;
-            case FEATURE_POD_CONTROL:
+            case FEATURE_POD_CONTROL: // Pod控制
                 if (veGameEngine.getPodControlService() != null) {
                     new PodControlServiceView(this, veGameEngine.getPodControlService(), btnPodControl);
                 } else {
                     AcLog.d(TAG, "PodControlService is null!");
                 }
                 break;
-            case FEATURE_PROBE_NETWORK:
+            case FEATURE_PROBE_NETWORK: // 网络探测
                 btnProbeNetwork.setVisibility(View.VISIBLE);
                 btnProbeNetwork.setOnClickListener(view -> {
                     final ProbeNetworkView dialog = new ProbeNetworkView(this, v -> veGameEngine.probeInterrupt());
                     dialog.showProbeNetworkDialogForGame(mGamePlayConfig);
                 });
                 break;
-            case FEATURE_SENSOR:
+            case FEATURE_SENSOR: // 传感器
                 new SensorView(this, btnSensor);
                 break;
-            case FEATURE_UNCLASSIFIED:
+            case FEATURE_UNCLASSIFIED: // 其他
                 new UnclassifiedView(this, btnUnclassified);
                 break;
             default:
@@ -455,6 +466,12 @@ public class GameActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * SDK内部产生的错误回调
+     *
+     * @param i 错误码
+     * @param s 错误详情
+     */
     @Override
     public void onError(int i, String s) {
         String msg = "onError:" + i + ", " + s;
@@ -462,46 +479,92 @@ public class GameActivity extends AppCompatActivity
         Log.e(TAG, msg);
     }
 
+    /**
+     * SDK内部产生的警告回调
+     *
+     * @param i 警告码
+     * @param s 警告详情
+     */
     @Override
     public void onWarning(int i, String s) {
         Log.d(TAG, "warn: code " + i + ", msg" + s);
     }
 
+    /**
+     * 网络连接类型和状态切换回调
+     *
+     * @param i 当前的网络类型
+     *         -1 -- 网络连接类型未知
+     *          0 -- 网络连接已断开
+     *          1 -- 网络类型为 LAN
+     *          2 -- 网络类型为 Wi-Fi（包含热点）
+     *          3 -- 网络类型为 2G 移动网络
+     *          4 -- 网络类型为 3G 移动网络
+     *          5 -- 网络类型为 4G 移动网络
+     *          6 -- 网络类型为 5G 移动网络
+     */
     @Override
     public void onNetworkChanged(int i) {
         Log.d(TAG, String.format("%d", i));
     }
 
+    /**
+     * 加入房间前回调，用于获取并初始化各个功能服务，例如设置各种事件监听回调。
+     */
     @Override
     public void onServiceInit() {
         initFeatures();
     }
 
+    /**
+     * 收到音频首帧时的回调
+     *
+     * @param s 远端实例音频流的ID
+     */
     @Override
     public void onFirstAudioFrame(String s) {
         Log.d(TAG, "onFirstAudioFrame " + s);
     }
 
+    /**
+     * 收到视频首帧时的回调
+     *
+     * @param s 远端实例视频流的ID
+     */
     @Override
     public void onFirstRemoteVideoFrame(String s) {
         Log.d(TAG, "onFirstRemoteVideoFrame " + s);
     }
 
+    /**
+     * 开始播放的回调
+     */
     @Override
     public void onStreamStarted() {
         Log.d(TAG, "onStreamStarted ");
     }
 
+    /**
+     * 暂停播放后的回调，调用pause()后会触发
+     */
     @Override
     public void onStreamPaused() {
         Log.d(TAG, "onStreamPaused ");
     }
 
+    /**
+     * 恢复播放后的回调，调用resume()或muteAudio(false)后回触发
+     */
     @Override
     public void onStreamResumed() {
         Log.d(TAG, "onStreamResumed ");
     }
 
+    /**
+     * 周期为2秒的音视频网络状态的回调，可用于内部数据分析或监控
+     *
+     * @param streamStats 远端视频流的性能状态
+     */
     @Override
     public void onStreamStats(StreamStats streamStats) {
         Log.d(TAG, " " + streamStats.getDecoderOutputFrameRate() + " " +
@@ -514,16 +577,46 @@ public class GameActivity extends AppCompatActivity
                 streamStats.getReceivedVideoBitRate());
     }
 
+
+    /**
+     * 周期为2秒的游戏中的网络质量回调
+     *
+     * @param quality 网络质量评级
+     *                0 -- 网络状况未知，无法判断网络质量
+     *                1 -- 网络状况极佳，能够高质量承载当前业务
+     *                2 -- 当前网络状况良好，能够较好地承载当前业务
+     *                3 -- 当前网络状况有轻微劣化，但不影响正常使用
+     *                4 -- 当前网络质量欠佳，会影响当前业务的主观体验
+     *                5 -- 当前网络已经无法承载当前业务的媒体流，需要采取相应策略，
+     *                      比如降低媒体流的码率或者更换网络
+     *                6 -- 当前网络完全无法正常通信
+     */
     @Override
     public void onNetworkQuality(int quality) {
         AcLog.d(TAG, "onNetworkQuality() called with: quality = [" + quality + "]");
     }
 
+    /**
+     * 周期为2秒的本地推送的音视频流的状态回调
+     *
+     * @param localStreamStats 本地音视频流的性能状态
+     */
     @Override
     public void onLocalStreamStats(LocalStreamStats localStreamStats) {
         AcLog.d(TAG, "LocalStreamStats" + localStreamStats);
     }
 
+    /**
+     * 视频流连接状态改变回调
+     *
+     * @param i 连接状态
+     *          1 -- 连接断开
+     *          2 -- 首次连接
+     *          3 -- 首次连接成功
+     *          4 -- 连接断开后重新连接中
+     *          5 -- 连接断开后重新连接成功
+     *          6 -- 连接断开超过10秒，仍然会继续重连
+     */
     @Override
     public void onStreamConnectionStateChanged(int i) {
         Log.d(TAG, "onStreamConnectionStateChanged " + i);
@@ -536,17 +629,36 @@ public class GameActivity extends AppCompatActivity
         VeGameEngine.getInstance().rotate(newConfig.orientation);
     }
 
+    /**
+     * 操作延迟回调
+     *
+     * @param l 操作延迟的具体值，单位:毫秒
+     */
     @Override
     public void onDetectDelay(long l) {
         Log.d(TAG, "delay " + l);
     }
 
+
+    /**
+     * 客户端旋转回调
+     *
+     * @param i 旋转方向
+     *          0, 180 -- 竖屏
+     *         90, 270 -- 横屏
+     */
     @Override
     public void onRotation(int i) {
         Log.d(TAG, "rotation" + i);
         setRotation(i);
     }
 
+    /**
+     * 远端实例退出回调
+     *
+     * @param i 退出的原因码
+     * @param s 退出的原因详情
+     */
     @Override
     public void onPodExit(int i, String s) {
         Log.d(TAG, "onPodExit" + i + " ,msg:" + s);
@@ -567,6 +679,7 @@ public class GameActivity extends AppCompatActivity
             String gameId,
             String roundId,
             int clarityId,
+            String reservedId,
             Activity activity,
             int featureId) {
         Intent intent = new Intent(activity, GameActivity.class);
@@ -575,6 +688,7 @@ public class GameActivity extends AppCompatActivity
         intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
         intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
         intent.putExtra(GameActivity.KEY_FEATURE_ID, featureId);
+        intent.putExtra(GameActivity.KEY_RESERVED_ID, reservedId);
         activity.startActivity(intent);
     }
 }

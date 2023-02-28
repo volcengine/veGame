@@ -35,10 +35,9 @@ public class UnclassifiedView {
                 throw new IllegalArgumentException("test");
             });
 
-            findViewById(R.id.btn_back).setOnClickListener(v -> {
-                VeGameEngine.getInstance().sendKeyEvent(KeyEvent.KEYCODE_BACK);
-            });
-
+            /**
+             * restart() -- 重启服务端游戏进程
+             */
             findViewById(R.id.btn_restart).setOnClickListener(v -> {
                 VeGameEngine.getInstance().restart();
             });
@@ -49,10 +48,16 @@ public class UnclassifiedView {
                 }
             });
 
+            /**
+             * pause() -- 暂停从云端拉流
+             */
             findViewById(R.id.btn_pause).setOnClickListener(v -> {
                 VeGameEngine.getInstance().pause();
             });
 
+            /**
+             * resume() -- 恢复从云端拉流
+             */
             findViewById(R.id.btn_resume).setOnClickListener(v -> {
                 VeGameEngine.getInstance().resume();
             });

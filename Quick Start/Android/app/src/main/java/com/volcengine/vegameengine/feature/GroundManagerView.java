@@ -34,10 +34,11 @@ public class GroundManagerView extends LinearLayout {
         initGameGroundCallback();
         setOrientation(VERTICAL);
         addView(createEditRow(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
-                String packageName = packageNameInputView.getText().toString();
+                /**
+                 * setRemoteGameForeground() -- 切换远端实例的APP到前台
+                 */
                 mGameGroundSwitchManager.setRemoteGameForeground();
             }
         }));
@@ -47,26 +48,6 @@ public class GroundManagerView extends LinearLayout {
         textConsumer = charSequence -> text.setText(charSequence);
     }
 
-
-    private View createButtonRow(View.OnClickListener listener) {
-        Button button = new Button(getContext());
-        button.setText("获取");
-        button.setOnClickListener(listener);
-        button.setAllCaps(false);
-
-        TextView label = new TextView(getContext());
-        label.setText("获取后台应用信息");
-        label.setTextColor(Color.BLACK);
-        int padding = SizeUtils.dp2px(12);
-        label.setPadding(padding, 0, padding, 0);
-        LinearLayout row = new LinearLayout(getContext());
-        LayoutParams lp = new LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT);
-        row.setGravity(Gravity.CENTER_VERTICAL);
-        lp.weight = 1;
-        row.addView(label, lp);
-        row.addView(button, lp);
-        return row;
-    }
 
     private View createEditRow(View.OnClickListener listener) {
         Button button = new Button(getContext());
@@ -88,18 +69,38 @@ public class GroundManagerView extends LinearLayout {
 
     private void initGameGroundCallback() {
         mGameGroundSwitchManager.setGroundChangeListener(new GameGroundSwitchManager.GameGroundSwitchedListener() {
+            /**
+             * 云游戏App切换到后台的回调
+             *
+             * @param switchType 切换类型
+             *                   0 -- 客户端手动切换
+             *                   1 -- 远端实例自动切换
+             */
             @Override
             public void onRemoteGameSwitchedBackground(int switchType) {
                 showTargetToast(true, switchType, true, "");
                 AcLog.d(TAG, "onRemoteGameSwitchedBackground");
             }
 
+            /**
+             * 云游戏App切换到前台的回调
+             *
+             * @param switchType 切换类型
+             *                   0 -- 客户端手动切换
+             *                   1 -- 远端实例自动切换
+             */
             @Override
             public void onRemoteGameSwitchedForeground(int switchType) {
                 showTargetToast(true, switchType, false, "");
                 AcLog.d(TAG, "onRemoteGameSwitchedForeground.");
             }
 
+            /**
+             * 云游戏App切换前后台失败回调
+             *
+             * @param errorCode 错误码
+             * @param errorMsg 具体的错误信息
+             */
             @Override
             public void onRemoteGameSwitchedFailed(int errorCode, String errorMsg) {
                 ToastUtils.showShort("errorCode: " + errorCode + "errorMsg: " + errorMsg, true);

@@ -16,11 +16,12 @@ class FeatureActivity : BaseSampleActivity() {
     private lateinit var etGameId: EditText
     private lateinit var etRoundId: EditText
     private lateinit var etClarityId: EditText
+    private lateinit var etReservedId: EditText
     private lateinit var btnStartGame: Button
 
     // 这里请输入你的gameId
 //    private val testBean = TestBean("7104356860098059039") // 抖音
-    private val testBean = TestBean("7179188860214188837") //弹弹弹
+    private val testBean = TestBean("7200722234032413498") // 消息通道
 //    private val testBean = TestBean("7153954521692003079") // 原神
 //    private val testBean = TestBean("7148631686065052446") // 光遇
 //    private val testBean = TestBean("7068174254205967111") // 汤姆猫
@@ -36,9 +37,11 @@ class FeatureActivity : BaseSampleActivity() {
         etGameId = findViewById(R.id.editText_gameId)
         etRoundId = findViewById(R.id.editText_roundId)
         etClarityId = findViewById(R.id.editText_clarityId)
+        etReservedId = findViewById(R.id.editText_reservedId)
         etGameId.setText(testBean.gameId)
         etRoundId.setText(testBean.roundId)
         etClarityId.setText(testBean.clarityId)
+        etReservedId.setText(testBean.reservedId)
 
         btnStartGame = findViewById(R.id.btn_start_game)
         btnStartGame.setOnClickListener{
@@ -47,6 +50,7 @@ class FeatureActivity : BaseSampleActivity() {
                     etGameId.text.toString(),
                     etRoundId.text.toString(),
                     etClarityId.text.toString().toIntOrNull() ?: 1,
+                    etReservedId.text.toString(),
                     this,
                     mFeatureId
                 )

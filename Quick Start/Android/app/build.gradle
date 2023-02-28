@@ -49,8 +49,8 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.volcengine.vegame:vegame:1.19.0'
-    implementation 'com.bytedance.cloudplay:VeGameConsole:1.0.0-beta'
+    implementation 'com.volcengine.vegame:vegame:1.21.0'
+    implementation 'com.volcengine.vegame:VeGameConsole:1.0.0-beta2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'
     implementation 'androidx.appcompat:appcompat:1.2.0'
