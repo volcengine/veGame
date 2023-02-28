@@ -12,6 +12,7 @@
     <string name="session_id">sessionId</string>
     <string name="round_id">roundId</string>
     <string name="clarity_id">clarityId</string>
+    <string name="reserved_id">reservedId</string>
     <string name="hide_or_show">点击隐藏/显示</string>
     <string name="back_again_to_exit">连按两次退出</string>
 

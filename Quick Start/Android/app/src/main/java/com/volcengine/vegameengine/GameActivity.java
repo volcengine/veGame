@@ -105,6 +105,7 @@ public class GameActivity extends AppCompatActivity
     public static final String KEY_PARAM_GAME_ID = "gameId";
     public static final String KEY_ROUND_ID = "roundId";
     public static final String KEY_ClARITY_ID = "clarityId";
+    public static final String KEY_RESERVED_ID = "reservedId";
     public static final String KEY_FEATURE_ID = "featureId";
     private ConstraintLayout mContainers;
 
@@ -172,6 +173,7 @@ public class GameActivity extends AppCompatActivity
                 .enableFileChannel(true)
                 .role(Role.PLAYER)
                 .roomType(0)
+                .reservedId(intent.getStringExtra(KEY_RESERVED_ID))
                 .streamListener(GameActivity.this);
 
         mGamePlayConfig = builder.build();
@@ -677,6 +679,7 @@ public class GameActivity extends AppCompatActivity
             String gameId,
             String roundId,
             int clarityId,
+            String reservedId,
             Activity activity,
             int featureId) {
         Intent intent = new Intent(activity, GameActivity.class);
@@ -685,6 +688,7 @@ public class GameActivity extends AppCompatActivity
         intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
         intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
         intent.putExtra(GameActivity.KEY_FEATURE_ID, featureId);
+        intent.putExtra(GameActivity.KEY_RESERVED_ID, reservedId);
         activity.startActivity(intent);
     }
 }
