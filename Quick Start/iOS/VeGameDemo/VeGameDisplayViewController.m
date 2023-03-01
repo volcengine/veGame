@@ -23,29 +23,48 @@
 // SOFTWARE.
 
 #import "Masonry.h"
+#import <Toast/Toast.h>
+#import <VeGame/VeGame.h>
+#import <SVProgressHUD/SVProgressHUD.h>
 #import "VeGameDisplayViewController.h"
+#import <CommonCrypto/CommonDigest.h>
 
-@interface VeGameDisplayViewController ()
+@implementation VeCloudGameConfigObject
 
-@property (nonatomic, strong, readwrite) UIView *containerView;
-@property (nonatomic, weak) id <VeGameDisplayViewControllerDelegate> delegate;
+@end
+
+@interface VeGameDisplayViewController () <VeGameManagerDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate>
+
+@property (nonatomic, assign) NSInteger rotation;
+@property (nonatomic, strong) UIView *containerView;
 
 @end
 
 @implementation VeGameDisplayViewController
 
-- (instancetype)initWithDelegate:(id<VeGameDisplayViewControllerDelegate>)delegate
+- (void)viewDidLoad
 {
-    if (self = [super init]) {
-        self.hidesBottomBarWhenPushed = YES;
-        self.view.backgroundColor = [UIColor blackColor];
-        
-        _rotation = 0;
-        _delegate = delegate;
-        
-        [self configUI];
-    }
-    return self;
+    [super viewDidLoad];
+    
+    self.hidesBottomBarWhenPushed = YES;
+    self.view.backgroundColor = [UIColor blackColor];
+    
+    self.rotation = self.configObj.rotation;
+    
+    [self configUI];
+    [SVProgressHUD showWithStatus: @"正在启动..."];
+    // 初始化云游戏实例
+    [VeGameManager sharedManagerWithContainerView: self.containerView delegate: self];
+    // 配置信息
+    VeGameConfigObject *configObj = [VeGameConfigObject new];
+    configObj.ak = self.configObj.ak;
+    configObj.sk = self.configObj.sk;
+    configObj.token = self.configObj.token;
+    configObj.userId = self.configObj.userId;
+    configObj.gameId = self.configObj.gameId;
+    configObj.roundId = self.configObj.roundId;
+    // 启动
+    [[VeGameManager sharedInstance] startWithConfig: configObj];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -96,15 +115,151 @@
         make.left.mas_equalTo(self.view).offset(30.0f);
         make.size.mas_equalTo(CGSizeMake(50.0f, 30.0f));
     }];
+    
+    // 文件上传
+    UIButton *fileButton = [UIButton buttonWithType: UIButtonTypeCustom];
+    fileButton.layer.borderWidth = 1.0f;
+    fileButton.layer.borderColor = [UIColor whiteColor].CGColor;
+    fileButton.layer.cornerRadius = 5.0f;
+    fileButton.titleLabel.adjustsFontSizeToFitWidth = YES;
+    fileButton.titleLabel.font = [UIFont systemFontOfSize: 14.0f];
+    [fileButton setTitle: @"上传文件" forState: UIControlStateNormal];
+    [fileButton setTitleColor: [UIColor whiteColor] forState: UIControlStateNormal];
+    [fileButton addTarget: self action: @selector(tappedFileButton:) forControlEvents: UIControlEventTouchUpInside];
+    [self.view addSubview: fileButton];
+    [fileButton mas_makeConstraints:^(MASConstraintMaker *make) {
+        make.size.mas_equalTo(CGSizeMake(80, 30));
+        make.left.mas_equalTo(exitBtn.mas_right).offset(5.0f);
+        make.top.mas_equalTo(exitBtn);
+    }];
+   
+}
+
+#pragma mark - VeGameDisplayViewControllerDelegate
+
+- (void)gameDisplayViewDidStopGame
+{
+    [SVProgressHUD dismiss];
+    [[VeGameManager sharedInstance] stop];
+    [self.navigationController popViewControllerAnimated: YES];
+}
+
+#pragma mark - VeGameManagerDelegate
+
+- (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId extra:(NSDictionary *)extra
+{
+    [SVProgressHUD dismiss];
+}
+
+- (void)gameManager:(VeGameManager *)manager changedDeviceRotation:(NSInteger)rotation
+{
+    [self setRotation: rotation];
+}
+
+- (void)gameManager:(VeGameManager *)manager onError:(VeGameErrorCode)errorCode
+{
+    [SVProgressHUD dismiss];
+    
+    [self.view makeToast: [NSString stringWithFormat: @"Error Code: %ld", errorCode]
+                duration: 2.0f
+                position: CSToastPositionCenter];
 }
 
 #pragma mark - button action
 
 - (void)tappedExitButton:(UIButton *)btn
 {
-    if ([self.delegate respondsToSelector: @selector(gameDisplayViewDidStopGame)]) {
-        [self.delegate gameDisplayViewDidStopGame];
+    [SVProgressHUD dismiss];
+    [[VeGameManager sharedInstance] stop];
+    [self.navigationController popViewControllerAnimated: YES];
+}
+
+- (void)tappedFileButton:(UIButton *)btn
+{
+    UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+    imagePicker.delegate = self;
+    imagePicker.allowsEditing = YES;
+    imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+    imagePicker.modalPresentationStyle = UIModalPresentationFullScreen;
+    [self presentViewController: imagePicker animated: YES completion: nil];
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info
+{
+    [picker dismissViewControllerAnimated: YES completion: nil];
+    UIImage *image = [info objectForKey: UIImagePickerControllerOriginalImage];
+    NSData *imageData;
+    if (UIImagePNGRepresentation(image)) {
+        imageData = UIImagePNGRepresentation(image);
+    } else {
+        imageData = UIImageJPEGRepresentation(image, 1.0f);
     }
+    NSDate *date = [NSDate dateWithTimeIntervalSinceNow: 0];
+    NSTimeInterval timeInterval = [date timeIntervalSince1970];
+    NSString *fileName = [NSString stringWithFormat: @"%0.f.png", timeInterval];
+    VeFile *file = [VeFile new];
+    file.fileData = imageData;
+    file.name = fileName;
+    file.md5 = [self md5StringOfData: imageData];
+    [[VeGameManager sharedInstance] startSendFile: file onProgress:^(VeFile *file, NSInteger progress) {
+        NSLog(@"上传进度--------%ld\n", progress / 2 + 50);
+    } onComplete:^(VeFile *file) {
+        NSLog(@"上传完成--------%@\n", file.name);
+    } onCancel:^(VeFile *file) {
+        NSLog(@"上传取消--------%@\n", file);
+    } onError:^(VeFile *file, int error) {
+        NSLog(@"上传出错--------%@\n", file);
+    }];
+    
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    NSLog(@"取消选择---------");
+}
+
+#pragma mark - 大文件下载
+
+- (void)gameManager:(VeGameManager *)manager downloadOnStart:(VeFile *)file
+{
+    NSLog(@"开始下载\n");
+}
+
+- (void)gameManager:(VeGameManager *)manager downloadOnProgress:(VeFile *)file progress:(NSInteger)progress
+{
+    NSLog(@"下载进度：%ld\n", progress);
+}
+
+- (void)gameManager:(VeGameManager *)manager downloadOnComplete:(VeFile *)file
+{
+    NSLog(@"下载完成，文件已经保存至XX\n");
+}
+
+- (void)gameManager:(VeGameManager *)manager downloadOnCancel:(VeFile *)file
+{
+    NSLog(@"取消下载\n");
+}
+
+- (void)gameManager:(VeGameManager *)manager downloadOnError:(VeFile *)file err:(VeGameErrorCode)err
+{
+    NSLog(@"下载出错，错误码：%ld\n", err);
+}
+
+#pragma mark - utils
+
+- (NSString *)md5StringOfData:(NSData *)data
+{
+    unsigned char result[CC_MD5_DIGEST_LENGTH];
+    CC_MD5(data.bytes, (CC_LONG)data.length,  result);
+    return [NSString stringWithFormat:
+            @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
 }
 
 #pragma mark - setter
