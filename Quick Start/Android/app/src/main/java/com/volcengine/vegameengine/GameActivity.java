@@ -29,7 +29,6 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CAMERA;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
@@ -63,6 +62,9 @@ import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
 import com.volcengine.cloudcore.common.mode.Role;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
+import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.IProbeNetworkListener;
+import com.volcengine.cloudphone.apiservice.ProbeStats;
 import com.volcengine.cloudphone.apiservice.StreamProfileChangeCallBack;
 import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
@@ -70,8 +72,8 @@ import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.CamaraManagerView;
 import com.volcengine.vegameengine.feature.ClarityServiceView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
-import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
+import com.volcengine.vegameengine.feature.GroundManagerView;
 import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.feature.MessageChannelView;
@@ -81,8 +83,8 @@ import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.SensorView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
-import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.DialogUtils;
+import com.volcengine.vegameengine.util.Feature;
 import com.volcengine.vegameengine.util.ScreenUtil;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
@@ -92,9 +94,8 @@ import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity
@@ -116,7 +117,7 @@ public class GameActivity extends AppCompatActivity
 
     private Button btnAudio, btnCamera, btnClarity, btnClipBoard, btnFileChannel, btnGround, btnLocation;
     private Button btnMessageChannel, btnPodControl, btnRotation, btnSensor, btnUnclassified;
-    private Button btnProbeNetwork, btnLocalInput, btnPadConsole, btnMultiUser, btnFileChannelExt;
+    private Button btnProbeNetwork, btnLocalInput, btnPadConsole, btnMultiUser;
     private TextView tvInfo;
     private boolean isLand = false;
     private boolean isShowInfo = false;
@@ -137,25 +138,15 @@ public class GameActivity extends AppCompatActivity
         String userId = "userid" + System.currentTimeMillis();
         AcLog.d(TAG, "userId: " + userId);
         Intent intent = getIntent();
-
-        String ak = "", sk = "", token = "";  // 这里需要替换成你的 ak/sk/token
-        String sts = AssetsUtil.getTextFromAssets(this.getApplicationContext(), "sts.json");
-        try {
-            JSONObject stsJObj = new JSONObject(sts);
-            ak = stsJObj.getString("ak");
-            sk = stsJObj.getString("sk");
-            token = stsJObj.getString("token");
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+        String ak = "your_ak";
+        String sk = "your_sk";
+        String token = "your_token";
 
         // ak, sk, token: 请通过火山引擎申请ak获得，详情见https://www.volcengine.com/docs/6512/75577
         builder.userId(userId) // 用户userid
                 .ak(ak) // 必填 ACEP ak
                 .sk(sk)  // 必填 ACEP sk
-                .token(token) // 必填 ACEP token
+                .token(token) // 必填 ACEP session
                 .container(mContainer)//必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
                 .roundId(intent.getStringExtra(KEY_ROUND_ID))//必填参数，自定义roundId
                 .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
@@ -168,7 +159,6 @@ public class GameActivity extends AppCompatActivity
                 .enableVibrator(true)
                 .enableLocationService(true)
                 .enableLocalKeyboard(true)
-                .keyBoardEnable(true)
                 .enableFileChannel(true)
                 .role(Role.PLAYER)
                 .roomType(0)
@@ -284,20 +274,14 @@ public class GameActivity extends AppCompatActivity
 
     private void initView() {
         mContainer = findViewById(R.id.container);
-        tvInfo = findViewById(R.id.tv_info);
-    }
-
-    /**
-     * 初始化功能界面
-     */
-    private void initFeatures() {
         mContainers = findViewById(R.id.cl_container);
+        tvInfo = findViewById(R.id.tv_info);
+
         btnAudio = findViewById(R.id.btn_audio);
         btnCamera = findViewById(R.id.btn_camera);
         btnClarity = findViewById(R.id.btn_clarity);
         btnClipBoard = findViewById(R.id.btn_clipboard);
         btnFileChannel = findViewById(R.id.btn_file_channel);
-        btnFileChannelExt = findViewById(R.id.btn_file_channel_ext);
         btnGround = findViewById(R.id.btn_ground);
         btnLocation = findViewById(R.id.btn_location);
         btnMessageChannel = findViewById(R.id.btn_message_channel);
@@ -373,14 +357,6 @@ public class GameActivity extends AppCompatActivity
                         AcLog.d(TAG, "FileChannel is null!");
                     }
                 });
-                break;
-            case FEATURE_FILE_CHANNEL_EXT:
-                if (veGameEngine.getFileChannelExt() != null) {
-                    new FileChannelExtView(this, veGameEngine.getFileChannelExt(), btnFileChannelExt);
-                }
-                else {
-                    AcLog.d(TAG, "FileChannelExt is null!");
-                }
                 break;
             case FEATURE_LOCAL_INPUT:
                 if (veGameEngine.getLocalInputManager() != null) {
@@ -472,9 +448,20 @@ public class GameActivity extends AppCompatActivity
         Log.d(TAG, String.format("%d", i));
     }
 
-    @Override
-    public void onServiceInit() {
-        initFeatures();
+
+    public static void startGame(
+            String gameId,
+            String roundId,
+            int clarityId,
+            Activity activity,
+            int featureId) {
+        Intent intent = new Intent(activity, GameActivity.class);
+        intent.putExtra(GameActivity.KEY_PARAM_GAME_ID, gameId);
+        if (roundId.isEmpty() || roundId.equals("")) roundId = "123";
+        intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
+        intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
+        intent.putExtra(GameActivity.KEY_FEATURE_ID, featureId);
+        activity.startActivity(intent);
     }
 
     @Override
@@ -515,11 +502,6 @@ public class GameActivity extends AppCompatActivity
     }
 
     @Override
-    public void onNetworkQuality(int quality) {
-        AcLog.d(TAG, "onNetworkQuality() called with: quality = [" + quality + "]");
-    }
-
-    @Override
     public void onLocalStreamStats(LocalStreamStats localStreamStats) {
         AcLog.d(TAG, "LocalStreamStats" + localStreamStats);
     }
@@ -557,24 +539,10 @@ public class GameActivity extends AppCompatActivity
         long current = System.currentTimeMillis();
         if (current - lastBackPress < 1000L) {
             super.onBackPressed();
-        } else {
+        }
+        else {
             Toast.makeText(this, getString(R.string.back_again_to_exit), Toast.LENGTH_SHORT).show();
             lastBackPress = current;
         }
-    }
-
-    public static void startGame(
-            String gameId,
-            String roundId,
-            int clarityId,
-            Activity activity,
-            int featureId) {
-        Intent intent = new Intent(activity, GameActivity.class);
-        intent.putExtra(GameActivity.KEY_PARAM_GAME_ID, gameId);
-        if (roundId.isEmpty() || roundId.equals("")) roundId = "123";
-        intent.putExtra(GameActivity.KEY_ROUND_ID, roundId);
-        intent.putExtra(GameActivity.KEY_ClARITY_ID, clarityId);
-        intent.putExtra(GameActivity.KEY_FEATURE_ID, featureId);
-        activity.startActivity(intent);
     }
 }

@@ -54,11 +54,6 @@
     <string name="file_channel">文件通道</string>
     <string name="file_channel_desc">在该演示中你可以体验与文件通道相关的功能接口</string>
 
-    <!-- 大文件通道相关 -->
-    <string name="file_channel_ext">大文件通道</string>
-    <string name="input_filepath">请输入文件路径</string>
-    <string name="file_channel_ext_desc">在该演示中你可以体验与大文件通道相关的功能接口</string>
-
     <!-- Ground相关 -->
     <string name="ground">ground</string>
 
@@ -103,12 +98,8 @@
 
     <!--Pod控制相关-->
     <string name="pod_control">Pod控制</string>
-    <string name="hint_idle_time">保活时长/秒</string>
-    <string name="set_idle_time">设置保活时长</string>
-    <string name="hint_auto_recycle_time">无操作回收时长/秒</string>
-    <string name="set_auto_recycle_time">设置无操作回收时长</string>
-    <string name="get_auto_recycle_time">查询无操作回收时长</string>
     <string name="set_keep_alive_time">设置Pod保活时间3min</string>
+    <string name="set_auto_recycle_time">设置无操作3分钟</string>
     <string name="switch_background">开启前后台切换</string>
     <string name="pod_control_desc">在该演示中你可以体验与Pod控制相关的功能接口</string>
 
@@ -139,11 +130,11 @@
     <string name="probe_network">网络探测</string>
     <string name="probe_network_desc">在该演示中你可以体验与网络探测相关的功能接口</string>
 
-    <!--  本地输入相关  -->
+    <!--  本地输入  -->
     <string name="local_input">本地输入</string>
     <string name="local_input_desc">在该演示中你可以体验与本地输入相关的功能接口</string>
 
-    <!--  多用户相关  -->
+    <!--  多用户  -->
     <string name="multi_user">多用户</string>
     <string name="player">player</string>
     <string name="viewer">viewer</string>
