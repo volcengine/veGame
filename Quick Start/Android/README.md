@@ -173,6 +173,8 @@ veGameEngine.start(gamePlayConfig, IGamePlayerListener playerListener);
 ```
 main
 ├── AndroidManifest.xml
+├── assets // 该目录及文件需要自行创建
+│   └── sts.json // 保存鉴权相关的 ak/sk/token，需要从火山官网获取
 ├── java
 │   └── com
 │       └── volcengine
@@ -181,31 +183,44 @@ main
 │               ├── GameActivity.java // 显示游戏的Activity
 │               ├── GsonConverter.java // 用于SDK 传入的JSON转换的实现 
 │               ├── InitApplication.java // 工程的Application 负责初始化SDK等
-│               ├── MainActivity.java // 用于展示SDK的特性列表
-│               ├── TestBean.kt
+│               ├── MainActivity.java // 用于展示SDK的特性列表，并进入对应特性的体验界面
+│               ├── TestBean.kt // 用于填写云游戏启动的参数
 │               ├── WebViewActivity.kt // 用于展示火山引擎的官网
 │               ├── base
 │               │   ├── BaseListActivity.java
 │               │   └── BaseSampleActivity.kt
 │               ├── feature // 用于体验SDK不同的特性
-│               │   ├── AudioServiceView.java
-│               │   ├── CamaraManagerView.java
-│               │   ├── ClarityServiceView.java
-│               │   ├── ClipBoardServiceManagerView.java
-│               │   ├── FileChannelView.java
-│               │   ├── GamePadServiceView.java
-│               │   ├── GroundManagerView.java
-│               │   ├── LocationServiceView.java
-│               │   ├── MessageChannelView.java
-│               │   ├── PodControlServiceView.java
-│               │   ├── SensorView.java
-│               │   └── UnclassifiedView.java
+│               │   ├── AudioServiceView.java // 音频
+│               │   ├── CamaraManagerView.java // 相机
+│               │   ├── ClarityServiceView.java // 清晰度
+│               │   ├── ClipBoardServiceManagerView.java // 剪切板
+│               │   ├── FileChannelExtView.java // 大文件通道
+│               │   ├── FileChannelView.java // 文件通道
+│               │   ├── LocalInputManagerView.java // 本地输入
+│               │   ├── LocationServiceView.java // 定位服务
+│               │   ├── MessageChannelView.java // 消息通道
+│               │   ├── MultiUserManagerView.java // 多用户
+│               │   ├── PadConsoleManagerView.java // 游戏手柄
+│               │   ├── PodControlServiceView.java //实例控制
+│               │   ├── SensorView.java // 传感器
+│               │   └── UnclassifiedView.java // 其他
 │               └── util
-│                   ├── DialogUtils.java 
+│                   ├── AssetsUtil.java // 用于读取并解析sts.json文件中的ak/sk/token
+│                   ├── DialogUtils.java // 用于在不同特性的体验界面显示对话框
 │                   ├── Feature.java // 声明不同的特性id
-│                   ├── FileUtil.java
+│                   ├── FileUtil.java // 用于文件传输功能的工具类
 │                   ├── ScreenUtil.java // 屏幕工具类，用于适配挖孔屏
 │                   └── SizeUtils.java 
+```
+
+
+其中, **sts.json** 的格式形如
+```java
+{
+    "ak": "your_ak",
+    "sk": "your_sk",
+    "token": "your_token"
+}
 ```
 
 ## 参考资料
