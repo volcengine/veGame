@@ -139,6 +139,15 @@ public class GameActivity extends AppCompatActivity
         AcLog.d(TAG, "userId: " + userId);
         Intent intent = getIntent();
 
+        /**
+         * ak/sk/token的值从assets目录下的sts.json文件中读取，该目录及文件需要自行创建。
+         * sts.json的格式形如
+         * {
+         *     "ak": "your_ak",
+         *     "sk": "your_sk",
+         *     "token": "your_token"
+         * }
+         */
         String ak = "", sk = "", token = "";  // 这里需要替换成你的 ak/sk/token
         String sts = AssetsUtil.getTextFromAssets(this.getApplicationContext(), "sts.json");
         try {
@@ -203,7 +212,6 @@ public class GameActivity extends AppCompatActivity
 
     @Override
     protected void onDestroy() {
-        veGameEngine.stop();
         if (mDialogWrapper != null) {
             mDialogWrapper.release();
             mDialogWrapper = null;
@@ -212,6 +220,12 @@ public class GameActivity extends AppCompatActivity
             mFileChannelView = null;
         }
         super.onDestroy();
+    }
+
+    @Override
+    public void finish() {
+        veGameEngine.stop();
+        super.finish();
     }
 
     @Override

@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.widget.Toast
 import com.blankj.utilcode.util.PermissionUtils
 import com.volcengine.vegameengine.base.BaseSampleActivity
+import com.volcengine.vegameengine.util.AssetsUtil
 import com.volcengine.vegameengine.util.Feature
 
 class FeatureActivity : BaseSampleActivity() {
@@ -45,7 +46,13 @@ class FeatureActivity : BaseSampleActivity() {
 
         btnStartGame = findViewById(R.id.btn_start_game)
         btnStartGame.setOnClickListener{
-            if (etGameId.text.isNotEmpty()) {
+            if (!AssetsUtil.isAssetsFileExists(applicationContext, "sts.json")) {
+                Toast.makeText(this, "Assets目录下sts.json文件不存在，请先创建文件！", Toast.LENGTH_SHORT).show()
+            }
+            else if (etGameId.text.isEmpty()) {
+                Toast.makeText(this, "请输入gameId", Toast.LENGTH_SHORT).show()
+            }
+            else {
                 GameActivity.startGame(
                     etGameId.text.toString(),
                     etRoundId.text.toString(),
@@ -54,9 +61,6 @@ class FeatureActivity : BaseSampleActivity() {
                     this,
                     mFeatureId
                 )
-            }
-            else {
-                Toast.makeText(this, "请输入gameId", Toast.LENGTH_SHORT).show()
             }
         }
 

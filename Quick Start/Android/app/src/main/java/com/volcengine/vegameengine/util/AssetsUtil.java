@@ -2,6 +2,9 @@ package com.volcengine.vegameengine.util;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.widget.Toast;
+
+import com.blankj.utilcode.util.ToastUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -32,5 +35,18 @@ public class AssetsUtil {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public static boolean isAssetsFileExists(Context context, String fileName) throws IOException {
+        AssetManager am = context.getAssets();
+        String[] files = am.list("");
+        boolean isFileExists = false;
+        for (String file : files) {
+            if (file.equals(fileName)) {
+                isFileExists = true;
+                break;
+            }
+        }
+        return isFileExists;
     }
 }
