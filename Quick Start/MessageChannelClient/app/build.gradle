@@ -1,0 +1,80 @@
+plugins {
+    id 'com.android.application'
+}
+Map<String, String> labelMap = new HashMap<>()
+android {
+    compileSdkVersion 29
+    buildToolsVersion "28.0.3"
+
+    defaultConfig {
+        applicationId "com.bytedance.vemessagechannelprj"
+        minSdkVersion 16
+        targetSdkVersion 29
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField 'String', 'buildTime', "\"${buildTime}\""
+        setProperty("archivesBaseName", "MCC_${gitVersionName}_${buildTime}")
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+
+    flavorDimensions("channel")
+    productFlavors {
+        prj1 {
+            dimension "channel"
+            labelMap.put(name, "MCC" + name)
+            applicationIdSuffix '.prj1'
+        }
+
+        prj2 {
+            dimension "channel"
+            labelMap.put(name, "MCC" + name)
+            applicationIdSuffix '.prj2'
+        }
+
+        prj3 {
+            dimension "channel"
+            labelMap.put(name, "MCC" + name)
+            applicationIdSuffix '.prj3'
+        }
+
+        prj4 {
+            labelMap.put(name, "MCC" + name)
+            dimension "channel"
+            applicationIdSuffix '.prj4'
+        }
+
+        prj5 {
+            labelMap.put(name, "MCC" + name)
+            dimension "channel"
+            applicationIdSuffix '.prj5'
+        }
+
+        productFlavors.all { flavor ->
+            flavor.manifestPlaceholders = [CHANNEL_VALUE: name, appLabel: labelMap.get(name)]
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.2.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation("com.bytedance.message:VeMsgChannelClient:1.0.8")
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+}
