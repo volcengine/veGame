@@ -6,7 +6,7 @@
 
 ## 错误码
 
-在接入SDK的过程中遇到**错误码**时，可参考[ErrorCode.md](ErrorCode.md)中的操作建议进行下一步操作。
+在接入 SDK 的过程中遇到**错误码**时，可参考 [ErrorCode.md](ErrorCode.md) 中的操作建议进行下一步操作。
 
 ## 环境要求
 
@@ -21,9 +21,9 @@
 
 ## 接入流程
 
-### 添加Maven仓库地址
+### 添加 Maven 仓库地址
 
-1. 在project根目录下的build.gradle文件中的repositories闭包中配置Maven仓库地址
+1. 在 project 根目录下的 build.gradle 文件中的 repositories 闭包中配置 Maven 仓库地址：
 
 ```java
 buildscript {
@@ -42,7 +42,7 @@ allprojects {
 }
 ```
 
-2. 在应用模块的build.gradle文件中的dependencies中加入依赖项
+2. 在应用模块的 build.gradle 文件中的 dependencies 中加入依赖项：
 
 ```java
 dependencies {
@@ -60,12 +60,12 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.11.1' // jackson
     implementation 'com.fasterxml.jackson.core:jackson-core:2.11.1' //jackson
 
-    // 大文件传输特性(FileChannelExt)需要以下依赖项
+    // 大文件传输特性（FileChannelExt）需要以下依赖项
     implementation 'com.squareup.okhttp3:okhttp:4.9.0'
 }
 ```
 
-3. 设置java版本到1.8
+3. 设置 Java 版本到 1.8：
 
 ```java
 android {
@@ -79,7 +79,7 @@ android {
 
 ### 权限声明
 
-根据实际使用场景在AndroidManifest.xml文件中声明SDK需要的权限
+根据实际使用场景在 AndroidManifest.xml 文件中声明 SDK 需要的权限：
 
 ```java
 //网络权限，使用场景：音视频传输等
@@ -104,7 +104,7 @@ android {
 
 #### 说明
 1. 存储写入权限需动态申请。参考：https://developer.android.com/training/permissions/requesting
-2. 如果APP指向Android 10及以上（targetSdkVersion >= 29），而且并未适配 Scoped Storage，那么需要
+2. 如果 APP 指向 Android 10 及以上（targetSdkVersion >= 29），而且并未适配 Scoped Storage，那么需要
     将AndroidManifest.xml文件中的requestLegacyExternalStorage设置为true。参考：https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage
 ```java
 <manifest>
@@ -116,12 +116,13 @@ android {
 
 #### 零、鉴权相关
 
-在接入云游戏SDK之前，需要获取火山引擎账号对应的 AccessKey（ak）和 SecretKey（sk），
-调用签发临时Token接口，获取用于鉴权的临时 Token（token）, ak/sk/token 的获取方式请参考 [快速入门](https://www.volcengine.com/docs/6512/75577)。
+1. 在接入云游戏 SDK 之前，需要获取火山引擎账号对应原始的 AccessKey（ak）和 SecretKey（sk），用于生成临时鉴权密钥（登录火山引擎控制台后，点击页面右上角用户信息，选择 账号 > API访问密钥）。
 
-获取到 ak/sk/token 之后，将其填入 [二、配置GamePlayConfig](#二、配置GamePlayConfig) 的对应位置。
+2. 调用 “签发临时Token” 接口，获取用于鉴权的临时密钥（ak/sk/token 的获取方式请参考 [快速入门](https://www.volcengine.com/docs/6512/75577)）。
 
-除此之外，需要在 [app/src/main/AndroidManifest.xml](app/src/main/AndroidManifest.xml) 文件的meta-data中填入注册的火山引擎用户账号，参考以下示例：
+3. 获取到 ak/sk/token 之后，将其填入 [二、配置GamePlayConfig](#二、配置GamePlayConfig) 的对应位置。
+
+4. 除此之外，需要在 [app/src/main/AndroidManifest.xml](app/src/main/AndroidManifest.xml) 文件的 meta-data 中填入注册的火山引擎用户账号，参考以下示例：
 
 ```java
 <meta-data
@@ -129,22 +130,22 @@ android {
     android:value="21000xxxxx" />
 ```
 
-#### 一、初始化VeGameEngine
+#### 一、初始化 VeGameEngine
 
 ```java
 VeGameEngine.getInstance().init();
 ```
 
-#### 二、配置GamePlayConfig
+#### 二、配置 GamePlayConfig
 
 ```java
 GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
 
 builder.userId(userId) // 用户userid
-    .ak(ak) // 必填参数 ACEP ak
-    .sk(sk)  // 必填参数 ACEP sk
-    .token(token) // 必填参数 ACEP token
-    .container(mContainer) // 必填参数，用来承载画面的 Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
+    .ak(ak) // 必填参数，临时鉴权 ak
+    .sk(sk)  // 必填参数，临时鉴权 sk
+    .token(token) // 必填参数，临时鉴权 token
+    .container(mContainer) // 必填参数，用来承载画面的 Container, 参数说明: layout 需要是 FrameLayout 或者 FrameLayout 的子类
     .roundId(intent.getStringExtra(KEY_ROUND_ID)) // 必填参数，自定义roundId
     .videoStreamProfileId(intent.getIntExtra(KEY_ClARITY_ID, 1)) // 选填参数，清晰度ID
     .gameId(intent.getStringExtra(KEY_PARAM_GAME_ID)) // 必填, gameId
@@ -167,14 +168,13 @@ GamePlayConfig gamePlayConfig = builder.build();
 veGameEngine.start(gamePlayConfig, IGamePlayerListener playerListener);
 ```
 
-
 ## 目录结构
 
 ```
 main
 ├── AndroidManifest.xml
 ├── assets // 该目录及文件需要自行创建
-│   └── sts.json // 保存鉴权相关的 ak/sk/token，需要从火山官网获取
+│   └── sts.json // 保存鉴权相关的 ak/sk/token
 ├── java
 │   └── com
 │       └── volcengine
@@ -214,7 +214,7 @@ main
 ```
 
 
-其中, **sts.json** 的格式形如
+其中, **sts.json** 的格式如下：
 ```java
 {
     "ak": "your_ak",
@@ -225,6 +225,6 @@ main
 
 ## 参考资料
 
-客户端 SDK 下载：https://www.volcengine.com/docs/6512/75594
+火山引擎云游戏客户端 SDK 下载：https://www.volcengine.com/docs/6512/75594。
 
 注：如果不能访问以上链接，请参考 [开通云游戏服务](https://www.volcengine.com/docs/6512/75577) 说明文档。
