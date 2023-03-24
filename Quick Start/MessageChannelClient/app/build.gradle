@@ -7,7 +7,7 @@ android {
     buildToolsVersion "28.0.3"
 
     defaultConfig {
-        applicationId "com.bytedance.test.blackframe"
+        applicationId "com.bytedance.vemessagechannelprj"
         minSdkVersion 16
         targetSdkVersion 29
         versionCode 1
@@ -21,11 +21,6 @@ android {
 
     flavorDimensions("channel")
     productFlavors {
-        demo {
-            dimension "channel"
-            labelMap.put(name, "BlackFrameTest")
-        }
-
         prj1 {
             dimension "channel"
             labelMap.put(name, "MCC" + name)
