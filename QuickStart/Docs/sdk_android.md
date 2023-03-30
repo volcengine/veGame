@@ -247,7 +247,7 @@ public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkLis
 | --- | --- |
 | onProbeStarted() | 启动网络测速回调 |
 | onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 [ProbeStats](#测速结果描述) 是中间测试状态，仅供参考 |
-| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：  <br>1（网络极好，可以很流畅地玩游戏）  <br>2（网络较好，可以玩游戏）  <br>3（网络较差，不推荐玩游戏） |
+| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位： - 1（网络极好，可以很流畅地玩游戏） - 2（网络较好，可以玩游戏） - 3（网络较差，不推荐玩游戏） |
 | onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：  <br>1（探测过程网络环境出错，无法完成探测）  <br>2（探测过程被终止取消）  <br>3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
 
 参考示例：
@@ -309,14 +309,106 @@ public interface IProbeNetworkListener {
 | uploadJitter | Int | 上行网络抖动时长；若为无效数据，数值为-1；单位：毫秒 |
 | uploadLossPercent | Double | 上行丢包率；百分比 |
 
+参考示例：
 
+```java
+public class ProbeStats {
+    private int rtt;
+    private int downloadBandwidth;
+    private int downloadJitter;
+    private double downloadLossPercent;
+    private int uploadBandwidth;
+    private int uploadJitter;
+    private double uploadLossPercent;
 
+    public ProbeStats() {}
 
+    public int getRtt() {
+        return rtt;
+    }
 
+    public void setRtt(int rtt) {
+        this.rtt = rtt;
+    }
 
- **详细配置说明**
+    public int getDownBandwidth() {
+        return downloadBandwidth;
+    }
 
-|  **名称**  |  **参数范围**  |  **是否必填**  |  **说明**  |
+    public void setDownBandwidth(int downloadBandwidth) {
+        this.downloadBandwidth = downloadBandwidth;
+    }
+
+    public int getDownloadJitter() {
+        return downloadJitter;
+    }
+
+    public void setDownloadJitter(int downloadJitter) {
+        this.downloadJitter = downloadJitter;
+    }
+
+    public double getDownloadLossPercent() {
+        return downloadLossPercent;
+    }
+
+    public void setDownloadLossPercent(double downloadLossPercent) {
+        this.downloadLossPercent = downloadLossPercent;
+    }
+
+    public int getUploadBandwidth() {
+        return uploadBandwidth;
+    }
+
+    public void setUploadBandwidth(int uploadBandwidth) {
+        this.uploadBandwidth = uploadBandwidth;
+    }
+
+    public int getUploadJitter() {
+        return uploadJitter;
+    }
+
+    public void setUploadJitter(int uploadJitter) {
+        this.uploadJitter = uploadJitter;
+    }
+
+    public double getUploadLossPercent() {
+        return uploadLossPercent;
+    }
+
+    public void setUploadLossPercent(double uploadLossPercent) {
+        this.uploadLossPercent = uploadLossPercent;
+    }
+}
+```
+
+#### 取消网速探测
+
+描述：在网速探索过程中，可使用 `veGameEngine` 类中的 `probeInterrupt` 接口来取消网速探测。网速探测终止完成后，会通过 [IProbeNetworkListener](#IProbeNetworkListener) 接口收到 `onProbeError` 回调，错误码是 2，标识探测过程被取消。
+
+参考示例：
+
+```java
+// veGameEngine class
+public void probeInterrupt()
+```
+
+### 开始播放
+
+描述：当成功初始化完成后，可以调用 `start()`，拉流开始播放。
+
+入参：config
+
+返回值：开始播放触发的回调为 IStreamListener 的 onFirstRemoteVideoFrame
+
+参考以下示例：
+
+```java
+public void start(@NonNull GamePlayConfig config, @NonNull IPlayerListener playerListener)
+```
+
+`config` 字段描述如下:
+
+|  **名称**  |  **类型**  |  **是否必填**  |  **说明**  |
 | --- | --- | --- | --- |
 | userId | 字符串，小于64位 | 是 | 客户端用户 ID，用于标识用户在流媒体房间中的身份 |
 | podInfo | PodInfo 实例 | 是 | Pod实例信息 |
