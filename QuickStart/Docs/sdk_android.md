@@ -410,25 +410,14 @@ public void start(@NonNull GamePlayConfig config, @NonNull IPlayerListener playe
 
 |  **名称**  |  **类型**  |  **是否必填**  |  **说明**  |
 | --- | --- | --- | --- |
-| userId | String | 是 | 自定义客户端用户 ID，用于标识用户在游戏房间中的身份，命名规则如下：
-- 最大长度为64位的非空字符串，支持的字符集范围为:
-- 大写字母 A ~ Z
-- 小写字母 a ~ z
-- 数字 0 ~ 9
-- 下划线、减号
+| userId | String | 是 | 自定义客户端用户 ID，用于标识用户在游戏房间中的身份，命名规则如下：  <br>-最大长度为64位的非空字符串，支持的字符集范围为:  <br>-大写字母 A ~ Z  <br>-小写字母 a ~ z  <br>-数字 0 ~ 9  <br>-下划线、减号
 |
 | ak | String | 是 | 用于用户鉴权的临时 Access Key，通过调用服务端 STSToken 接口获取，参考 [生成临时 Token 接口]() |
 | sk | String | 是 | 用于用户鉴权的临时 Secret Key，通过调用服务端 STSToken 接口获取，参考 [生成临时 Token 接口]() |
 | token | String | 是 | 用于用户鉴权的临时 Token，通过调用服务端 STSToken 接口获取，参考 [生成临时 Token 接口]() |
 | gameId | String | 是 | 游戏 ID，可通过火山引擎云游戏控制台『游戏管理』页面获取，例如：1428112352161312345；当传入 customGameId 时，可不传入（以 game_id 优先） |
 | customGameId | String | 是 | 注册游戏时指定的用户自定义游戏 ID；当传入 gameId 时，可不传入 |
-| roundId | String | 是 | 当次游戏生命周期的标识符，命名规则如下：
-- 最大长度为128位的非空字符串，支持的字符集范围为:
-- 大写字母 A ~ Z
-- 小写字母 a ~ z
-- 数字 0 ~ 9
-- 下划线、减号
-|
+| roundId | String | 是 | 当次游戏生命周期的标识符，命名规则如下：  <br>-最大长度为128位的非空字符串，支持的字符集范围为:  <br>-大写字母 A ~ Z  <br>-小写字母 a ~ z  <br>-数字 0 ~ 9  <br>-下划线、减号 |
 | roomType | Int | 否 | 启动游戏的场景，用于控制是否开启多人游戏及游戏控制权转移：  <br>0（单用户，默认）  <br>1（单房间多用户，不可转移游戏控制权）  <br>2（单房间多用户, 可转移游戏控制权） |
 | role | Role | 否 | 启动游戏时，游戏玩家的角色：  <br>Role.PLAYER（操作者）  <br>Role.VIEWER（观看者）；注：当游戏场景类型为1和2时，如不指定则游戏玩家的角色默认为观看者（游戏场景类型为1或2时才有多用户之分） |
 | container | FrameLayout 或其子类 | 是 | 用来承载画面的 Container |
