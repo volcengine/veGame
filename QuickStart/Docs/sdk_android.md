@@ -21,7 +21,7 @@
 
 1. 在 Project 根目录下的 `build.gradle` 文件中的 `repositories` 中配置了 maven 仓库地址，参考以下示例：
 
-```
+```java
 buildscript {
     repositories {
         maven {
@@ -43,7 +43,7 @@ allprojects {
 
 - （方式一）解压下载的 veGameSDK 包文件，将 `cloudgame-release.aar` 文件拷贝到 `libs` 目录下。在应用模块的 `build.gradle` 文件中的 `dependencies` 中加入：
 
-```
+```java
 repositories {
    flatDir {dirs 'libs'}
 }
@@ -62,20 +62,20 @@ dependencies {
 
 - （方式二）在应用模块的 build.gradle 文件中的 dependencies 中添加 veGameSDK 的依赖，参考以下示例：
 
-```
+```java
 implementation 'com.volcengine.vegame:vegame:1.22.0'
 ```
 
 - （方式三，非必须）在应用模块的 build.gradle 文件中的 dependencies 中添加 veGameSDK 以及插件包的依赖，参考以下示例：
 
-```
+```java
 implementation 'com.volcengine.vegame:vegame:1.22.0'
 implementation 'com.volcengine.vegame:core-full:1.22.0'
 ```
 
 3. 设置 Java 版本到 1.8，参考以下示例：
 
-```
+```java
 android {
     // ...
     compileOptions {
@@ -89,7 +89,7 @@ android {
 
 在 `AndroidManifest.xml` 文件中设置注册的火山引擎用户账号（可通过火山引擎官网页面右上角 **用户 > 账号管理 > 主账号信息** 获取），参考以下示例：
 
-```
+```java
 <meta-data
     android:name="VOLC_ACCOUNT_ID"
     android:value="21000xxxxx" />
@@ -99,7 +99,7 @@ android {
 
 根据实际场景在 `AndroidManifest.xml` 文件中声明 SDK 需要的权限，参考以下示例：
 
-```
+```java
 //网络权限，使用场景：音视频传输等
 <uses-permission android:name="android.permission.INTERNET" />
 
@@ -127,7 +127,7 @@ android {
 > 1. 存储写入权限需动态申请。参考：[https://developer.android.com/training/permissions/requesting](https://developer.android.com/training/permissions/requesting)
 > 2. 如果 App 指向 Android 10 以上 (targetSdkVersion >= 29)，而且还未适配 “Scoped Storage”。请将 `AndroidManifest.xml` 中的 `requestLegacyExternalStorage` 设置为 `true`。参考官方文档: [https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage](https://developer.android.com/training/data-storage/use-cases#opt-out-scoped-storage)
 
-```
+```java
 <manifest>
   <application android:requestLegacyExternalStorage="true">
   </application>
@@ -150,12 +150,12 @@ android {
 
 参考以下示例：
 
-```
+```java
 // veGameEngine class
 int getStatus()
 ```
 
-```
+```java
 // veGameEngine class
 void addCloudCoreManagerListener(@NonNull ICloudCoreManagerStatusListener listener)
 
@@ -166,15 +166,15 @@ public interface ICloudCoreManagerStatusListener {
 }
 ```
 
-**addCloudCoreManagerListener(listener)**
+#### addCloudCoreManagerListener(listener)
 
 描述：设置 veGameEngine 生命周期回调监听。
 
-**removeCloudCoreManagerListener(listener)**
+#### removeCloudCoreManagerListener(listener)
 
 描述：取消 veGameEngine 生命周期回调监听。
 
-**ICloudCoreManagerStatusListener**
+#### ICloudCoreManagerStatusListener
 
 描述：veGameEngine 生命周期回调。
 
@@ -191,7 +191,7 @@ public interface ICloudCoreManagerStatusListener {
 > - 第一次初始化时，SDK 会进行一次资源异步加载。如果在初始化时资源加载失败，不需要重新调用 init。SDK 会在调用 start 接口启动游戏时检查资源是否已成功加载，如果没有，则会重新加载。资源加载完成后会由 ICloudCoreManagerStatusListener 的 onInitialed() 回调。
 > - 初始化只需要执行一次。特别注意：多进程会多次执行 Application 的 onCreate，需要在 onCreate 中添加当前进程判断，详情可参考 [Github Demo](https://github.com/volcengine/veGame/tree/master/QuickStart/Android)。
 
-```
+```java
 /**
  * veGameEngine class
  * @param application Android上下文
@@ -203,7 +203,7 @@ public void init(Application application)
 
 在申请云游戏服务之前，需要在 `\app\src\main\AndroidManifest.xml` 文件的 `meta-data` 中填入注册的火山引擎用户账号（`VOLC_ACCOUNT_ID`）。参考以下示例：
 
-```
+```java
 <meta-data
     android:name="VOLC_ACCOUNT_ID"
     android:value="21000xxxxx" />
@@ -219,7 +219,7 @@ public void init(Application application)
 
 参考以下示例：
 
-```
+```java
 // veGameEngine class
 public String getServiceDeviceId()
 ```
@@ -234,7 +234,7 @@ public String getServiceDeviceId()
 
 参考示例：
 
-```
+```java
 // veGameEngine class
 public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkListener listener)
 ```
@@ -246,11 +246,9 @@ public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkLis
 |  **接口名称**  |  **接口描述**  |
 | --- | --- |
 | onProbeStarted() | 启动网络测速回调 |
-| onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 [ProbeStats](测速结果描述) 是中间测试状态，仅供参考 |
-| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：
-<br>1（网络极好，可以很流畅地玩游戏）<br>2（网络较好，可以玩游戏）<br>3（网络较差，不推荐玩游戏） |
-| onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：
-<br>1（探测过程网络环境出错，无法完成探测）<br>2（探测过程被终止取消）<br>3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
+| onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 [ProbeStats](#测速结果描述) 是中间测试状态，仅供参考 |
+| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：  <br>1（网络极好，可以很流畅地玩游戏）  <br>2（网络较好，可以玩游戏）  <br>3（网络较差，不推荐玩游戏） |
+| onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：  <br>1（探测过程网络环境出错，无法完成探测）  <br>2（探测过程被终止取消）  <br>3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
 
 参考示例：
 
