@@ -247,8 +247,8 @@ public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkLis
 | --- | --- |
 | onProbeStarted() | 启动网络测速回调 |
 | onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 [ProbeStats](#测速结果描述) 是中间测试状态，仅供参考 |
-| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：  <br> * 1（网络极好，可以很流畅地玩游戏）  <br> * 2（网络较好，可以玩游戏） <br> * 3（网络较差，不推荐玩游戏） |
-| onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：* 1（探测过程网络环境出错，无法完成探测） * 2（探测过程被终止取消） * 3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
+| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：  <br> + 1（网络极好，可以很流畅地玩游戏）  <br> + 2（网络较好，可以玩游戏） <br> + 3（网络较差，不推荐玩游戏） |
+| onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：  <br> * 1（探测过程网络环境出错，无法完成探测）  <br> * 2（探测过程被终止取消）  <br> * 3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
 
 参考示例：
 
