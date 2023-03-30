@@ -819,3 +819,367 @@ public class LocalStreamStats {
     }
 }  
 ```
+
+#### 错误码
+
+启动游戏可能返回的错误码和相关说明如下：
+
+|  **错误码**  |  **错误信息**  |  **说明**  |
+| --- | --- | --- |
+| 10000 | ERROR_START_GENERAL | 开始游戏失败。原因：通用错误。建议：请检查开始游戏 start() 接口参数。 |
+| 10001 | ERROR_START_AUTHENTICATION_FAILED | 开始游戏失败。原因：火山引擎服务鉴权失败。建议：检查您的 AK、SK、Token 生成，参考 生成临时 Token 接口。 |
+| 10002 | ERROR_START_GAME_ID_NOT_EXIST | 开始游戏失败。原因：当前游戏 ID 或 自定义游戏 ID 不存在。建议：请通过火山引擎云游戏控制台『游戏管理』页面获取正确的游戏 ID。 |
+| 10003 | ERROR_START_GAME_ID_NOT_READY | 开始游戏失败。原因：当前游戏尚在适配中。建议：游戏适配需要一定时间，如需加急，可联系火山引擎云游戏服务对接人员。 |
+| 10004 | ERROR_START_CONFIGURATION_CODE_NOT_EXIST | 开始游戏失败。原因：资源套餐 ID 不存在。建议：可通过调用服务端 ListResourceSet 接口获取（configuration_code 字段）获取正确的套餐信息。 |
+| 10005 | ERROR_START_CONFIGURATION_CODE_NOT_REDAY | 开始游戏失败。原因：游戏尚未配置资源套餐或套餐 ID 无效。建议：请通过火山引擎云游戏控制台『游戏管理』页面为游戏配置部署策略。 |
+| 10006 | ERROR_START_RESOURCE_NOT_READY | 开始游戏失败。原因：当前业务没有订购资源。建议：请通过火山引擎云游戏控制台『资源管理』页面购买资源。 |
+| 10007 | ERROR_START_RESOURCE_CAPACITY_NOT_ENOUGH | 开始游戏失败。原因：当前游戏资源用量超限或无可用资源。建议：请通过火山引擎云游戏控制台『资源管理』页面购买资源。 |
+| 10009 | ERROR_START_AUTHENTICATION_KEY_FAILED | 开始游戏失败。原因：火山引擎服务鉴权失败。建议：请检查临时鉴权 Token 的有效期，参考 生成临时 Token 接口。 |
+| 10011 | ERROR_START_CONNECTION_ENDED | 开始游戏失败。原因：在调用 start() 接口启动游戏、启动成功回调触发之前，游戏被停止（可能原因包括：服务端游戏崩溃导致开始游戏失败、调用了服务端 GameStop 接口停止游戏服务）。 |
+| 10012 | ERROR_START_RESERVED_ID_NOT_FOUND | 开始游戏失败。原因：资源预锁定 ID（reservedId）不存在。建议：请确保指定的 reservedId 正确；可通过调用服务端 PreAllocateResource 接口获取。 |
+| 10013 | ERROR_START_RESERVED_ID_EXPIRED | 开始游戏失败。原因：资源预锁定 ID（reservedId）已失效。建议：可通过调用服务端 PreAllocateResource 接口重新获取。 |
+| 10014 | ERROR_START_RESERVED_ID_ALREADY_USED_RELEASE | 开始游戏失败。原因：资源预锁定 ID（reservedId）已被使用且已释放。建议：可通过调用服务端 PreAllocateResource 接口重新获取。 |
+| 10015 | ERROR_START_RESERVED_ID_USING | 开始游戏失败。原因：资源预锁定 ID（reservedId）正在被使用中。建议：可通过调用服务端 PreAllocateResource 接口重新获取。 |
+| 10016 | ERROR_START_RESERVED_ID_MISMATCH_PREPARE | 开始游戏失败。原因：资源预锁定 ID（reservedId）与调用 PreAllocateResource 接口时指定的参数不一致。建议：请检查资源预锁定 ID（reservedId）与调用 PreAllocateResource 接口时指定的参数是否一致。 |
+| 10017 | ERROR_START_NO_SUFFICIENT_FUND | 开始游戏失败。原因：启动游戏时，后付费账户欠费，导致服务不可用。建议：请通过火山引擎『费用中心』充值付费，充值到账后服务自动开启。 |
+| 10018 | ERROR_START_USER_CONFLICT | 开始游戏失败。原因：用户使用多个设备申请游戏服务时，触发了游戏多开限制。建议：需要客户端提示用户不要进行多开操作。 |
+| 10026 | ERROR_START_MISMATCH_ACCOUNTID | 开始游戏失败。原因：指定的火山引擎账号校验失败。建议：通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取正确的账号。 |
+| 10027 | ERROR_START_INVALID_LOCAL_TIME | 开始游戏失败。原因：用户手机时间和服务端时间相差超过7天，导致鉴权 Token 过期。建议：需要客户端提示用户把手机时间修正为标准时间。 |
+
+### 暂停
+
+描述：当 veGameEngine 处于播放状态时，调用 pause() 暂停从云端拉流，此时并不改变云端的运行状态。
+
+返回值：暂停成功会收到 onStreamPaused 的接口回调。
+
+```java
+// veGameEngine class
+void pause()
+```
+
+### 恢复
+
+描述：当 veGameEngine 处于暂停状态时，调用 resume() 恢复从云端拉流播放。
+
+返回值：恢复播放成功会收到 onStreamResumed 的接口回调。
+
+```java
+// veGameEngine class
+void resume()
+```
+
+### 停止
+
+描述：停止从云端拉流，并释放本次游戏相关的资源，同时通知云端释放实例资源（异步）。
+
+```java
+// veGameEngine class
+void stop()
+```
+
+### 重启游戏
+
+描述：重启云端当前游戏进程（10秒内只能调用最多3次 ）。
+
+```java
+// veGameEngine class
+void restart()
+```
+
+### 静音开关
+
+描述：游戏音量静音开关，及检查播放音量是否处在静音状态。
+
+```java
+// veGameEngine class
+void muteAudio(boolean mute) //true: 静音; false: 开音。
+boolean isAudioMuted() //当前是否处在静音状态，返回：true: 静音； false:开音。
+```
+
+### 调节本地播放和采集音量
+
+描述：调节客户端本地播放和采集音量。
+
+```java
+// AudioService class
+int getLocalAudioPlaybackVolume() //获取客户端本地播放音量
+int setLocalAudioPlaybackVolume(int volume) //设置客户端本地播放音量，范围 [0,100]
+int setLocalAudioCaptureVolume(int volume) //设置采集客户端本地音量，范围 [0,100]
+```
+
+### 调节云端游戏播放音量
+
+描述：调节云端游戏播放音量。
+
+```java
+// AudioService class
+int getRemoteAudioPlaybackVolume() //获取云端游戏播放音量
+int setRemoteAudioPlaybackVolume(int volume) //设置云端游戏播放音量，范围 [0,100]
+```
+
+### 设置音频输出源
+
+描述：设置或切换播放音频的设备。
+- 设置音频播放设备时，需要保证已开启音频数据发送，否则设置无效；
+- 当使用蓝牙耳机进行音频采集、播放时，需要获取蓝牙权限。
+
+```java
+// AudioService class
+void setAudioPlaybackDevice(deviceId) //指定音频播放设备（系统喇叭、外接喇叭和耳机、有线外接播放器，蓝牙播放器等）
+```
+
+### 开启/关闭音频数据发送
+
+描述：开启或关闭采集麦克风音频数据后发送给云端实例，进而注入到实例的 Android 系统中。注意: 需要开启麦克风使用权限。
+
+```java
+// AudioService class
+void onRemoteAudioStartRequest() //收到云端实例请求开始发送音频数据事件
+void onRemoteAudioStopRequest() //收到云端实例请求停止发送音频数据事件
+
+int startSendAudioStream() //获取麦克风权限后，采集并发送音频数据
+int stopSendAudioStream() //关闭音频数据发送，并且不进行音频采集
+```
+
+### 增大/减小游戏音量
+
+描述：增大或减小游戏音量。
+
+```java
+// veGameEngine class
+void volumeUp()
+void volumeDown()
+```
+
+### 手柄
+
+描述：发送游戏手柄消息。
+
+```java
+// veGameEngine class
+public @Nullable GamePadService getGamePadService()
+
+public interface GamePadService {
+
+    //扳机模拟量
+    void sendGamePadRockerEvent(float leftX, float leftY, float rightX, float rightY, float leftT, float rightT);
+
+    //KEYCODE_BUTTON_L2  KEYCODE_BUTTON_R2
+    void sendRtRbLtLb(int keyCode, float value);
+
+    // 其他的按键操作，官方按键定义的KeyEvent
+    void sendKeyEvent(int action, int keyCode);
+
+    // 设置监听远端震动的消息
+    void setGamePadListener(GamePadListener gamePadListener);
+
+    interface GamePadListener {
+
+        // index 表示手柄是第几个发的，leftValue 手柄左马达震动量，rightValue 手柄右马达震动量
+        void onVibrate(int index, int leftVale, int rightValue);
+
+    }
+}
+```
+
+### 传感器开关
+
+描述：获取传感器使用权限。
+
+```java
+// veGameEngine class
+void enableAccelSensor(boolean enable) //是否启用加速度传感器
+void enableGyroscopeSensor(boolean enable) //是否启用陀螺仪传感器
+void enableGravitySensor(boolean enable) //是否启用重力传感器
+void enableOrientationSensor(boolean enable) //是否启用方向传感器
+void enableMagneticSensor(boolean enable) //是否启用磁力传感器
+```
+
+### 震动开关
+
+描述：本地震动传感器开关。开启后，当云端的应用令手机发生震动时，本地手机会同步震动。注意：需要打开系统的震动开关后才能生效。
+
+```java
+// veGameEngine class
+void enableVibrator(boolean enable)
+```
+
+### 定位开关
+
+描述：当云端请求本地位置信息后，如果设置为启用，则获取本地位置信息传输到云端。
+
+```java
+// veGameEngine class
+void enableLocationService(boolean enable)
+```
+
+### 设置键盘开关
+
+描述：设置是否允许用户使用键盘进行信息输入的能力。
+
+```java
+public interface LocalInputManager {
+
+    void setKeyboardEnable(boolean enable); //是否允许用户使用键盘进行输入
+
+    void getKeyboardEnable(); // 获取键盘启用状态
+}
+```
+
+### 屏幕旋转
+
+描述：旋转游戏画面方向。
+
+orientation 在收到 SDK IStreamListener onRotation 回调后，旋转当前的 Activity 方向。同时在 Activity  的 onConfigurationChanged(Configuration newConfiguration) 回调中，调用 VeGameEngine 的 rotate 方法，传入 newConfiguration.orientation 的值。
+
+```java
+// veGameEngine class
+void rotate(int orientation)
+
+参考示例：
+private void setRotation(int rotation) {
+    switch (rotation) {
+        case 0:
+        case 180:
+            setRequestedOrientation(SCREEN_ORIENTATION_UNSPECIFIED);
+            break;
+        case 90:
+        case 270:
+            setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
+            break;
+    }
+}
+```
+
+### 收发消息
+描述：与云端实例之间收发消息（需要在收到 veGameEngine#addCloudCoreManagerListener 回调之后使用）。
+有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| sendMessage(String destChannelUid, String payload, boolean needAck) | 发送消息：  <br>destChannelUid：目标用户 ID（云端游戏初始化 veMessageChannelClient 时填入的用户 ID）  <br>payload：发送消息内容（size：60KB）  <br>needAck：是否需要接收消息反馈 |
+| setMessageListener(IMessageReceiver listener) | 设置消息接收回调监听 |
+| getMid() | 获取消息编号 |
+| getPayload() | 获取携带的消息内容 |
+| getTimeMillis() | 获取消息发送时间 |
+| getSrcChannelUid() | 获取发送方的 ChannelUid |
+| getDestChannelUid() | 获取接收方的 ChannelUid |
+
+#### 消息发送超时设置
+
+通过 MessageChannel 发送消息到云端游戏时，可以设置消息发送超时时长。
+
+> 当消息发送后，如果超过指定的时长还未收到对应的接收消息反馈，则会通过 `IMessageReceiver#onSentResult` 返回消息发送失败信息。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| sendMessage(String destChannelUid, String payload, long timeout) | 发送消息：  <br>destChannelUid：目标用户 ID（云端游戏初始化 veMessageChannelClient 时填入的用户 ID）  <br>payload：发送消息内容（size：60KB）  <br>timeout：消息发送超时时长，单位 ms（需要大于0；当小于等于0时，通过 IMessageReceiver#onError 返回错误信息） |
+| setMessageListener(IMessageReceiver listener) | 设置消息接收回调监听 |
+
+
+#### IMessageReceiver
+
+消息接收回调监听。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onReceiveMessage(IChannelMessage message) | 消息接收回调 |
+| onSentResult(boolean success, String mid) | 发送消息结果回调 |
+| onError(int errorCode, String message) | 错误上报回调 |
+| onRemoteOffline(String channelUid) | 云端实例离线回调，消息发送可能失败（channelUid 为云端游戏侧初始化 veMessageChannelClient 时填入的用户 ID） |
+| onRemoteOnline(String channelUid) | 云端实例在线回调，建议在发送消息前监听该回调检查通道是否已连接（channelUid 为云端游戏侧初始化 veMessageChannelClient 时填入的用户 ID） |
+
+参考示例：
+
+```java
+// veGameEngine class
+public @Nullable IMessageChannel getMessageChannel()
+```
+
+```java
+public interface IMessageChannel {
+
+    IChannelMessage sendMessage(String destChannelUid, String payload, boolean needAck);
+
+    void setMessageListener(IMessageReceiver listener);
+
+    interface IMessageReceiver {
+
+        void onReceiveMessage(IChannelMessage message);
+
+        void onSentResult(boolean success, String mid);
+
+        void onError(int errorCode, String message);
+
+        void onRemoteOffline(String channelUid);
+
+        void onRemoteOnline(String channelUid);
+    }
+
+    interface IChannelMessage {
+
+        String getMid();
+
+        String getPayload();
+
+        long getTimeMillis();
+
+        String getSrcChannelUid();
+
+        String getDestChannelUid();
+    }
+}
+```
+
+消息发送超时设置：
+
+```java
+public interface IMessageChannel {
+
+    IChannelMessage sendMessage(String destChannelUid, String payload, long timeout);
+
+    void setMessageListener(IMessageReceiver listener);
+
+    interface IMessageReceiver {
+
+        void onReceiveMessage(IChannelMessage message);
+
+        void onSentResult(boolean success, String mid);
+
+        void onError(int errorCode, String message);
+
+        void onRemoteOffline(String channelUid);
+
+        void onRemoteOnline(String channelUid);
+    }
+
+    interface IChannelMessage {
+
+        String getMid();
+
+        String getPayload();
+
+        long getTimeMillis();
+
+        String getSrcChannelUid();
+
+        String getDestChannelUid();
+    }
+}
+```
+
+#### 错误码
+
+收发消息可能返回的错误码和相关说明如下：
+
+|  **错误码**  |  **错误信息**  |  **说明**  |
+| --- | --- | --- |
+| 50000 | ERROR_MESSAGE_GENERAL | 未知错误 |
+| 50001 | ERROR_MESSAGE_NOT_CONNECTED | 发送消息错误。原因：客户端 SDK 与火山引擎云游戏 PaaS 服务未连接。建议：请检查网络后，重新调用发送消息接口，进行消息发送。 |
+| 50002 | ERROR_MESSAGE_FAILED_TO_PARSE_MSG | 消息通道数据解析失败。原因：无法解析接收到的消息。 |
+| 50003 | ERROR_MESSAGE_CHANNEL_UID_ILLEGAL | 指定的消息通道 ID 无效。原因：指定的消息通道 ID 与云端初始化 veMessageChannelClient 时填入的用户 ID 不符。 |
+| 50004 | ERROR_MESSAGE_FAILED | 发送消息错误。建议：请检查网络。 |
+| 50005 | ERROR_MESSAGE_NOT_CLOUD_RUNTIME  | 消息通道错误。原因：云端 SDK 未运行。建议：请检查网络。 |
+| 50006 | ERROR_MESSAGE_CONNECT_VERIFY_FAILED  | 消息通道错误。原因：鉴权失败。建议：请检查参数配置。 |
+| 50007 | ERROR_MESSAGE_OVER_SIZED | 通过客户端 SDK 发送的消息错误。原因：消息包体过大（不应超过60kb）。建议：减小发送包体大小，重新发送。 |
+| 50009 | ERROR_MESSAGE_TIMEOUT_ILLEGAL | 发送消息错误。原因：指定的消息发送超时时长不符合要求，必须为大于0的值。 |
