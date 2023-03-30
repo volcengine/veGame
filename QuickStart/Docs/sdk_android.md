@@ -383,7 +383,7 @@ public class ProbeStats {
 
 #### 取消网速探测
 
-描述：在网速探索过程中，可使用 `veGameEngine` 类中的 `probeInterrupt` 接口来取消网速探测。网速探测终止完成后，会通过 [IProbeNetworkListener](#IProbeNetworkListener) 接口收到 `onProbeError` 回调，错误码是 2，标识探测过程被取消。
+描述：在网速探索过程中，可使用 `veGameEngine` 类中的 `probeInterrupt` 接口来取消网速探测。网速探测终止完成后，会通过 [IProbeNetworkListener](#iprobenetworklistener) 接口收到 `onProbeError` 回调，错误码是 2，标识探测过程被取消。
 
 参考示例：
 
@@ -488,8 +488,7 @@ GamePlayConfig config = builder.userId("your_user_id")
 |  **接口名称**  |  **接口描述**  |
 | --- | --- |
 | onServiceInit() | 加入房间前回调，用于获取并初始化各个功能服务，例如设置各种事件监听回调 |
-| onPlaySuccess(String roundId, int videoStreamProfileId, Map<String, String> extra, String gameId, String reservedId)
- | 播放成功回调：  <br>roundId：当次游戏生命周期标识符  <br>videoStreamProfileId：当前游戏画面的清晰度，首帧渲染到画面时触发该回调  <br>extra：自定义的扩展参数  <br>gameId：游戏 ID  <br>reservedId：资源预锁定 ID  |
+| onPlaySuccess(String roundId, int videoStreamProfileId, Map<String, String> extra, String gameId, String reservedId) | 播放成功回调：  <br>roundId：当次游戏生命周期标识符  <br>videoStreamProfileId：当前游戏画面的清晰度，首帧渲染到画面时触发该回调  <br>extra：自定义的扩展参数  <br>gameId：游戏 ID  <br>reservedId：资源预锁定 ID  |
 | onNetworkChanged(int type) | 网络连接类型和状态切换回调：  <br>-1: 网络连接类型未知0: 网络连接已断开  <br>1: 网络类型为 LAN  <br>2: 网络类型为 Wi-Fi（包含热点）  <br>3: 网络类型为 2G 移动网络  <br>4: 网络类型为 3G 移动网络  <br>5: 网络类型为 4G 移动网络  <br>6: 网络类型为 5G 移动网络 |
 | onWarning(int code, String message) | SDK 内部产生告警回调，参考 [警告码](#警告码) |
 | onError(int code, String message) | SDK 内部产生错误回调，参考 [错误码](错误码)；注意：在出现报错时，需要调用 stop() 接口，恢复到初始状态，排查问题后，再调用 start() |
@@ -524,12 +523,12 @@ public interface IGamePlayerListener {
 | onStreamStarted() | 开始播放回调 |
 | onStreamPaused() | 调用 pause()，暂停播放后的回调 |
 | onStreamResumed() | 调用 resume() 或 muteAudio(false)，恢复播放后的回调 |
-| onStreamStats(StreamStats streamStats) | 视频流的当前性能状态回调（2秒周期内音视频网路状态的回调，可用于内部数据分析或监控）：  <br>streamStats：远端数据间视频流的性能状态，参考以下 [StreamStats 类型说明]() |
+| onStreamStats(StreamStats streamStats) | 视频流的当前性能状态回调（2秒周期内音视频网路状态的回调，可用于内部数据分析或监控）：  <br>streamStats：远端数据间视频流的性能状态，参考以下 [StreamStats 类型说明](#streamstats-类型说明) |
 | onStreamConnectionStateChanged(int state) | 视频流连接状态变更回调：  <br>1：连接断开  <br>2：首次连接，正在连接中  <br>3：首次连接成功  <br>4：连接断开后重新连接中  <br>5：连接断开后重连成功  <br>6：网络连接断开超过 10 秒，仍然会继续重连 |
-| onNetworkQuality(int quality) | 游戏中网络质量回调，每隔 2 秒上报一次网络质量评级：  <br>quality：网络质量评级（可根据当前返回的网络质量评级进行推流参数降级或者终止拉流；详细信息，参考以下 [onNetworkQuality 相关信息]()） |
+| onNetworkQuality(int quality) | 游戏中网络质量回调，每隔 2 秒上报一次网络质量评级：  <br>quality：网络质量评级（可根据当前返回的网络质量评级进行推流参数降级或者终止拉流；详细信息，参考以下 [onNetworkQuality 相关信息](#onNetworkquality-相关信息)） |
 | onDetectDelay(long  elapse) | 当前操作延时回调，单位毫秒（操作延时获取是指在操作时发送到远端的消息，本地记录的时间戳，收到远端视频流会带上操作延时的标记，从而计算出来的一个值，该值可以理解为操作和对应画面渲染更新的一个差值） |
 | onRotation(int rotation) | 客户端旋转回调 |
-| onPodExit(int reason, String msg) | 实例端退出回调，参考以下 [onPodExit 相关信息]() |
+| onPodExit(int reason, String msg) | 实例端退出回调，参考以下 [onPodExit 相关信息](#onpodexit-相关信息) |
 
 参考示例：
 
