@@ -247,8 +247,8 @@ public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkLis
 | --- | --- |
 | onProbeStarted() | 启动网络测速回调 |
 | onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 [ProbeStats](#测速结果描述) 是中间测试状态，仅供参考 |
-| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：  <br> + 1（网络极好，可以很流畅地玩游戏）  <br> + 2（网络较好，可以玩游戏） <br> + 3（网络较差，不推荐玩游戏） |
-| onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：  <br> * 1（探测过程网络环境出错，无法完成探测）  <br> * 2（探测过程被终止取消）  <br> * 3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
+| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](#测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位： <br> 1（网络极好，可以很流畅地玩游戏） <br> 2（网络较好，可以玩游戏） <br> 3（网络较差，不推荐玩游戏） |
+| onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：  <br>1（探测过程网络环境出错，无法完成探测）  <br>2（探测过程被终止取消）  <br>3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
 
 参考示例：
 
@@ -398,7 +398,7 @@ public void probeInterrupt()
 
 入参：config
 
-返回值：开始播放触发的回调为 IStreamListener 的 onFirstRemoteVideoFrame
+返回值：开始播放触发的回调为 `IStreamListener` 的 `onFirstRemoteVideoFrame`
 
 参考以下示例：
 
@@ -410,523 +410,85 @@ public void start(@NonNull GamePlayConfig config, @NonNull IPlayerListener playe
 
 |  **名称**  |  **类型**  |  **是否必填**  |  **说明**  |
 | --- | --- | --- | --- |
-| userId | 字符串，小于64位 | 是 | 客户端用户 ID，用于标识用户在流媒体房间中的身份 |
-| podInfo | PodInfo 实例 | 是 | Pod实例信息 |
-| conatiner | FrameLayout 或其子类 | 是 | 用来承载画面的 Container |
-| width | 单位 px | 是 | Container 的宽 |
-| height | 单位 px | 是 | Container 的高 |
-| jsonConverter | IJsonConverter 实例 | 是 | Json 转换器 |
-| enableLocalKeyboard | true / false | 否 | 是否使能本地输入法 |
-| magneticSensor | true / false | 否 | 是否使能磁力传感器 |
-| acceleratorSensor | true / false | 否 | 是否使能加速度传感器 |
-| gravitySensor | true / false | 否 | 是否使能重力传感器 |
-| gyroscopeSensor | true / false | 否 | 是否使能陀螺仪传感器 |
-| locationService | true / false | 否 | 是否使能定位服务 |
-| channel | 字符串，小于64位 | 否 | 渠道，埋点信息 |
-| vibrator | true / false | 否 | 是否开启震动 |
-| rotation | \[0, 90, 180, 270\] | 否 | 屏幕旋转角度 |
-| deviceId | 字符串小于64位 | 否 | 设备唯一标识，性能统计 |
+| userId | String | 是 | 自定义客户端用户 ID，用于标识用户在游戏房间中的身份，命名规则如下：
+- 最大长度为64位的非空字符串，支持的字符集范围为:
+- 大写字母 A ~ Z
+- 小写字母 a ~ z
+- 数字 0 ~ 9
+- 下划线、减号
+|
+| ak | String | 是 | 用于用户鉴权的临时 Access Key，通过调用服务端 STSToken 接口获取，参考 [生成临时 Token 接口]() |
+| sk | String | 是 | 用于用户鉴权的临时 Secret Key，通过调用服务端 STSToken 接口获取，参考 [生成临时 Token 接口]() |
+| token | String | 是 | 用于用户鉴权的临时 Token，通过调用服务端 STSToken 接口获取，参考 [生成临时 Token 接口]() |
+| gameId | String | 是 | 游戏 ID，可通过火山引擎云游戏控制台『游戏管理』页面获取，例如：1428112352161312345；当传入 customGameId 时，可不传入（以 game_id 优先） |
+| customGameId | String | 是 | 注册游戏时指定的用户自定义游戏 ID；当传入 gameId 时，可不传入 |
+| roundId | String | 是 | 当次游戏生命周期的标识符，命名规则如下：
+- 最大长度为128位的非空字符串，支持的字符集范围为:
+- 大写字母 A ~ Z
+- 小写字母 a ~ z
+- 数字 0 ~ 9
+- 下划线、减号
+|
+| roomType | Int | 否 | 启动游戏的场景，用于控制是否开启多人游戏及游戏控制权转移：  <br>0（单用户，默认）  <br>1（单房间多用户，不可转移游戏控制权）  <br>2（单房间多用户, 可转移游戏控制权） |
+| role | Role | 否 | 启动游戏时，游戏玩家的角色：  <br>Role.PLAYER（操作者）  <br>Role.VIEWER（观看者）；注：当游戏场景类型为1和2时，如不指定则游戏玩家的角色默认为观看者（游戏场景类型为1或2时才有多用户之分） |
+| container | FrameLayout 或其子类 | 是 | 用来承载画面的 Container |
+| planId | String | 否 | 火山侧套餐 ID，可通过调用服务端 ListResourceSet 接口获取（configuration_code 字段） |
+| enableFileChannel | Boolean | 否 | 是否使能文件传输通道（默认为 false） |
+| enableLocalKeyboard | Boolean | 否 | 是否使能手机本地输入法，（默认为 false）；注：焦点拦截、以及 activity 设置能弹出软键盘等，都会导致本地键盘无法弹出 |
+| keyBoardEnable | Boolean | 否 | 默认输入法开启，true ：开启， false: 关闭（默认为 true） |
+| enableMagneticSensor | Boolean | 否 | 是否使能磁力传感器（默认为 false） |
+| enableAcceleratorSensor | Boolean | 否 | 是否使能加速度传感器（默认为 false） |
+| enableGravitySensor | Boolean | 否 | 是否使能重力传感器（默认为 false） |
+| enableGyroscopeSensor | Boolean | 否 | 是否使能陀螺仪传感器（默认为 false） |
+| enableLocationService | Boolean | 否 | 是否使能定位服务（默认为 false） |
+| enableVibrator | Boolean | 否 | 是否开启震动（默认为 true） |
+| videoStreamProfileId | Int | 否 | 游戏视频流清晰度 ID；如不传入，则使用默认清晰度（清晰度档位 ID 列表和详细说明，参考 [云游戏清晰度档位说明]()） |
+| userTag | String | 否 | 用户标签，由业务方指定，可通过调用服务端 CreateUserTag 接口创建，参考 [创建用户属性]() |
+| reservedId | String | 否 | 资源预锁定 ID，通过调用服务端 PreAllocateResource 接口获取（如不传入，将在开始播放成功 onPlaySuccess 回调中返回）；资源预锁定 ID 用于申请火山引擎云游戏的每次服务，建议业务记录此 ID，用于每次服务会话的唯一标识，可用于调试和问题排查 |
+| autoRecycleTime | Int | 否 | 设置无操作自动回收服务时长，单位秒（如不设置或设置为0，则使用默认时长300秒，支持设置的上限值为7200，即2小时） |
+| userProfilePath | String[] | 否 | 保存用户游戏配置文件的路径列表（如需在游戏进行中通过 setUserProfilePath 接口设置保存配置文件的路径，需要配置该参数） |
+| extra | Map<String,String> | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考 [自定义扩展参数列表]() |
 
- **IPlayerListener**
+`config` 最简配置参考示例（必填参数）：
 
-```
-public interface IPlayerListener {
-
-    /**
-     * 初始化成功
-     */
-    void onInitSuccess(); //初始化成功
-
-    /**
-     * 初始化失败
-     * @param code 错误码
-     * @param error 错误描述
-     */
-    void onInitFail(int code, String error);
-
-    /**
-     * 播流成功，Play/切分辨率/重连成功均会回调
-     */
-    void onPlaySuccess();
-
-    /**
-     * 播放失败
-     *
-     * @param code 错误码
-     * @param err  错误描述
-     */
-    void onPlayFail(int code, String err);
-
-    /**
-     * 分辨率切换的回调
-     *
-     * @param result   是否切换成功
-     * @param currentId
-     */
-    void onSwitchResolution(int result, String currentId);
-
-
-    /**
-     * SDK内部产生的事件回调
-     * @param event 事件
-     */
-    void onPlayEvent(CommonEvent event);
-
-
-    /**
-     * SDK内部产生错误回调
-     * 详情见【错误码表】
-     */
-    void onError(int code, String message);
-
-     /**
-     * 网络类型状态的切换
-     * -1：网络连接类型未知。
-     * 0： 网络连接已断开。
-     * 1： 网络类型为 LAN 。
-     * 2： 网络类型为 Wi-Fi（包含热点）。
-     * 3： 网络类型为 2G 移动网络。
-     * 4： 网络类型为 3G 移动网络。
-     * 5： 网络类型为 4G 移动网络。
-     */
-    void onNetworkChanged(int type);
-}
+```java
+GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
+builder.userId("your_user_id")
+       .container(mContainer)
+       .ak("your_ak")
+       .sk("your_sk")
+       .token("token")
+       .gameId("gameId")
+       .roundId("game_round_id");
+GamePlayConfig config = builder.build();    
 ```
 
- **CommonEvent 说明**
-
+```java
+config 完整配置参考示例：
+GamePlayConfig.Builder builder = new GamePlayConfig.Builder();
+GamePlayConfig config = builder.userId("your_user_id")
+        .container(layout)
+        .ak("your_ak")
+        .sk("your_sk")
+        .token("token")
+        .gameId("gameId")
+        .roundId("game_round_id")
+        .roomType(0)
+        .planId("ARMSoC_General")
+        .userTag("your_user_tag")
+        .reservedId("reserved_id")
+        .enableFileChannel(true)
+        .enableLocalKeyboard(true)
+        .keyBoardEnable(true)
+        .enableMagneticSensor(true)
+        .enableAcceleratorSensor(true)
+        .enableGravitySensor(true)
+        .enableGyroscopeSensor(true)
+        .enableLocationService(true)
+        .enableOrientationSensor(true)
+        .enableVibrator(true)
+        .videoStreamProfileId(1)
+        .autoRecycleTime(120)
+        .userProfilePath("/a/b/", "/c/d/")
+        .extra(new HashMap<String,String>());
 ```
-public class CommonEvent {
-    public static final int RECONNECTION = 5;
-    public static final int FIRST_FRAME = 8;
-    public static final int FIRST_FRAME_TIMEOUT = 9;
-    public static final int DETECT_DELAY = 12;
-    public static final int PERFORMANCE_STATS = 13;
-    public static final int CONNECTION_INTERRUPTED = 16;
-    public static final int SCREEN_ROTATION = 17;
-    public static final int POD_EXIT = 19;
-    public static final int PRESSURE_TEST = 20;
-    public static final int REMOTE_OFFLINE = 22;
-    public final int code;
-    public JSONObject data;
-}
-```
-
-|  **code / 名称**  |  **data (Json)**  |  **说明**  |
-| --- | --- | --- |
-| 5 / `CommonEvent.RECONNECTION`  | NG |  重连成功  |
-| 8 / `CommonEvent.FIRST_FRAME`  | NG | 首帧到达 |
-| 9 / `CommonEvent.FIRST_FRAME_TIMEOUT`  | NG | 首帧超时 |
-| 12 / `CommonEvent.DETECT_DELAY`  | {  <br>elapse: 10 // long 型  <br>} | 操作延迟(参考)探测  <br>表示耗时 |
-| 16 / `CommonEvent.CONNECTION_INTERRUPTED`  | {} | 连接中断 |
-| 17 / `CommonEvent.SCREEN_ROTATION`  | {  <br>"rotation":0 // int 型  <br>} | Pod 屏幕旋转  <br>rotation: 0 默认竖屏，90 旋转90度，180 旋转180度，270 旋转270度 |
-| 19 / `CommonEvent.POD_EXIT`  | {  <br>"reason":255,// Int 型  <br>"message":"String"  <br>} | 远端 Pod 由于某些原因退出  <br>reason: 255代表正常退出；其他代表异常退出；  <br>message:退出的具体原因说明 |
-| 21 / `CommonEvent.DATA_CHANNEL_STATE`  | {  <br>"state":1 // int  <br>} | DataChannel 状态变化  <br>state 取值范围:  <br>1：连接中断  <br>2：连接建立中  <br>3：连接已建立  <br>4：连接重连中  <br>5：连接已重连  <br>6：连接失败 |
-| 22 / `CommonEvent.REMOTE_OFFLINE`  | {  <br>reason : 0 // int  <br>message : "string"  <br>} | 远端离线  <br>0: 用户主动离开。  <br>1: 用户掉线。  <br> |
-
-**IStreamListener**
-
-获取媒体流信息。
-
-```
-// 在 IPlayerListener onInitSuccess 后注册该接口
-CloudPhoneManager.getInstance().setStreamListener(new IStreamListener);
-```
-
-```
-public interface IStreamListener {
-    /**
-     *
-     * @param uid 远端pod视频流id
-     * @param elapsed 订阅视频流到收到音频首帧的时间
-     */
-    void onFirstAudioFrame(String uid, long elapsed);
-
-    /**
-     *
-     * @param uid 远端pod视频流id
-     * @param elapsed 订阅视频流到收到视频首帧的时间
-     */
-    void onFirstRemoteVideoFrame(String uid, long elapsed);
-
-    void onStreamStarted();
-
-    void onStreamPaused();
-
-    void onStreamResumed();
-
-    /**
-     * 视频流的当前性能状态
-     *
-     * @param streamStats 远端数据间 stremstatus
-     */
-    void onStreamStats(StreamStats streamStats);
-
-    /**
-     * 视频流网络异常
-     *
-     * @param state
-     */
-    void onStreamConnectionStateChanged(int state);
-}
-```
-
- **StreamStats**
-
-```
-public class StreamStats implements ModelPool.PoolModel {
-
-    /**
-     * 视频接收码率（kbps），瞬时值
-     */
-    private int receivedVideoBitRate;
-
-    /**
-     * 音频接收码率（kbps），瞬时值
-     */
-    private int receivedAudioBitRate;
-
-    /**
-     * 解码器输出帧率，单位 fps
-     */
-    private int decoderOutputFrameRate;
-
-    /**
-     * 渲染帧率，单位 fps
-     */
-    private int rendererOutputFrameRate;
-
-    /**
-     * 远端视频流高度
-     */
-    private int receivedResolutionHeight;
-
-    /**
-     * 远端视频流宽度
-     */
-    private int receivedResolutionWidth;
-
-
-    public int getReceivedVideoBitRate() {
-        return receivedVideoBitRate;
-    }
-
-    public int getReceivedAudioBitRate() {
-        return receivedAudioBitRate;
-    }
-
-    public int getDecoderOutputFrameRate() {
-        return decoderOutputFrameRate;
-    }
-
-    public int getRendererOutputFrameRate() {
-        return rendererOutputFrameRate;
-    }
-
-    public int getReceivedResolutionHeight() {
-        return receivedResolutionHeight;
-    }
-
-    public int getReceivedResolutionWidth() {
-        return receivedResolutionWidth;
-    }
-}
-```
-
-#### play()
-
-当 CloudPhoneManager 触发 `IPlayerListener` 的 `onInitSuccess` 回调后，可以调用 `play()`，然后拉流开始播放。播放触发的回调为 `IStreamListener` 的 `onFirstRemoteVideoFrame`。
-
-```
-//CloudPhoneManager class
-void play()
-```
-
-#### pause()
-
-当 CloudPhoneManager 处于播放状态时，调用 `pause()` 暂停从云端拉流，此时并不改变云端的运行状态。
-
-```
-//CloudPhoneManager class
-void pause()
-```
-
-#### resumePlay()
-
-当 CloudPhoneManager 处于暂停状态时，调用 `resumePlay()` 重新从云端拉流播放。
-
-```
-//CloudPhoneManager class
-void resumePlay()
-```
-
-#### stop()
-
-停止从云端拉流，并且退出房间，但不会回收资源。
-
-```
-//CloudPhoneManager class
-void stop()
-```
-
-#### release()
-
-销毁实例，释放资源。如果没有调用 `stop()` 接口，则会直接停止从云端拉流并注销资源。
-
-```
-//CloudPhoneManager class
-void release()
-```
-
-#### restart()
-
-重启远端 pod 当前的游戏或应用。
-
-```
-//CloudPhoneManager class
-void restart()
-```
-
-### 其它功能接口说明
-
-#### 静音开关
-
-媒体流静音开关，及检查静音状态。
-
-```
-//CloudPhoneManager class
-void muteAudio(boolean mute) //true: 静音; false: 开音。
-boolean isAudioMuted() //当前是否处在静音状态，返回：true: 静音； false: 开音。
-```
-
-#### 麦克风开关
-
-打开后会将本地麦克风数据发送给云端pod，进而注入到pod的Android系统中。注意: 需要开启麦克风使用权限。
-
-```
-//CloudPhoneManager class
-void enableMic(boolean enable) //激活本地麦克风。
-boolean isEnableMic() //获取当前麦克风激活状态。
-```
-
-#### 增大/减小pod音量
-
-增大或减小媒体流音量。
-
-```
-// CloudPhoneManager class
-void volumeUp()
-void volumeDown()
-```
-
-#### 切换清晰度
-
-```
-//CloudPhoneManager class
-List<IVideoDescription> getSupportVideoDescList() //获取当前支持的分辨率列表，详情参考IVideoDescription
-void switchResolution(IVideoDescription info) //选择要切换的分辨率
-```
-
-**IVideoDescription**
-
-```
-public interface IVideoDescription {
-    String getId();
-
-    /**
-     * 分辨率名称
-     */
-    String getName();
-
-    /**
-     * 分辨率，形如<width>x<height>
-     *
-     * @return
-     */
-    String getResolution();
-
-    /**
-     * 峰值码率， 单位 KB/s
-     *
-     * @return
-     */
-    String getPeakBitRate();
-
-    /**
-     * 码率，单位为 bit/s, Long
-     *
-     * @return
-     */
-    String getBitRate();
-
-    /**
-     * 帧率, Int
-     *
-     * @return
-     */
-    int getFrameRate();
-
-    /**
-     * 是否是默认选择
-     *
-     * @return
-     */
-    boolean isDefaultChoice();
-
-    /**
-     * 是否开启
-     *
-     * @return
-     */
-    boolean isEnable();
-}
-```
-
-#### 传感器开关
-
-获取传感器使用权限。
-
-```
-//CloudPhoneManager class
-void enableAccelSensor(boolean enable) //是否使能加速度传感器
-void enableGyroscopeSensor(boolean enable) //是否使能陀螺仪传感器
-void enableGravitySensor(boolean enable) //是否使能重力传感器
-void enableOrientationSensor(boolean enable) //是否使能方向传感器
-void enableMagneticSensor(boolean enable) //是否使能磁力传感器
-```
-
-#### 震动开关
-
-本地震动传感器开关。开启后，当云端的应用令手机发生震动时，本地手机会同步震动。注意：需要打开系统的震动开关后才能生效。
-
-```
-//CloudPhoneManager class
-void enableVibrator(boolean enable)
-```
-
-#### 定位开关
-
-```
-// CloudPhoneManager class
-void enableLocationService(boolean enable) //是否打开定位开关
-```
-
-
-#### 屏幕旋转
-
-旋转游戏画面方向。
-
-```
-void rotate(int orientation) //orientation:0，90，180，270。0为默认竖屏方向，其他角度为顺时针旋转的角度
-```
-
-#### 发送KeyEvent
-
-发送 Android KeyEvent，参考：[开发者文档](https://developer.android.com/reference/android/view/KeyEvent)
-
-```
-void sendKeyEvent(int keyCode) //发送 Android KeyEvent
-```
-
-#### 启动/关闭云端App
-
-```
-// CloudPhoneManager class
-void launchApp(String pkgName) //启动云端App及将云端App置于前台，参数：pkgName 应用包名
-void closeApp(String pkgName) //关闭云端App，参数：pkgName 应用包名
-```
-
-#### 设置Debug模式
-
-设置调试模式，在该模式下会打印日志信息。
-
-```
-static void setDebug(boolean debug) //当设置为debug时，会打印log信息
-```
-
-#### 设置Logger
-
-```
-// CloudPhoneManager class
-static void setLogger(ILogger logger) //设置自定义Logger
-```
-**ILogger**
-
-```
-public interface ILogger {
-    /**
-     * verbose日志
-     *
-     * @param tag
-     * @param msg
-     */
-    void onVerbose(String tag, String msg);
-
-    /**
-     * debug日志
-     *
-     * @param tag
-     * @param msg
-     */
-    void onDebug(String tag, String msg);
-
-    /**
-     * info日志
-     *
-     * @param tag
-     * @param msg
-     */
-    void onInfo(String tag, String msg);
-
-    /**
-     * warn日志
-     *
-     * @param tag
-     * @param msg
-     */
-    void onWarn(String tag, String msg);
-
-    /**
-     * error日志
-     *
-     * @param tag
-     * @param msg
-     */
-    void onError(String tag, String msg);
-
-    /**
-     * error日志
-     *
-     * @param tag
-     * @param msg
-     * @param e
-     */
-    void onError(String tag, String msg, Throwable e);
-```
-
-
-#### 获取 SDK 版本信息
-
-```
-// CloudPhoneManager class
-static String getSDKVersion()
-```
-
-## 错误码
-
-错误码回调接口为 `IPlayerListener#onError`，具体错误原因见回调接口中的 `errorMsg` 。
-
-|  **错误码**  |  **描述**  |
-| --- | --- |
-| 1000 | 初始化错误 |
-| 1001 | 状态错误，即当前状态不支持用户的操作 |
-| 1002 | 连接云端超时 |  |
-| 1003 | 订阅云端超时 |  |
-| 1900 | 未知错误 |  |
-| 1901 | 没有权限 |  |
-| 1902 | 解析 json 失败 |  |
-| 1903 | 流媒体内部错误 |  |
-| 1904 | 设置流媒体渲染错误 |  |
-| 2100 | 多媒体流发生错误 |  |
-| 2200 | 发送消息的大小超出 64KB 限制 |  |
-| 2201 | 与云端未建立连接的情况下发送信息 |  |
