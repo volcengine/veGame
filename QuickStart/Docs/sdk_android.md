@@ -239,48 +239,83 @@ public String getServiceDeviceId()
 public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkListener listener)
 ```
 
-**IProbeNetworkListener**
+#### IProbeNetworkListener
 
 接收网络探测流程和状态监听的回调。
 
 |  **接口名称**  |  **接口描述**  |
-
+| --- | --- |
 | onProbeStarted() | 启动网络测速回调 |
-| onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 ProbeStats 是中间测试状态，仅供参考 |
-| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 ProbeStats 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：
-1（网络极好，可以很流畅地玩游戏）2（网络较好，可以玩游戏）3（网络较差，不推荐玩游戏） |
+| onProbeProgress(ProbeStats stats) | 网络测速过程中检测状态的回调，此时 [ProbeStats](测速结果描述) 是中间测试状态，仅供参考 |
+| onProbeCompleted(ProbeStats stats, int quality) | 网络测速成功结束回调，此时 [ProbeStats](测速结果描述) 标识最终的网络测试结果，quality 标识当前网络推荐值，有以下三个档位：
+<br>1（网络极好，可以很流畅地玩游戏）<br>2（网络较好，可以玩游戏）<br>3（网络较差，不推荐玩游戏） |
 | onProbeError(int err, String message) | 网络测速异常结束回调，err 标识错误码，message 标识错误信息；错误码说明如下：
-1（探测过程网络环境出错，无法完成探测）2（探测过程被终止取消）3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
+<br>1（探测过程网络环境出错，无法完成探测）<br>2（探测过程被终止取消）<br>3（探测过程结束，但没有任何探测结果，通常情况下不会发生） |
 
+参考示例：
 
-#### init()
+```java
+public interface IProbeNetworkListener {
+    public static final int QUALITY_EXCELLENT = 1;
+    public static final int QUALITY_GOOD = 2;
+    public static final int QUALITY_POOR = 3;
 
-在申请到 Pod 实例后，进行初始化操作，参考以下示例：
+    public static final int ERROR_BAD_NETWORK = 1;
+    public static final int ERROR_CANCEL_BY_USER = 2;
+    public static final int ERROR_EMPTY_STATS = 3;
 
+    /**
+     * 启动探测回调
+     */
+    void onProbeStarted();
+
+    /**
+     * 探测过程检测状态回调
+     *
+     * @param stats 探测过程的节点网速状态
+     *
+     */
+    void onProbeProgress(ProbeStats stats);
+
+    /**
+     * 探测结束回调
+     *
+     * @param stats 最终的网络测试结果
+     * @param quality 当前网络推荐值，有三个档位（Excellent/Good/Poor）
+     *
+     */
+    void onProbeCompleted(ProbeStats stats, int quality);
+
+    /**
+     * 探测结束回调
+     *
+     * @param err 错误码
+     * @param message 错误日志消息
+     *
+     */
+    void onProbeError(int err, String message);
+}
 ```
-CloudPhoneConfig.Builder builder = new CloudPhoneConfig.Builder();
-CloudPhoneConfig config = builder.userId("userid") // 用户userid，用于标识在流媒体 room 中的身份
-        .deviceId("deviceid") //设备的唯一编号，用于统计区分使用
-        .podInfo(podInfo)//podInfo，需要申请，参看步骤(1)
-        .container(layout)//用来承载画面的Container, 参数说明: layout 需要是FrameLayout或者FrameLayout的子类
-        .width(1080) //container的宽，单位px
-        .height(2160) //container的高，单位px
-        .enableLocalKeyboard(false) // 是否开启本地键盘。开启后，当pod端需要输入时，会唤起本地键盘。
-        .magneticSensor(true) //是否开启磁力传感器
-        .acceleratorSensor(true) //是否开启加速度传感器
-        .gravitySensor(true) //是否开启重力传感器
-        .gyroscopeSensor(true) //是否开启陀螺仪传感器
-        .locationService(true) //是否开启自动定位
-        .channel("channel")//设置渠道
-        .jsonConverter(converter)//设置IJsonConverter实现类，用来做转换json
-        .vibrator(true) //是否开启震动同步
-        .rotation(90)//旋转角度，竖屏 0 180 / 横屏 90 270
-        .build(); //超时设置，默认不限制时长
 
-//CloudPhoneManager class
-void init(@NonNull Context context, @NonNull Cloud
-Config config, @NonNull IPlayerListener playerListener)
-```
+#### 测速结果描述
+
+`ProbeStats` 描述测速的中间状态信息，包含以下字段：
+
+|  **字段名称**  |  **类型**  |  **描述**  |
+| --- | --- |  --- |
+| rtt | Int | 往返时延时长；单位：毫秒 |
+| downloadBandwidth | Int | 下行带宽；单位：Kbit/s |
+| downloadJitter | Int | 下行网络抖动时长；若为无效数据，数值为-1；单位：毫秒 |
+| downloadLossPercent | Double | 下行丢包率；百分比 |
+| uploadBandwidth | Int | 上行带宽；单位：Kbit/s |
+| uploadJitter | Int | 上行网络抖动时长；若为无效数据，数值为-1；单位：毫秒 |
+| uploadLossPercent | Double | 上行丢包率；百分比 |
+
+
+
+
+
+
  **详细配置说明**
 
 |  **名称**  |  **参数范围**  |  **是否必填**  |  **说明**  |
