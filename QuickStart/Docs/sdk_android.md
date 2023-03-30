@@ -480,3 +480,343 @@ GamePlayConfig config = builder.userId("your_user_id")
         .userProfilePath("/a/b/", "/c/d/")
         .extra(new HashMap<String,String>());
 ```
+
+#### IGamePlayerListener
+
+拉流播放状态回调监听：
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onServiceInit() | 加入房间前回调，用于获取并初始化各个功能服务，例如设置各种事件监听回调 |
+| onPlaySuccess(String roundId, int videoStreamProfileId, Map<String, String> extra, String gameId, String reservedId)
+ | 播放成功回调：  <br>roundId：当次游戏生命周期标识符  <br>videoStreamProfileId：当前游戏画面的清晰度，首帧渲染到画面时触发该回调  <br>extra：自定义的扩展参数  <br>gameId：游戏 ID  <br>reservedId：资源预锁定 ID  |
+| onNetworkChanged(int type) | 网络连接类型和状态切换回调：  <br>-1: 网络连接类型未知0: 网络连接已断开  <br>1: 网络类型为 LAN  <br>2: 网络类型为 Wi-Fi（包含热点）  <br>3: 网络类型为 2G 移动网络  <br>4: 网络类型为 3G 移动网络  <br>5: 网络类型为 4G 移动网络  <br>6: 网络类型为 5G 移动网络 |
+| onWarning(int code, String message) | SDK 内部产生告警回调，参考 [警告码](#警告码) |
+| onError(int code, String message) | SDK 内部产生错误回调，参考 [错误码](错误码)；注意：在出现报错时，需要调用 stop() 接口，恢复到初始状态，排查问题后，再调用 start() |
+
+
+参考示例：
+
+```java
+public interface IGamePlayerListener {
+
+    void onServiceInit();
+
+    void onPlaySuccess(String roundId, int videoStreamProfileId, Map<String, String> extra, String gameId, String reservedId);
+
+    void onNetworkChanged(int type);
+
+    void onWarning(int code, String message);
+
+    void onError(int code, String message);
+
+}
+```
+
+#### IStreamListener
+
+获取音视频流信息回调监听。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onFirstAudioFrame(String uid) | 订阅视频流到收到音频首帧回调：  <br>uid：远端实例视频流 ID |
+| onFirstRemoteVideoFrame(String uid) | 订阅视频流到收到视频首帧回调：  <br>uid：远端实例视频流 ID |
+| onStreamStarted() | 开始播放回调 |
+| onStreamPaused() | 调用 pause()，暂停播放后的回调 |
+| onStreamResumed() | 调用 resume() 或 muteAudio(false)，恢复播放后的回调 |
+| onStreamStats(StreamStats streamStats) | 视频流的当前性能状态回调（2秒周期内音视频网路状态的回调，可用于内部数据分析或监控）：  <br>streamStats：远端数据间视频流的性能状态，参考以下 [StreamStats 类型说明]() |
+| onStreamConnectionStateChanged(int state) | 视频流连接状态变更回调：  <br>1：连接断开  <br>2：首次连接，正在连接中  <br>3：首次连接成功  <br>4：连接断开后重新连接中  <br>5：连接断开后重连成功  <br>6：网络连接断开超过 10 秒，仍然会继续重连 |
+| onNetworkQuality(int quality) | 游戏中网络质量回调，每隔 2 秒上报一次网络质量评级：  <br>quality：网络质量评级（可根据当前返回的网络质量评级进行推流参数降级或者终止拉流；详细信息，参考以下 [onNetworkQuality 相关信息]()） |
+| onDetectDelay(long  elapse) | 当前操作延时回调，单位毫秒（操作延时获取是指在操作时发送到远端的消息，本地记录的时间戳，收到远端视频流会带上操作延时的标记，从而计算出来的一个值，该值可以理解为操作和对应画面渲染更新的一个差值） |
+| onRotation(int rotation) | 客户端旋转回调 |
+| onPodExit(int reason, String msg) | 实例端退出回调，参考以下 [onPodExit 相关信息]() |
+
+参考示例：
+
+```java
+public GamePlayConfig.Builder streamListener(IStreamListener listener)
+```
+
+```java
+public interface IStreamListener {
+
+    void onFirstAudioFrame(String uid);
+
+    void onFirstRemoteVideoFrame(String uid);
+
+    void onStreamStarted();
+
+    void onStreamPaused();
+
+    void onStreamResumed();
+
+    void onStreamStats(StreamStats streamStats);
+
+    void onStreamConnectionStateChanged(int state);
+
+    void onNetworkQuality(int quality)
+
+    void onDetectDelay(long elapse);
+
+    void onRotation(int rotation);
+
+    void onPodExit(int reason, String msg);
+}
+```
+
+#### onPodExit 相关信息
+
+|  **错误码**  |  **错误信息**  |  **说明**  |
+| --- | --- | --- |
+| 40000 | ERROR_GAME_ABNORMAL_EXIT | 游戏停止。原因：云端服务异常退出。 |
+| 40001 | ERROR_POD_EXIT_CRASH  | 游戏停止。原因：服务端游戏崩溃。建议：请尝试复现游戏在本地设备是否运行异常，如本地未复现，可以联系火山引擎云游戏服务技术支持。 |
+| 40002 | ERROR_GAME_OFFLINE | 游戏停止。原因：当前游戏被下架。建议：请通过火山引擎云游戏控制台『游戏管理』页面或调用服务端 [ListGame]() 接口查看当前游戏的上架状态。 |
+| 40003 | ERROR_GAME_EXIT_TIMEOUT | 游戏停止。原因：超时退出。 |
+| 40004 | ERROR_GAME_STOPPED_IDLE | 游戏停止。原因：用户长时间未操作，服务端自动断开游戏连接。建议：客户端需要提示用户长时间无操作被踢下线。 |
+| 40005 | ERROR_GAME_STOPPED_RESET | 游戏停止。原因：服务端主动重置了游戏。建议：请联系火山引擎云游戏服务对接人员。 |
+| 40006 | ERROR_GAME_STOPPED_API | 游戏停止。原因：服务端主动停止了游戏。 |
+| 40007 | ERROR_GAME_STOPPED_DUPLICATE_START | 游戏停止。原因：某个 start() 请求使用了与当前游戏相同的 userId 和 gameId，导致当前游戏停止。建议：请检查调用 start() 接口的参数是否重复。如果需要重新启动被停止的游戏，请再次使用相同的 userId 和 gameId 调用 start() 接口。 |
+| 40008 | ERROR_POD_STOPPED_BACKGROUND_TIMEOUT | 游戏停止。原因：游戏切换后台，超过指定的保活时长未切换前台，服务端自动断开游戏连接。建议：客户端需要提示用户因为游戏切后台超过保活时长，连接断开。 |
+| 40011 | MESSAGE_START_RESERVED_ID_EXPIRED | 资源预锁定 ID 已过期。建议：调用服务端 [PreAllocateResource]() 接口重新获取。 |
+| 40012 | MESSAGE_RESERVED_ID_NOT_APPLIED | 未通过指定的资源预锁定 ID 启动游戏。建议：确保启动游戏时指定的资源预锁定 ID 正确。 |
+| 40013 | MESSAGE_START_RESERVED_ID_RELEASED | 与指定的资源预锁定 ID 相对应的实例资源已被退订。建议：确保申请的实例资源可用。 |
+| 40014 | MESSAGE_RESOURCE_OFFLINE | 实例已离线。建议：检查实例资源的运行状态。 |
+| 40015 | MESSAGE_RESOURCE_UPDATING | 实例升级中。建议：检查实例资源的运行状态。 |
+| 40016 | MESSAGE_RESOURCE_REBOOTING | 实例重启中。建议：检查实例资源的运行状态。 |
+| 40017 | MESSAGE_RESOURCE_MAINTANENCE | 实例运维中。建议：检查实例资源的运行状态。 |
+| 40018 | MESSAGE_RESOURCE_SERVICE_UPDATING | 实例的云服务升级中。建议：检查实例资源的运行状态。 |
+| 40019 | MESSAGE_RESOURCE_OCCUPIED | 实例被占用。建议：检查实例资源的运行状态。 |
+| 40020 | MESSAGE_RESOURCE_LAUNCHING_GAME | 实例正在启动游戏。 |
+| 40021 | MESSAGE_RESOURCE_IS_RUNNING | 实例正在运行。 |
+| 40022 | MESSAGE_RESOURCE_IS_PUBLISH | 实例正在推流。 |
+| 40023 | MESSAGE_RESOURCE_RELEASED_NORMAL | 实例正常释放。 |
+| 40024 | MESSAGE_RESOURCE_RELEASED_NO_USER | 实例异常释放：客户端超时未加入。 |
+| 40025 | MESSAGE_RESOURCE_RELEASED_IDLE | 实例异常释放：客户端无操作释放。 |
+| 40026 | MESSAGE_RESOURCE_RELEASED_OS_MISSED | 实例异常释放：游戏镜像缺失。 |
+| 40027 | MESSAGE_RESOURCE_RELEASED_GAME_START_FAILURE | 实例异常释放：游戏启动失败。 |
+| 40028 | MESSAGE_RESOURCE_RELEASED_STREAMING_ERROR | 实例异常释放：RTC 推流成功，但是推流过程中出现异常。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40029 | MESSAGE_RESOURCE_RELEASED_3RD_APP_MISSED | 实例异常释放：伴随包镜像缺失。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40030 | MESSAGE_RESOURCE_ERROR | 实例故障。建议：检查实例资源的运行状态或联系火山引擎云游戏服务技术支持。 |
+| 40031 | MESSAGE_3RD_APP_START_FAILURE | 伴随包启动失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40032 | MESSAGE_CLOUD_GAME_CRASH_OFTEN | 游戏频繁崩溃。建议：请尝试复现游戏在本地设备是否运行异常，如本地未复现，可以联系火山引擎云游戏服务技术支持。 |
+| 40033 | MESSAGE_GAME_STEAMING_FAILURE | RTC 推流不成功。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40035 | ERROR_GAME_STOPPED_USER_PROFILE_PATH_UPLOAD_FAILURE | 游戏停止。原因：用户存档信息上传失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40036 | WARNING_USER_PROFILE_RESTORE_FAILURE | 用户存档信息还原失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40047 | MESSAGE_RESOURCE_RELEASED_INVALID_PARAMETER | 云端实例接收到的参数非法。 |
+| 40048 | MESSAGE_RESOURCE_RELEASED_HEART_BEAT_TIMEOUT | 云端实例离线60秒，中间没有任何心跳。 |
+| 40049 | MESSAGE_RESOURCE_RELEASED_INGAME_EXIT | 游戏停止。原因：一般是因为云端运行的游戏主动退出了。建议：客户端需要提示用户目前游戏主动被结束了，如果需要，可以重新开始游戏。 |
+
+#### onNetworkQuality 相关信息
+
+网络质量评级说明：
+
+|  **网络质量评级**  |  **评级名称**  |  **说明**  |
+| --- | --- | --- |
+| 0 | NETWORK_QUALITY_UNKNOWN | 表示当前网络状况未知，无法判断网络质量 |
+| 1 | NETWORK_QUALITY_EXCELLENT | 表示当前网络状况极佳，能够高质量承载当前业务 |
+| 2 | NETWORK_QUALITY_GOOD | 表示当前网络状况良好，能够较好地承载当前业务 |
+| 3 | NETWORK_QUALITY_POOR | 表示当前网络状况有轻微劣化，但不影响正常使用 |
+| 4 | NETWORK_QUALITY_BAD | 表示当前网络质量欠佳，会影响当前业务的主观体验 |
+| 5 | NETWORK_QUALITY_VERY_BAD | 表示当前网络已经无法承载当前业务的媒体流，需要采取相应策略，比如降低媒体流的码率或者更换网络 |
+| 6 | NETWORK_QUALITY_DOWN | 表示当前网络完全无法正常通信 |
+
+#### StreamStats 类型说明
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| getReceivedVideoBitRate() | 获取视频接收码率瞬时值（单位 kbps） |
+| getReceivedAudioBitRate() | 获取音频接收码率瞬时值（单位 kbps） |
+| getDecoderOutputFrameRate() | 获取解码器输出帧率（单位 fps） |
+| getRendererOutputFrameRate() | 获取渲染帧率（单位 fps） |
+| getReceivedResolutionHeight() | 获取远端视频流高度 |
+| getReceivedResolutionWidth() | 获取远端视频流宽度 |
+| getVideoLossRate() | 获取丢包率 |
+| getRtt() | 获取客户端与服务端往返时延（单位 ms） |
+| getStallCount() | 获取卡顿次数 |
+| getStallDuration() | 获取卡顿时长（统计周期内的视频卡顿总时长，单位 ms） |
+| getFrozenRate() | 获取卡顿率（视频卡顿的累计时长占视频总有效时长的百分比） |
+
+参考示例：
+
+```java
+public class StreamStats {
+
+    private int receivedVideoBitRate;
+
+    private int receivedAudioBitRate;
+
+    private int decoderOutputFrameRate;
+
+    private int rendererOutputFrameRate;
+
+    private int receivedResolutionHeight;
+
+    private int receivedResolutionWidth;
+
+    private float videoLossRate;
+
+    private int rtt;
+
+    private int stallCount;
+
+    private int stallDuration;
+
+    private int frozenRate;
+
+    public int getReceivedVideoBitRate() {
+        return receivedVideoBitRate;
+    }
+
+    public int getReceivedAudioBitRate() {
+        return receivedAudioBitRate;
+    }
+
+    public int getDecoderOutputFrameRate() {
+        return decoderOutputFrameRate;
+    }
+
+    public int getRendererOutputFrameRate() {
+        return rendererOutputFrameRate;
+    }
+
+    public int getReceivedResolutionHeight() {
+        return receivedResolutionHeight;
+    }
+
+    public int getReceivedResolutionWidth() {
+        return receivedResolutionWidth;
+    }
+
+    public int getVideoLossRate() {
+        return videoLossRate;
+    }
+
+    public int getRtt() {
+        return rtt;
+    }
+
+    public int getStallCount() {
+        return stallCount;
+    }
+
+    public int getStallDuration() {
+        return stallDuration;
+    }
+
+    public int getFrozenRate() {
+        return frozenRate;
+    }
+}
+```
+
+#### LocalStreamStats
+
+本地音频流数据统计（LocalAudioStreamStats）：
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| audioLossRate | Float | 音频丢包率；此次统计周期内的音频上行丢包率，单位为 % ，取值范围为 [0,1]  |
+| sendKBitrate | Float | 发送码率；此次统计周期内的音频发送码率，单位为 kbps  |
+| recordSampleRate | Integer | 采集采样率；此次统计周期内的音频采集采样率信息，单位为 Hz  |
+| statsInterval | Integer | 统计间隔；此次统计周期的间隔，单位为 ms  |
+| rtt | Integer | 往返时延；单位为 ms  |
+| numChannels | Integer | 音频声道数 |
+| sentSampleRate | Integer | 音频发送采样率；此次统计周期内的音频发送采样率信息，单位为 Hz  |
+
+本地视频流数据统计（LocalVideoStreamStats）：
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| sentKBitrate | Float | 发送码率；此次统计周期内的视频发送码率，单位为 kbps |
+| inputFrameRate | Integer | 采集帧率；此次统计周期内的视频采集帧率，单位为 fps  |
+| sentFrameRate | Integer | 发送帧率；此次统计周期内的视频发送帧率，单位为 fps  |
+| encoderOutputFrameRate | Integer | 编码器输出帧率；当前编码器在此次统计周期内的输出帧率，单位为 fps  |
+| rendererOutputFrameRate | Integer | 本地渲染帧率；此次统计周期内的本地视频渲染帧率，单位为 fps |
+| targetKBitrate | Integer | 目标发送码率；此次统计周期内的视频目标发送码率，单位为 kbps  |
+| targetFrameRate | Integer | 目标发送帧率；当前编码器在此次统计周期内的目标发送帧率，单位为 fps  |
+| statsInterval | Integer | 统计间隔；单位为 ms  |
+| videoLossRate | Float | 视频丢包率；此次统计周期内的视频上行丢包率，取值范围： [0,1]  |
+| rtt | Integer | 往返时延；单位为 ms  |
+| encodedBitrate | Integer | 视频编码码率；此次统计周期内的视频编码码率，单位为 kbps   |
+| encodedFrameWidth | Integer | 视频编码宽度；单位为 px   |
+| encodedFrameHeight | Integer | 视频编码高度；单位为 px   |
+| encodedFrameCount | Integer | 此次统计周期内发送的视频帧总数 |
+| codecType | Integer | 视频的编码类型 |
+
+参考示例：
+
+```java
+public class LocalStreamStats {
+
+    public final LocalVideoStreamStats mLocalVideoStreamStats;
+    public final LocalAudioStreamStats mLocalAudioStreamStats;
+
+    public LocalStreamStats(LocalVideoStreamStats localVideoStreamStats, LocalAudioStreamStats localAudioStreamStats) {
+        mLocalVideoStreamStats = localVideoStreamStats;
+        mLocalAudioStreamStats = localAudioStreamStats;
+    }
+
+    public static class LocalVideoStreamStats {
+        public float sentKBitrate;
+        public int inputFrameRate;
+        public int sentFrameRate;
+        public int encoderOutputFrameRate;
+        public int rendererOutputFrameRate;
+        public int targetKBitrate;
+        public int targetFrameRate;
+        public int statsInterval;
+        public float videoLossRate;
+        public int rtt;
+        public int encodedBitrate;
+        public int encodedFrameWidth;
+        public int encodedFrameHeight;
+        public int encodedFrameCount;
+        public int codecType;
+
+        public LocalVideoStreamStats(float sentKBitrate, int inputFrameRate, int sentFrameRate,
+                                     int encoderOutputFrameRate, int rendererOutputFrameRate,
+                                     int targetKBitrate, int targetFrameRate, int statsInterval,
+                                     float videoLossRate, int rtt, int encodedBitrate, int encodedFrameWidth,
+                                     int encodedFrameHeight, int encodedFrameCount, int codecType) {
+            this.sentKBitrate = sentKBitrate;
+            this.inputFrameRate = inputFrameRate;
+            this.sentFrameRate = sentFrameRate;
+            this.encoderOutputFrameRate = encoderOutputFrameRate;
+            this.rendererOutputFrameRate = rendererOutputFrameRate;
+            this.targetKBitrate = targetKBitrate;
+            this.targetFrameRate = targetFrameRate;
+            this.statsInterval = statsInterval;
+            this.videoLossRate = videoLossRate;
+            this.rtt = rtt;
+            this.encodedBitrate = encodedBitrate;
+            this.encodedFrameWidth = encodedFrameWidth;
+            this.encodedFrameHeight = encodedFrameHeight;
+            this.encodedFrameCount = encodedFrameCount;
+            this.codecType = codecType;
+        }
+    }
+
+    public static class LocalAudioStreamStats {
+
+        public float audioLossRate;
+        public float sendKBitrate;
+        public int recordSampleRate;
+        public int statsInterval;
+        public int rtt;
+        public int numChannels;
+        public int sentSampleRate;
+
+
+        public LocalAudioStreamStats(float audioLossRate, float sendKBitrate, int recordSampleRate,
+                                     int statsInterval, int rtt, int numChannels, int sentSampleRate) {
+            this.audioLossRate = audioLossRate;
+            this.sendKBitrate = sendKBitrate;
+            this.recordSampleRate = recordSampleRate;
+            this.statsInterval = statsInterval;
+            this.rtt = rtt;
+            this.numChannels = numChannels;
+            this.sentSampleRate = sentSampleRate;
+        }
+    }
+}  
+```
