@@ -21,22 +21,21 @@
 
 1. 下载 veGameSDK 压缩包后，解压得到 `VeGame.framework` 和 `VolcEngineRTC.framework` 文件夹。手动将 `VeGame.framework` 和 `VolcEngineRTC.framework` 拖入目标工程，选择如下：
 
-    ![image.png](ios_1)
+    ![alt 工程配置](media/ios_1.png)
 
 2. 添加 `VeGame.framework` 和 `VolcEngineRTC.framework`：
 
-    ![image.png](ios_2)
-
+    ![alt 工程配置](media/ios_2.png)
 
 3. 修改 Build Settings  设置：
 
 第一步：
 
-    ![image.png](ios_3)
+    ![alt 工程配置](media/ios_3.png)
 
 第二步：
 
-    ![image.png](ios_4)
+    ![alt 工程配置](media/ios_4.png)
 
 4. 权限声明，在 `info.plist` 文件中配置“相机、麦克风、定位”相关使用权限说明：
 
