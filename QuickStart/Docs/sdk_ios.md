@@ -176,7 +176,7 @@ configObj.roundId = @"";
 
 |  **参数**  |  **类型**  |  **是否必填**  |  **描述**  |
 | --- | --- | --- | --- |
-| role | VeBaseRoleType | 是 | 当前用户进入游戏的默认角色，可选项：  <br>0：观看者，默认  <br>1：操作者  <br>说明：指定 `roomType` 和该参数后，可在游戏中调用 [changeRole]() 接口将观看者设置为操作者，转移游戏控制权。进入游戏的观看者也会占用实例资源，建议控制观看者数量。 |
+| role | VeBaseRoleType | 是 | 当前用户进入游戏的默认角色，可选项：  <br>0：观看者，默认  <br>1：操作者  <br>说明：指定 `roomType` 和该参数后，可在游戏中调用 [changeRole](#设置游戏玩家角色) 接口将观看者设置为操作者，转移游戏控制权。进入游戏的观看者也会占用实例资源，建议控制观看者数量。 |
 | roomType | VeBaseRoomType | 是 | 游戏房间类型，可选项：  <br>0：单人控制单人观看，默认  <br>1：单人控制多人观看，不可转移游戏控制权  <br>2：单人控制多人观看，可转移游戏控制权 |
 
 ```objectivec
@@ -517,4 +517,297 @@ configObj.roundId = @"";
 
 ```objectivec
 - (BOOL)getKeyboardEnable;
+```
+
+### 发送消息
+
+描述：客户端向云端实例发送消息。有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()。
+
+> 调用此接口不会触发 gameManager:onSendMessageResult:messageId: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| payload | NSString | 发送的消息内容 |
+
+```objectivec
+- (VeBaseChannelMessage *)sendMessage:(NSString *)payload;
+```
+
+### 发送消息（支持多用户）
+
+描述：客户端向云端实例发送消息（支持多用户）。
+
+> 调用此接口不会触发 gameManager:onSendMessageResult:messageId: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| payload | NSString | 发送的消息内容 |
+| channel_uid | NSString | 消息通道 ID（云端初始化 veMessageChannelClient 时指定的用户 ID） |
+
+```objectivec
+- (VeBaseChannelMessage *)sendMessage:(NSString *)payload channel:(NSString *)channel_uid;
+```
+
+### 发送消息（指定超时时间）
+
+描述：（veMsgChannel 消息通道）客户端向云端实例发送消息，并指定消息发送超时时间。
+
+> 调用此接口会触发 gameManager:onSendMessageResult:messageId: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| payload | NSString | 发送的消息内容 |
+| time | NSInteger | 消息发送超时时长，单位 ms |
+
+```objectivec
+- (VeBaseChannelMessage *)sendMessage:(NSString *)payload timeout:(NSInteger)time;
+```
+
+### 发送消息（指定超时时间、支持多用户）
+
+描述：客户端向云端实例发送消息，并指定消息发送超时时间（支持多用户）。
+> 调用此接口会触发 gameManager:onSendMessageResult:messageId: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| payload | NSString | 发送的消息内容 |
+| time | NSInteger | 消息发送超时时长，单位 ms |
+| channel_uid | NSString | 消息通道 ID（云端初始化 veMessageChannelClient 时指定的用户 ID） |
+
+```objectivec
+- (VeBaseChannelMessage *)sendMessage:(NSString *)payload timeout:(NSInteger)time channel:(NSString *)channel_uid;
+```
+
+#### MessageChannel 参数说明
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| mid | NSString  | 消息 ID |
+| payload | NSString | 发送的消息内容 |
+| time | NSString | 消息发送超时时长 |
+| srcUid | NSString | 消息发送方的用户 ID |
+| destUid | NSString | 消息接收方的用户 ID |
+
+```objectivec
+@interface VeBaseChannelMessage : NSObject
+/** 消息Id */
+@property (nonatomic, copy) NSString *mid;
+/** 消息内容 */
+@property (nonatomic, copy) NSString *payload;
+/** 发送消息时间 */
+@property (nonatomic, copy) NSString *time;
+/** 发送方的 Uid */
+@property (nonatomic, copy) NSString *srcUid;
+/** 接收方的 Uid */
+@property (nonatomic, copy) NSString *destUid;
+
+@end
+```
+
+### 发送通用消息
+
+描述：客户端向云端实例发送通用消息。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| message | NSString | 发送的消息内容 |
+
+```objectivec
+- (void)sendGeneralMessage:(NSString *)message;
+```
+
+### 发送剪贴板消息
+
+描述：发送客户端本地剪贴板消息到云端。
+
+> 调用此接口会触发 gameManager:receivedClipBoardMessage: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| dataArray | NSArray<NSString> | 发送的消息内容 |
+
+```objectivec
+- (void)sendClipBoardMessage:(NSArray<NSString *> *)dataArray;
+```
+
+### 消息传输
+
+描述：用于客户端与云端游戏之间进行文件传输的相关功能。
+
+参考示例：
+
+```objectivec
+typedef NS_ENUM(NSInteger, VeFileChannelEngineState) {
+    /** 未初始化状态 */
+    VeFileChannelEngineStateIDLE         = 0x0001,
+    /** 初始化成功 */
+    VeFileChannelEngineStateINITIALIZED  = 0x0002,
+    /** 正在连接远程服务端 */
+    VeFileChannelEngineStateCONNECTING   = 0x0004,
+    /** 与远程服务端连接中 */
+    VeFileChannelEngineStateCONNECTED    = 0x0008,
+    /** 与远程服务端断开连接中 */
+    VeFileChannelEngineStateDISCONNECTED = 0x0010,
+};
+
+typedef NS_ENUM(NSInteger, VeFileChannelEngineErrorCode) {
+    /** 发送文件发生超时 */
+    VeFileChannelEngineErrorCodeERROR_SEND_TIMEOUT      = -1,
+    /** 发送文件时断开连接 */
+    VeFileChannelEngineErrorCodeERROR_DISCONNECT_SERVER = -2,
+    /** 发送请求在客户端等待，因缓冲区不足被丢弃 */
+    VeFileChannelEngineErrorCodeERROR_DATA_DISCARD      = -3,
+};
+
+@protocol VeFileChannelEngineDelegate <NSObject>
+
+/// 接收云端实例发送给客户端的文件
+/// - Parameter data: 云端实例发送给客户端的文件
+- (void)onDataReceived:(NSString *)data;
+
+/// 当状态变更时回调
+/// - Parameter status: 新状态
+- (void)onStateUpdated:(VeFileChannelEngineState)state;
+
+/// 发送文件到云端实例成功后回调
+- (void)onDataSend;
+
+/// 发送文件到云端实例失败后回调
+/// - Parameter errorCode: 错误码
+- (void)onError:(VeFileChannelEngineErrorCode)errorCode;
+
+@end
+
+@interface VeFileChannelEngine : NSObject
+
+@property (nonatomic, weak) id<VeFileChannelEngineDelegate> delegate;
+
+/// 构造函数
+/// - Parameter messageChannel: 文件传输通道
+- (instancetype)initWithMessageChannel:(NSString *)messageChannel;
+
+/// 发送文件到远程实例，无到达回执
+/// - Parameter data: 发送的文件
+- (void)sendData:(NSData *)data;
+
+/// 设置调试模式
+/// - Parameter debug: 设置为true表示会打印日志信息到logcat
+- (void)setDebug:(BOOL)debug;
+
+/// 获取当前FileChannelEngine的内部状态
+- (VeFileChannelEngineState)getStatus;
+
+/// 获取当前SDK的版本信息
+/// - return 当前SDK的版本号
+- (NSString *)getSDKVersion;
+
+/// 释放文件传输通道资源，确定不再使用通道时调用
+- (void)close;
+
+@end
+```
+
+### 文件传输
+
+描述：用于客户端与云端游戏之间进行大文件传输的相关功能（需要与 Message Channel SDK V1.0.9 及以上版本配合使用。有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()）。
+
+参考示例：
+
+```objectivec
+@interface VeFile : NSObject
+
+/** 文件名 */
+@property (nonatomic, copy) NSString *name;
+/** 文件二进制data */
+@property (nonatomic, strong) NSData *fileData;
+/** 文件MD5 */
+@property (nonatomic, copy) NSString *md5;
+/** 服务端文件目路径 */
+@property (nonatomic, copy) NSString *path;
+
+@end
+
+@protocol VeGameManagerDelegate <NSObject>
+
+#pragma mark - “大文件传输下载”回调
+/// 文件传输下载开始
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - file: 下载对象
+///   - options: 自定义参数
+- (void)gameManager:(VeGameManager *)manager downloadOnStart:(VeFile *)file options:(NSDictionary <NSString *, NSString *>*)options;
+
+/// 文件传输下载开始
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - file: 下载对象
+///   - options: 自定义参数
+///   - progress: 下载进度
+- (void)gameManager:(VeGameManager *)manager downloadOnProgress:(VeFile *)file options:(NSDictionary <NSString *, NSString *>*)options progress:(NSInteger)progress;
+
+/// 文件传输下载完成
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - file: 下载对象
+///   - options: 自定义参数
+- (void)gameManager:(VeGameManager *)manager downloadOnComplete:(VeFile *)file options:(NSDictionary <NSString *, NSString *>*)options;
+
+/// 文件传输下载错误
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - file: 下载对象
+///   - options: 自定义参数
+///   - err: 错误码
+- (void)gameManager:(VeGameManager *)manager downloadOnError:(VeFile *)file options:(NSDictionary <NSString *, NSString *>*)options err:(VeGameErrorCode)err;
+
+/// 文件传输下载取消
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - file: 下载对象
+///   - options: 自定义参数
+- (void)gameManager:(VeGameManager *)manager downloadOnCancel:(VeFile *)file options:(NSDictionary <NSString *, NSString *>*)options;
+
+@end
+
+@interface VeGameManager : NSObject
+/// 开始上传文件
+/// - Parameters:
+///   - file: 文件路径
+///   - options: 自定义参数
+///   - start: 流程开始
+///   - progress: 上传进度回调
+///   - complete: 上传完成回调
+///   - cancel: 取消上传回调
+///   - error: 上传错误回调
+- (void)startSendFile:(VeFile *)file
+              options:(NSDictionary <NSString *, NSString *>*)options
+              onStart:(void(^)(VeFile *file, NSDictionary <NSString *, NSString *>*options))start
+           onProgress:(void(^)(VeFile *file, NSDictionary <NSString *, NSString *>*options, NSInteger progress))progress
+           onComplete:(void(^)(VeFile *file, NSDictionary <NSString *, NSString *>*options))complete
+             onCancel:(void(^)(VeFile *file, NSDictionary <NSString *, NSString *>*options))cancel
+              onError:(void(^)(VeFile *file, NSDictionary <NSString *, NSString *>*options, VeGameErrorCode err))error;
+
+/// 终止文件传输任务
+/// - Parameters:
+///   - file: 文件对象
+- (void)stopSendFile:(VeFile *)file;
+
+/// 终止文件接收任务
+/// - Parameters:
+///   - file: 文件对象
+- (void)stopReceiveFile:(VeFile *)file;
+
+@end
+```
+
+### 游戏手柄数据通道
+
+描述：收发游戏手柄数据。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| dataDict | NSDictionary  | 操作数据 |
+
+```objectivec
+- (void)sendGamepadData:(NSDictionary *)dataDict;
 ```
