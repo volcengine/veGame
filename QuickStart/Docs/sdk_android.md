@@ -581,34 +581,6 @@ public interface IStreamListener {
 | 40006 | ERROR_GAME_STOPPED_API | 游戏停止。原因：服务端主动停止了游戏。 |
 | 40007 | ERROR_GAME_STOPPED_DUPLICATE_START | 游戏停止。原因：某个 start() 请求使用了与当前游戏相同的 userId 和 gameId，导致当前游戏停止。建议：请检查调用 start() 接口的参数是否重复。如果需要重新启动被停止的游戏，请再次使用相同的 userId 和 gameId 调用 start() 接口。 |
 | 40008 | ERROR_POD_STOPPED_BACKGROUND_TIMEOUT | 游戏停止。原因：游戏切换后台，超过指定的保活时长未切换前台，服务端自动断开游戏连接。建议：客户端需要提示用户因为游戏切后台超过保活时长，连接断开。 |
-| 40011 | MESSAGE_START_RESERVED_ID_EXPIRED | 资源预锁定 ID 已过期。建议：调用服务端 [PreAllocateResource]() 接口重新获取。 |
-| 40012 | MESSAGE_RESERVED_ID_NOT_APPLIED | 未通过指定的资源预锁定 ID 启动游戏。建议：确保启动游戏时指定的资源预锁定 ID 正确。 |
-| 40013 | MESSAGE_START_RESERVED_ID_RELEASED | 与指定的资源预锁定 ID 相对应的实例资源已被退订。建议：确保申请的实例资源可用。 |
-| 40014 | MESSAGE_RESOURCE_OFFLINE | 实例已离线。建议：检查实例资源的运行状态。 |
-| 40015 | MESSAGE_RESOURCE_UPDATING | 实例升级中。建议：检查实例资源的运行状态。 |
-| 40016 | MESSAGE_RESOURCE_REBOOTING | 实例重启中。建议：检查实例资源的运行状态。 |
-| 40017 | MESSAGE_RESOURCE_MAINTANENCE | 实例运维中。建议：检查实例资源的运行状态。 |
-| 40018 | MESSAGE_RESOURCE_SERVICE_UPDATING | 实例的云服务升级中。建议：检查实例资源的运行状态。 |
-| 40019 | MESSAGE_RESOURCE_OCCUPIED | 实例被占用。建议：检查实例资源的运行状态。 |
-| 40020 | MESSAGE_RESOURCE_LAUNCHING_GAME | 实例正在启动游戏。 |
-| 40021 | MESSAGE_RESOURCE_IS_RUNNING | 实例正在运行。 |
-| 40022 | MESSAGE_RESOURCE_IS_PUBLISH | 实例正在推流。 |
-| 40023 | MESSAGE_RESOURCE_RELEASED_NORMAL | 实例正常释放。 |
-| 40024 | MESSAGE_RESOURCE_RELEASED_NO_USER | 实例异常释放：客户端超时未加入。 |
-| 40025 | MESSAGE_RESOURCE_RELEASED_IDLE | 实例异常释放：客户端无操作释放。 |
-| 40026 | MESSAGE_RESOURCE_RELEASED_OS_MISSED | 实例异常释放：游戏镜像缺失。 |
-| 40027 | MESSAGE_RESOURCE_RELEASED_GAME_START_FAILURE | 实例异常释放：游戏启动失败。 |
-| 40028 | MESSAGE_RESOURCE_RELEASED_STREAMING_ERROR | 实例异常释放：RTC 推流成功，但是推流过程中出现异常。建议：请联系火山引擎云游戏服务技术支持。 |
-| 40029 | MESSAGE_RESOURCE_RELEASED_3RD_APP_MISSED | 实例异常释放：伴随包镜像缺失。建议：请联系火山引擎云游戏服务技术支持。 |
-| 40030 | MESSAGE_RESOURCE_ERROR | 实例故障。建议：检查实例资源的运行状态或联系火山引擎云游戏服务技术支持。 |
-| 40031 | MESSAGE_3RD_APP_START_FAILURE | 伴随包启动失败。建议：请联系火山引擎云游戏服务技术支持。 |
-| 40032 | MESSAGE_CLOUD_GAME_CRASH_OFTEN | 游戏频繁崩溃。建议：请尝试复现游戏在本地设备是否运行异常，如本地未复现，可以联系火山引擎云游戏服务技术支持。 |
-| 40033 | MESSAGE_GAME_STEAMING_FAILURE | RTC 推流不成功。建议：请联系火山引擎云游戏服务技术支持。 |
-| 40035 | ERROR_GAME_STOPPED_USER_PROFILE_PATH_UPLOAD_FAILURE | 游戏停止。原因：用户存档信息上传失败。建议：请联系火山引擎云游戏服务技术支持。 |
-| 40036 | WARNING_USER_PROFILE_RESTORE_FAILURE | 用户存档信息还原失败。建议：请联系火山引擎云游戏服务技术支持。 |
-| 40047 | MESSAGE_RESOURCE_RELEASED_INVALID_PARAMETER | 云端实例接收到的参数非法。 |
-| 40048 | MESSAGE_RESOURCE_RELEASED_HEART_BEAT_TIMEOUT | 云端实例离线60秒，中间没有任何心跳。 |
-| 40049 | MESSAGE_RESOURCE_RELEASED_INGAME_EXIT | 游戏停止。原因：一般是因为云端运行的游戏主动退出了。建议：客户端需要提示用户目前游戏主动被结束了，如果需要，可以重新开始游戏。 |
 
 #### onNetworkQuality 相关信息
 
@@ -1895,7 +1867,9 @@ public void resetToken(@NonNull String ak, @NonNull String sk, @NonNull String t
 // veGameEngine class
 
 public @Nullable IClipBoardServiceManager getClipBoardServiceManager()
+```
 
+```java
 /**
  * @desc 剪贴板 操作 发送剪贴板数据
  */
@@ -1940,6 +1914,7 @@ public interface IClipBoardListener {
 
 ```java
 // veGameEngine class
+
 public @Nullable CameraManager getCameraManager()
 ```
 
@@ -1960,7 +1935,7 @@ public interface CameraManager {
 
     void setLocalVideoMirrorMode(MirrorMode mode);
 
-    void setVideoEncoderConfig(List<VideoStreamDescription> videoStreamDescriptions)
+    void setVideoEncoderConfig(List<VideoStreamDescription> videoStreamDescriptions);
 }
 ```
 
@@ -1968,8 +1943,7 @@ public interface CameraManager {
 | --- | --- |
 | switchCamera(CameraId cameraId) | 切换前后摄像头，用于中途切换（预留，目前仅支持前置摄像头）  <br>**参数**  <br>CameraId：FRONT（前置摄像头）；  <br>BACK（后置摄像头）  <br>**返回值**  <br>0：调用成功  <br>-1：调用失败（可能原因为尚未收到 `onPlaySuccess` 播放成功回调） |
 | startVideoStream(CameraId cameraId) | 开始指定摄像头采集并推流  <br>**参数**  <br>CameraId：FRONT（前置摄像头）；  <br>BACK（后置摄像头）  <br>**返回值**  <br>0：调用成功  <br>-1：调用失败（可能原因为尚未收到 `onPlaySuccess` 播放成功回调）  <br>**调用时机**  <br>在收到 `RemoteCameraRequestListener` 的方法 `onVideoStreamStartRequested` 中去调用  <br>**调用结果**  <br>CameraManagerListener 回调接口的 `onLocalVideoStateChanged` 方法中会回调调用结果 |
-| stopVideoStream() | 停止推流  <br>**调用时机**  <br>在收到 RemoteCameraRequestListener 的方法
-onVideoStreamStopRequested 中去调用 |
+| stopVideoStream() | 停止推流  <br>**调用时机**  <br>在收到 `RemoteCameraRequestListener` 的方法 `onVideoStreamStopRequested` 中去调用 |
 | setRemoteRequestListener() | 设置监听云端请求打开本地摄像头的回调方法  <br>**参数**  <br>RemoteCameraRequestListener：云端请求打开（关闭）摄像头 |
 | setCameraManagerListener() | 设置监听当前推流状态和首帧采集  <br>**参数**  <br>CameraManagerListener：监听调用 startVideoStream 的推流结果 |
 | setLocalVideoCanvas(SurfaceView surfaceView, RenderMode mode) | 设置本地视频画面布局  <br>**参数**  <br>1：RENDER_MODE_HIDDEN（默认，视窗填满优先；缩放完成后，视频帧的一边长和视窗的对应边长一致，另一边长大于等于视窗对应边长）  <br>2：RENDER_MODE_FIT（视频帧内容全部显示优先；缩放完成后，视频帧的一边长和视窗的对应边长一致，另一边长小于等于视窗对应边长）  <br>3：RENDER_MODE_Fill（视频帧自适应画布；视频帧非等比缩放，直至画布被填满。在此过程中，视频帧的长宽比例可能会发生变化） |
@@ -2101,3 +2075,267 @@ public void onPlaySuccess(String roundId, int videoStreamProfile, Map<String, St
     });
 }
 ```
+
+### 保存/还原用户配置信息
+
+描述：设置保存游戏云端配置文件的路径，当用户正常退出或异常退出（切前后台保活到期、踢下线、游戏崩溃等），按照配置的路径保存用户的配置文件。当用户再次进入游戏时，拉取和还原已保存的用户配置信息。
+
+> 需要已通过 `start()` 接口的配置参数 `userProfilePath` 设置保存配置文件的路径后，并收到 `onPlaySuccess` 播放成功回调之后使用。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| setUserProfilePath(String[] userProfilePath) | 设置游戏云端配置文件绝对路径：  <br>userProfilePath：保存配置文件的路径列表 |
+| getUserProfilePath(GetUserProfilePathListener userProfilePathListener) | 获取保存配置文件的路径 |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable PodControlService getPodControlService()
+
+public interface PodControlService {
+
+   int setUserProfilePath(List<String> pathList);
+
+   int getUserProfilePath(GetUserProfilePathListener userProfilePathListener);
+}
+```
+
+### 游戏控制权转移
+
+描述：获取多用户管理类 MultiUserService，支持开启多人游戏及游戏控制权转移等功能。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| getMultiUserService() | 获取多用户管理服务，注意需要在接口 `ICloudCoreManagerStatusListener` 的 `onInitalized` 函数回调后获取，可能为空（插件包） |
+
+#### MultiUserService
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| changeRole(String userId, Role role, ChangeRoleCallBack callBack) | 修改某个用户的角色：  <br>userid：游戏玩家用户 ID  <br>role：角色（Role.PLAYER：操作者；Role.VIEWER：观看者）  <br>callBack：游戏玩家角色修改结果回调 |
+| setRoomListener(RoomListener roomListener) | 设置当前房间的监听器（需要在首帧前设置） |
+| getCurrentRole() | 获取当前游戏玩家的角色 |
+
+#### RoomListener 回调
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onPlayerChanged(String userId) | 当用户角色发生变化后，收到远端服务的通知 |
+| onJoinRoomRoleResult(Role role, int reason, String PlayerUid) | 用户加入房间成功后，收到的当前用户角色的回调：  <br>role：用户角色  <br>reason（0：成功，请求的一致；其他值为失败的原因)  <br>playerUid：当前的操作者 ID |
+
+#### ChangeRoleCallBack 回调
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onResult(String userId, Role role, int result) | 游戏玩家角色修改结果回调：  <br>userId：游戏玩家用户 ID  <br>role：游戏玩家角色  <br>result（0：角色修改成功；1：房间类型不正确，不支持切换控制权或不支持多玩家；2：希望改变的用户不存在） |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public interface MultiUserService {
+
+    // 改变某个userId的角色
+    void changeRole(String userId, Role role, ChangeRoleCallBack callBack);
+
+    // 设置当前的RoomListener
+    void setRoomListener(RoomListener roomListener);
+
+    // 获取当前用户的角色
+    Role getCurrentRole();
+
+    interface RoomListener {
+
+        // 回调当前的广播Player
+        void onPlayerChanged(String userId);
+
+        // join Room首帧到达后获取当前的用户角色, reason (0 成功和请求的一致， 其他值标识失败的原因)
+        void onJoinRoomRoleResult(Role role, int reason, String PlayerUid);
+
+    }
+
+    interface ChangeRoleCallBack {
+        // 游戏玩家角色修改结果
+        void onResult(String userId, Role role, int result);
+
+    }
+}
+```
+
+### 设置 Debug 模式
+
+描述：设置调试模式，在该模式下会打印日志信息。
+
+```java
+// veGameEngine class
+
+static void setDebug(boolean debug)
+```
+
+### 获取设备 ID
+
+描述：获取 SDK 生成的设备 ID，用于后台查询 SDK 日志，进行调试和问题排查（建议接入方在需要问题排查时，提供给火山引擎云游戏服务技术支持）。
+
+参考以下示例：
+
+```java
+// veGameEngine class
+
+public String getDeviceId()
+```
+
+### 设置是否生成本地日志
+
+描述: 打印的日志是否生成本地文件，调试阶段使用。设置为 true 就会打印日志到本地，默认路径为外部存储路径下 `file/veSdkLog/`。
+
+```java
+// veGameEngine class
+
+public static void setCreateLocalLog(boolean isCreate)
+```
+
+### 设置 Logger
+
+描述：设置自定义 Logger。
+
+```java
+// veGameEngine class
+
+static void setLogger(ILogger logger)
+```
+
+#### ILogger
+
+```java
+public interface ILogger {
+    /**
+     * verbose日志
+     *
+     * @param tag
+     * @param msg
+     */
+    void onVerbose(String tag, String msg);
+
+    /**
+     * debug日志
+     *
+     * @param tag
+     * @param msg
+     */
+    void onDebug(String tag, String msg);
+
+    /**
+     * info日志
+     *
+     * @param tag
+     * @param msg
+     */
+    void onInfo(String tag, String msg);
+
+    /**
+     * warn日志
+     *
+     * @param tag
+     * @param msg
+     */
+    void onWarn(String tag, String msg);
+
+    /**
+     * error日志
+     *
+     * @param tag
+     * @param msg
+     */
+    void onError(String tag, String msg);
+
+    /**
+     * error日志
+     *
+     * @param tag
+     * @param msg
+     * @param e
+     */
+    void onError(String tag, String msg, Throwable e);
+}    
+```    
+
+### 获取 SDK 版本信息
+
+```java
+// veGameEngine class
+static String getSDKVersion()
+```
+
+## 警告码
+
+警告码回调接口为 `IGamePlayerListener#onWarning`，具体错误原因见回调接口中的 `message`。
+
+|  **警告码**  |  **警告信息**  | **说明**  |
+| --- | --- | --- |
+| 10010 | WARNING_START_NO_STOP_BEFORE | 开始游戏失败。原因：同一个客户端连续调用了两次 `start()` 接口启动游戏，之前未调用 `stop()` 接口停止游戏。建议：请调用服务端 [GameStop]() 接口结束上一次 “游戏”，再调用 `start()` 接口开始游戏。 |
+| 10019 | WARNING_START_INVALID_AUTO_RECYCLE_TIME | 设置无操作回收服务时长出错。建议：请参考 [autoRecycleTime]() 参数描述进行设置。 |
+| 10023 | WARNING_START_WITH_FRAMEWORK_NOT_FOUND | 指定的伴随程序不存在。原因：传入的伴随程序包名错误。建议：检查是否已上传指定的伴随程序、且伴随程序包名称正确。 |
+| 10024 | WARNING_START_WITH_FRAMEWORK_PART_MATCH | 指定的部分伴随程序不存在。原因：传入的伴随程序包名部分错误。建议：检查是否已上传指定的伴随程序、且伴随程序包名称是否正确。 |
+| 10025 | WARNING_START_WITH_FRAMEWORK_WRONG_INPUT_FORMAT | 指定的伴随程序包名格式错误。建议：检查启动游戏接口的 `extra` 参数格式是否正确。 |
+| 30007 | WARNING_SDK_LACK_OF_LOCATION_PERMISSION | SDK 无定位服务权限。原因：定位服务权限未开启。建议：检查设备定位服务权限是否开启。 |
+| 40036 | WARNING_USER_PROFILE_RESTORE_FAILURE | 用户存档信息还原失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40037 | WARNING_LOCAL_ALREADY_SET_BACKGROUND | 本地客户端应用已切换到后台，请勿重复调用切换后台接口。 |
+| 40038 | WARNING_LOCAL_ALREADY_SET_FOREGROUND | 本地客户端应用已切换到前台，请勿重复调用切换前台接口。 |
+| 40040 | WARNING_REMOTE_<package name>_FOREGROUND_FAILURE_NO_SUCH_PACKAGE_NAME | 云端游戏切换前台失败。原因：游戏包名不存在。建议：请检查指定的游戏包名是否正确。 |
+| 40041 | WARNING_REMOTE_<package name>_ALREADY_FOREGROUND | 云端游戏切换前台失败。原因：云端游戏已处于前台。 |
+| 40043 | WARNING_REMOTE_<package name>_FOREGROUND_FAILURE_NO_PACKAGE_NAME_BACKGROUND | 云端游戏切换前台失败。原因：指定的游戏不在后台或已被关闭。 |
+| 40044 | WARNING_GAME_STOPPED_INGAME_EXIT | 游戏停止。原因：一般是因为云端运行的游戏主动退出了。建议：客户端需要提示用户目前游戏主动被结束了，如果需要，可以重新开始游戏。 |
+
+## 错误码
+
+错误码回调接口为 `IGamePlayerListener#onError`，具体错误原因见回调接口中的 `message`。
+
+|  **错误码**  |  **错误信息**  | **说明**  |
+| --- | --- | --- |
+| 20000 | ERROR_STREAM_GENERAL | 游戏串流连接错误。原因：网络原因。建议：请检查网络。 |
+| 20002 | ERROR_STREAM_CHANGE_CLARITY_ID_NOT_IN_START_STATE | 切换清晰度失败。原因：当前处于非播放状态 。建议：请调用 `start()` 接口，在收到播放成功回调后，再调用切换清晰度档位接口。 |
+| 20003 | ERROR_STREAM_CLARITY_ID_NOT_IN_RANGE | 切换清晰度失败。原因：切换游戏视频清晰度档位不在预设范围内。 |
+| 30000 | ERROR_SDK_GENERAL | 客户端 SDK 通用错误。 |
+| 30001 | ERROR_SDK_INIT_FAILED | 客户端 SDK 初始化失败。 |
+| 30002 | ERROR_SDK_<Parameter>_PARAMETER_EMPTY | 客户端调用 SDK 接口错误。原因：接口参数为空。建议：请参考接口说明文档，检查接口参数。 |
+| 30003 | ERROR_SDK_<Parameter>_PARAMETER_ERROR | 客户端调用 SDK 接口错误。原因：接口参数错误。建议：请参考接口说明文档，检查接口参数。 |
+| 30009 | ERROR_INIT_ACCOUNT_ID_ILLEGAL | 未指定火山引擎账号。建议：通过火山引擎官网页面右上角 **用户 > 账号管理 > 主账号信息** 获取正确的账号。 |
+| 40011 | MESSAGE_START_RESERVED_ID_EXPIRED | 资源预锁定 ID 已过期。建议：调用服务端 [PreAllocateResource]() 接口重新获取。 |
+| 40012 | MESSAGE_RESERVED_ID_NOT_APPLIED | 未通过指定的资源预锁定 ID 启动游戏。建议：确保启动游戏时指定的资源预锁定 ID 正确。 |
+| 40013 | MESSAGE_START_RESERVED_ID_RELEASED | 与指定的资源预锁定 ID 相对应的实例资源已被退订。建议：确保申请的实例资源可用。 |
+| 40014 | MESSAGE_RESOURCE_OFFLINE | 实例已离线。建议：检查实例资源的运行状态。 |
+| 40015 | MESSAGE_RESOURCE_UPDATING | 实例升级中。建议：检查实例资源的运行状态。 |
+| 40016 | MESSAGE_RESOURCE_REBOOTING | 实例重启中。建议：检查实例资源的运行状态。 |
+| 40017 | MESSAGE_RESOURCE_MAINTANENCE | 实例运维中。建议：检查实例资源的运行状态。 |
+| 40018 | MESSAGE_RESOURCE_SERVICE_UPDATING | 实例的云服务升级中。建议：检查实例资源的运行状态。 |
+| 40019 | MESSAGE_RESOURCE_OCCUPIED | 实例被占用。建议：检查实例资源的运行状态。 |
+| 40020 | MESSAGE_RESOURCE_LAUNCHING_GAME | 实例正在启动游戏。 |
+| 40021 | MESSAGE_RESOURCE_IS_RUNNING | 实例正在运行。 |
+| 40022 | MESSAGE_RESOURCE_IS_PUBLISH | 实例正在推流。 |
+| 40023 | MESSAGE_RESOURCE_RELEASED_NORMAL | 实例正常释放。 |
+| 40024 | MESSAGE_RESOURCE_RELEASED_NO_USER | 实例异常释放：客户端超时未加入。 |
+| 40025 | MESSAGE_RESOURCE_RELEASED_IDLE | 实例异常释放：客户端无操作释放。 |
+| 40026 | MESSAGE_RESOURCE_RELEASED_OS_MISSED | 实例异常释放：游戏镜像缺失。 |
+| 40027 | MESSAGE_RESOURCE_RELEASED_GAME_START_FAILURE | 实例异常释放：游戏启动失败。 |
+| 40028 | MESSAGE_RESOURCE_RELEASED_STREAMING_ERROR | 实例异常释放：RTC 推流成功，但是推流过程中出现异常。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40029 | MESSAGE_RESOURCE_RELEASED_3RD_APP_MISSED | 实例异常释放：伴随包镜像缺失。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40030 | MESSAGE_RESOURCE_ERROR | 实例故障。建议：检查实例资源的运行状态或联系火山引擎云游戏服务技术支持。 |
+| 40031 | MESSAGE_3RD_APP_START_FAILURE | 伴随包启动失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40032 | MESSAGE_CLOUD_GAME_CRASH_OFTEN | 游戏频繁崩溃。建议：请尝试复现游戏在本地设备是否运行异常，如本地未复现，可以联系火山引擎云游戏服务技术支持。 |
+| 40033 | MESSAGE_GAME_STEAMING_FAILURE | RTC 推流不成功。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40035 | ERROR_GAME_STOPPED_USER_PROFILE_PATH_UPLOAD_FAILURE | 游戏停止。原因：用户存档信息上传失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40039 | ERROR_SET_INVALID_AUTO_RECYCLE_TIME | 设置无操作回收服务时长错误，请查看 [设置无操作回收服务时间](#设置无操作回收服务时间) 接口文档进行设置。 |
+| 40047 | MESSAGE_RESOURCE_RELEASED_INVALID_PARAMETER | 云端实例接收到的参数非法。 |
+| 40048 | MESSAGE_RESOURCE_RELEASED_HEART_BEAT_TIMEOUT | 云端实例离线60秒，中间没有任何心跳。 |
+| 40049 | MESSAGE_RESOURCE_RELEASED_INGAME_EXIT | 游戏停止。原因：一般是因为云端运行的游戏主动退出了。建议：客户端需要提示用户目前游戏主动被结束了，如果需要，可以重新开始游戏。 |
+| 60001 | ERROR_NET_REQUEST_ERROR | 网络请求失败 |
+| 60002 | ERROR_HTTP_REQUEST_ERROR | 网络请求失败 |
+| 71001 | ERROR_FILE_CHANNEL_FILE_NOT_FOUND | 文件传输失败。原因：上传或下载的文件不存在。建议：请检查文件名是否正确且确保文件存在后重试。 |
+| 71002 | ERROR_FILE_CHANNEL_FILE_NO_ACCESS | 文件传输失败。原因：上传或下载的文件无权限访问。建议：请检查文件的访问权限。 |
+| 71003 | ERROR_FILE_CHANNEL_NETWORK_ABORT | 文件传输失败。原因：上传或下载文件过程中网络异常中断。建议：请检查网络连接后重试。 |
+| 71004 | ERROR_FILE_CHANNEL_TIMEOUT | 文件传输失败。原因：上传或下载文件过程中超时。建议：请检查网络连接后重试。 |
+| 71005 | ERROR_FILE_CHANNEL_STORAGE_NOT_ENOUGH | 文件传输失败。原因：上传或下载文件磁盘空间不足。建议：请确保有足够的存储空间保存文件。 |
+| 71006 | ERROR_FILE_CHANNEL_INTERNAL_ERROR | 文件传输失败。原因：上传或下载文件发生内部错误 |
