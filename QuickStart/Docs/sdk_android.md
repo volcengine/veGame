@@ -1076,7 +1076,7 @@ private void setRotation(int rotation) {
 
 ### 收发消息
 
-描述：与云端实例之间收发消息（需要在收到 veGameEngine#addCloudCoreManagerListener 回调之后使用）。
+描述：与云端实例之间收发消息（需要在收到 `veGameEngine#addCloudCoreManagerListener` 回调之后使用）。
 有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()。
 
 |  **接口名称**  |  **接口描述**  |
@@ -1211,7 +1211,7 @@ public interface IMessageChannel {
 
 ### 收发数据
 
-描述：与云端游戏之间收发数据（需要通过 start() 接口的配置参数 enableFileChannel，开启文件传输通道，并在收到 onPlaySuccess 播放成功回调之后使用）。
+描述：与云端游戏之间收发数据（需要通过 `start()` 接口的配置参数 `enableFileChannel`，开启文件传输通道，并在收到 `onPlaySuccess` 播放成功回调之后使用）。
 
 |  **接口名称**  |  **接口描述**  |
 | --- | --- |
@@ -1263,7 +1263,7 @@ public interface IMessageChannel {
 // veGameEngine class
 
 public @Nullable IFileChannel getFileChannel()
-```java
+```
 
 ```java
 public interface IFileChannel {
@@ -1359,12 +1359,12 @@ public interface IFileChannel {
 
 ### 收发文件
 
-描述：云游戏客户端 SDK 支持通过 IFileChannelExt 类实现与云端游戏进行文件传输。需要注意的是 IFileChannelExt 是一个接口类，通过 VeGameEngine 的 `getFileChannelExt()` 方法获取对象引用。
+描述：云游戏客户端 SDK 支持通过 `IFileChannelExt` 类实现与云端游戏进行文件传输。需要注意的是 `IFileChannelExt` 是一个接口类，通过 VeGameEngine 的 `getFileChannelExt()` 方法获取对象引用。
 
 > 说明：
 > - 收发文件功能需要与 Message Channel SDK V1.0.9 及以上版本配合使用。有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()。
 > - 收发文件功能依赖第三方库 okttp3 实现数据的发送和接收功能，请确保工程中已引入该库：
-implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+`implementation 'com.squareup.okhttp3:okhttp:4.9.0'`
 
 参考示例：
 
@@ -1561,4 +1561,543 @@ public interface IReceiveFileListener {
  *
  */
 void stopReceiveFile(File file)
+```
+
+### 本地键盘
+
+描述： 获取 LocalInputManager，管理本地键盘与云端游戏的交互。
+
+#### LocalInputManager
+
+```java
+// veGameEngine class
+
+public @Nullable LocalInputManager getLocalInputManager()
+```
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| setRemoteInputCallBack(RemoteInputCallBack remoteInputCallBack) | 设置监听远端键盘弹出的回调，参考以下 [RemoteInputCallBack](#remoteinputcallback) |
+| coverCurrentEditTextMessage(String text) | 设置当前输入框的内容 |
+| enableShowCurrentInputText(boolean enable) | 显示自带的 textView，用于显示当前输入框内容，默认不打开 |
+| closeAutoKeyBoard(boolean isIntercept) | 拦截是否打开本地键盘，默认不拦截 SDK 调起本地键盘；当传入 true 时，由用户自行处理键盘的弹出和内容的发送 |
+| getEditText() | 获取隐藏的输入框对象 |
+| getKeyboardEnable() | 远端输入法是否开启 |
+| setKeyBoardEnable(boolean enable) | 设置远端输入法是否开启 |
+
+参考示例：
+
+```java
+public interface LocalInputManager {
+
+    /**
+     * 设置监听远端键盘弹出的回调
+     * @param remoteInputCallBack
+     */
+    void setRemoteInputCallBack(RemoteInputCallBack remoteInputCallBack);
+
+    /**
+     * 设置当前输入框的内容
+     * @param text 内容字符串
+     */
+    void coverCurrentEditTextMessage(String text);
+
+    /**
+     * 显示自带的输入view ，默认不打开
+     * @param enable 是否打开
+     */
+    void enableShowCurrentInputText(boolean enable);
+
+    /**
+     * 拦截是否打开本地键盘；默认false 不拦截sdk调起本地键盘；传入true 用户自行处理键盘的弹出和内容的发送
+     * @param isIntercept  是否拦截本地键盘弹出。
+     */
+    void closeAutoKeyBoard(boolean isIntercept);
+
+    /**
+     * 获取本地隐藏的输入框
+     * @return 本地的edittext
+     */
+    EditText getEditText();
+
+    /**
+     * 获取远端输入法是否开启
+     */
+    boolean getKeyboardEnable();
+
+    /**
+     * 设置远端输入法是否开启
+     */
+    int setKeyBoardEnable(boolean enable);
+}
+```
+
+#### RemoteInputCallBack
+
+远端键盘弹出的回调。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onPrepare(String hintText, int inputType) | 远端当前输入框的一些状态回调 |
+| onCommandShow() | 请求弹出软键盘的回调，会多次回调 |
+| onCommandHide() | 请求收起软键盘的回调 |
+| onTextChange(String text) | 远端输入框内容的更改回调 |
+| onRemoteKeyBoardEnabled(boolean enable) | 远端输入法状态更新的回调 |
+
+参考示例：
+
+```java
+interface RemoteInputCallBack {
+
+        /**
+         * @param hintText 提示文本
+         * @param inputType 输入格式
+         */
+        void onPrepare(String hintText , int inputType);
+
+        /**
+         * 远端键盘请求弹出
+         */
+        void onCommandShow();
+
+        /**
+         * 远端键盘请求收起
+         */
+        void onCommandHide();
+
+        /**
+         * 监听本地输入内容的改变 ，可以自定义显示给用户
+         * @param text 改变的内容
+         */
+        void onTextChange(String text);
+
+        /**
+         *  远端输入法状态更新
+         */
+        void onRemoteKeyBoardEnabled(boolean enable);
+    }
+```
+
+### 清晰度切换
+
+描述：在游戏运行过程中，可通过指定清晰度 ID，切换游戏的清晰度。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| switchVideoStreamProfile(int streamProfileId) | 切换游戏的清晰度（streamProfileId 的可选值和清晰度配置说明，参考 [云游戏清晰度档位说明]()） |
+| setStreamProfileChangeListener(StreamProfileChangeCallBack streamProfileChangeCallBack) | 设置清晰度切换成功的回调 |
+
+#### StreamProfileChangeCallBack
+
+清晰度切换成功的回调
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onVideoStreamProfileChange(boolean isSuccess, int from, int current) | 清晰切换结果：  <br>isSuccess（清晰度是否成功切换）  <br>from（切换前的清晰度）  <br>current（当前的清晰度） |
+
+参考示例：
+
+```java
+public interface StreamProfileManager {
+
+    void switchVideoStreamProfile(int streamProfileId);
+
+    void setStreamProfileChangeListener(StreamProfileChangeCallBack streamProfileChangeCallBack);
+}
+```
+
+```java
+public interface StreamProfileChangeCallBack {
+
+    void onVideoStreamProfileChange(boolean isSuccess, int from, int current);
+}
+```
+
+### 客户端前后台切换
+
+描述：设置客户端应用或游戏切换前后台的状态。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| switchBackground(boolean on) | 客户端切换前后台：  <br>true：切后台  <br>false：切前台 |
+| setBackgroundSwitchListener(BackgroundSwitchListener listener) | 设置监听客户端应用切换前后台的回调方法：  <br>BackgroundSwitchListener：监听客户端应用切换前后台 |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable PodControlService getPodControlService()
+
+public interface PodControlService {
+
+    void switchBackground(boolean on);
+
+    void setBackgroundSwitchListener(BackgroundSwitchListener listener);
+}
+```
+
+#### BackgroundSwitchListener
+
+监听客户端应用切换前台或后台。
+
+> 如果重复调用切换前后台接口，IGamePlayerListener 的 onWarning 会给出告警提示。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onBackgroundSwitched() | 客户端应用切换前台或后台的回调（用户手动调用 `switchBackground` 接口或者触摸屏幕发生切换前后台都会触发这个回调）：  <br>true（切换到后台）  <br>from（切换到前台） |
+
+参考示例：
+
+```java
+public interface BackgroundSwitchListener {
+
+    void onBackgroundSwitched(boolean on);
+}
+```
+
+### 云端游戏切换前台
+
+描述：将云端游戏切换到前台。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| setRemoteGameForeground() | 将云端游戏切换到前台 |
+
+参考示例：
+
+```java
+interface VeGameManager {
+
+    void setRemoteGameForeground();
+
+    void setGroundChangeListener(GameGroundSwitchedListener gameGroundSwitchedListener);
+}
+```
+
+#### GameGroundSwitchedListener
+
+云端游戏切换前台或后台状态。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onRemoteGameSwitchedBackground(int switchedType) | 云端游戏切换到后台，switchedType：  <br>0（手动）  <br>1（自动） |
+| onRemoteGameSwitchedForeground(int switchedType) | 云端游戏切换到前台，switchedType：  <br>0（手动）  <br>1（自动） |
+| onRemoteGameSwitchedFailed(int errorCode, String errorMsg) | 云端游戏切换前后台失败 |
+
+参考示例：
+
+```java
+public interface GameGroundSwitchedListener {
+
+    void onRemoteGameSwitchedBackground(int switchedType);
+
+    void onRemoteGameSwitchedForeground(int switchedType);
+
+    void onRemoteGameSwitchedFailed(int errorCode, String errorMsg);
+}
+```
+
+### 设置保活时间
+
+描述：在游戏中动态设置客户端切后台之后，云端游戏服务的保活时间（如不设置，则使用默认保活时长300秒；支持设置的上限值为7200，即2小时；如需设置更长时间，可联系火山引擎云游戏技术支持）。
+
+> 当客户端切后台时开始计时。如用户在设置的保活时间到达时未切回前台，服务端将断开游戏连接。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| setIdleTime() | 指定保活时长，单位秒 |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable PodControlService getPodControlService()
+
+public interface PodControlService {
+    /**
+     * 设置保活时间
+     *
+     * @param time 单位秒
+     * @return -1 表示未在播放状态下使用
+     */
+    int setIdleTime(long time);
+}
+```
+
+### 设置/获取无操作回收服务时间
+
+描述：在游戏中动态设置无操作回收服务时长。
+
+> 如果已在 `start()` 接口中通过 `autoRecycleTime` 参数设置，动态设置的时长优先级高。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| setAutoRecycleTime(int time, SetAutoRecycleTimeCallback callback) | 设置无操作回收服务时间：  <br>time（无操作回收服务时长，单位秒；支持设置的范围为 [0, 7200]，即0到2小时；如不设置或设置为0，则使用默认时长300秒）  <br>callback（设置无操作回收服务时长的回调） |
+| getAutoRecycleTime(GetAutoRecycleTimeCallback callback) | 获取已设置的无操作回收服务时间：  <br>callback（获取无操作回收服务时长的回调） |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable PodControlService getPodControlService()
+
+public interface PodControlService {
+
+    /**
+     * @param time 无操作回收时长
+     * @param callback 设置无操作回收服务时长的回调
+     * @return 0：正常返回；-1：ICoreEngine为空；-2：time参数小于0
+     */
+    int setAutoRecycleTime(int time, SetAutoRecycleTimeCallback callback);
+
+    /**
+      * @param callback 获取已设置无操作回收服务时长的回调
+      * @return 0：正常返回；-1：ICoreEngine为空
+      */
+     int getAutoRecycleTime(GetAutoRecycleTimeCallback callback);
+}
+```
+
+### 重置签名密钥
+
+描述：在用户鉴权密钥过期之前（生成 token 时指定的密钥过期时间），刷新和重置签名密钥（通过调用服务端  STS Token 接口获取）。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| resetToken() | 配置参数如下：  <br>ak：用于用户鉴权的临时 Access Key  <br>sk：用于用户鉴权的临时 Secret Key  <br>token：用于用户鉴权的临时 Token  <br>以上参数可通过调用服务端 [STSToken 接口]() 获取 |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+/**
+ * 重新设置 ak，sk，token
+ */
+public void resetToken(@NonNull String ak, @NonNull String sk, @NonNull String token)
+```
+
+### 发送剪贴板消息
+
+描述：获取剪贴板管理类、注册云端实例剪贴板回调、发送本地剪贴板消息到云端（需要在收到 onPlaySuccess 播放成功回调之后使用）。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| sendClipBoardMessage() | 发送本地剪贴板数据到云端，支持发送文本数据 |
+| onClipBoardMessageReceived() | 收到云端返回的剪贴板数据回调 |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable IClipBoardServiceManager getClipBoardServiceManager()
+
+/**
+ * @desc 剪贴板 操作 发送剪贴板数据
+ */
+public interface IClipBoardServiceManager {
+
+    /**
+     * 云端实例同步过来的剪贴板数据
+     * @param iClipBoardListener
+     */
+    void setBoardSyncClipListener(IClipBoardListener iClipBoardListener);
+
+    /**
+     * 手动发送剪贴板数据
+     *
+     * @param data 剪贴板数据
+     */
+    void sendClipBoardMessage(ClipData data);
+}
+```
+
+> 注意：clipData mimeType 只支持：ClipDescription.MIMETYPE_TEXT_PLAIN 和 ClipDescription.MIMETYPE_TEXT_HTML
+
+```java
+/**
+ * @desc 回调用户云端剪贴板数据的 listener
+ */
+public interface IClipBoardListener {
+    /**
+     * @param clipData 云端返回的剪贴板数据
+     */
+    void onClipBoardMessageReceived(ClipData clipData);
+}
+```
+
+### Camera 注入
+
+描述：获取 CameraManager 对象，该对象支持发送本地视频流和监听云端请求本地摄像头的打开和关闭。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| getCameraManager() | 获取 CameraManager 对象 |
+
+```java
+// veGameEngine class
+public @Nullable CameraManager getCameraManager()
+```
+
+```java
+public interface CameraManager {
+
+    int switchCamera(CameraId cameraId);
+
+    int startVideoStream(CameraId cameraId);
+
+    void stopVideoStream();
+
+    void setRemoteRequestListener(RemoteCameraRequestListener remoteRequestListener);
+
+    void setCameraManagerListener(CameraManagerListener cameraManagerListener);
+
+    void setLocalVideoCanvas(SurfaceView surfaceView, RenderMode mode);
+
+    void setLocalVideoMirrorMode(MirrorMode mode);
+
+    void setVideoEncoderConfig(List<VideoStreamDescription> videoStreamDescriptions)
+}
+```
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| switchCamera(CameraId cameraId) | 切换前后摄像头，用于中途切换（预留，目前仅支持前置摄像头）  <br>**参数**  <br>CameraId：FRONT（前置摄像头）；  <br>BACK（后置摄像头）  <br>**返回值**  <br>0：调用成功  <br>-1：调用失败（可能原因为尚未收到 `onPlaySuccess` 播放成功回调） |
+| startVideoStream(CameraId cameraId) | 开始指定摄像头采集并推流  <br>**参数**  <br>CameraId：FRONT（前置摄像头）；  <br>BACK（后置摄像头）  <br>**返回值**  <br>0：调用成功  <br>-1：调用失败（可能原因为尚未收到 `onPlaySuccess` 播放成功回调）  <br>**调用时机**  <br>在收到 `RemoteCameraRequestListener` 的方法 `onVideoStreamStartRequested` 中去调用  <br>**调用结果**  <br>CameraManagerListener 回调接口的 `onLocalVideoStateChanged` 方法中会回调调用结果 |
+| stopVideoStream() | 停止推流  <br>**调用时机**  <br>在收到 RemoteCameraRequestListener 的方法
+onVideoStreamStopRequested 中去调用 |
+| setRemoteRequestListener() | 设置监听云端请求打开本地摄像头的回调方法  <br>**参数**  <br>RemoteCameraRequestListener：云端请求打开（关闭）摄像头 |
+| setCameraManagerListener() | 设置监听当前推流状态和首帧采集  <br>**参数**  <br>CameraManagerListener：监听调用 startVideoStream 的推流结果 |
+| setLocalVideoCanvas(SurfaceView surfaceView, RenderMode mode) | 设置本地视频画面布局  <br>**参数**  <br>1：RENDER_MODE_HIDDEN（默认，视窗填满优先；缩放完成后，视频帧的一边长和视窗的对应边长一致，另一边长大于等于视窗对应边长）  <br>2：RENDER_MODE_FIT（视频帧内容全部显示优先；缩放完成后，视频帧的一边长和视窗的对应边长一致，另一边长小于等于视窗对应边长）  <br>3：RENDER_MODE_Fill（视频帧自适应画布；视频帧非等比缩放，直至画布被填满。在此过程中，视频帧的长宽比例可能会发生变化） |
+| setLocalVideoMirrorMode(MirrorMode mode) | 使用“前置摄像头”采集时，是否开启镜像翻转本地摄像头画面  <br>**参数**  <br>0：MIRROR_MODE_OFF（默认，不开启镜像翻转）  <br>1：MIRROR_MODE_ON（开启镜像翻转） |
+| setVideoEncoderConfig(List<VideoStreamDescription> videoStreamDescriptions) | 根据客户端的网络情况，配置本地最大视频编码质量参数  <br>**参数**  <br>width（宽度）  <br>height（高度）  <br>frameRate（帧率）  <br>maxBitrate（最大码率） |
+
+#### RemoteCameraRequestListener
+
+监听云端请求本地摄像头的打开和关闭。
+
+```java
+public interface RemoteCameraRequestListener {
+
+    /**
+     * 云端请求本地摄像头
+     * @param CameraId：FRONT（前置摄像头）；BACK（后置摄像头）
+     *
+     */
+    void onVideoStreamStartRequested(CameraId cameraId);
+
+    /**
+     * 云端关闭本地摄像头回调
+     */
+    void onVideoStreamStopRequested();
+}
+```
+
+#### CameraManagerListener
+
+监听本地推流状态。
+
+```java
+public interface CameraManagerListener {
+
+    /**
+     *
+     * @param localVideoStreamState 枚举值：当前推流状态
+     * @param errorCode 错误码
+     */
+    void onLocalVideoStateChanged(LocalVideoStreamState localVideoStreamState, LocalVideoStreamError errorCode);
+
+    /**
+     * 第一帧被采集
+     */
+    void onFirstCapture();
+}
+```
+
+#### LocalVideoStreamState
+
+```java
+public enum LocalVideoStreamState {
+    LOCAL_VIDEO_STREAM_STATE_STOPPED(0),
+    LOCAL_VIDEO_STREAM_STATE_RECORDING(1),
+    LOCAL_VIDEO_STREAM_STATE_ENCODING(2),
+    LOCAL_VIDEO_STREAM_STATE_FAILED(3);
+ }
+ ```   
+
+推流状态说明：
+
+|  **状态码**  |  **说明**  |
+| --- | --- |
+| LOCAL_VIDEO_STREAM_STATE_STOPPED | 本地视频采集停止状态（默认初始状态） |
+| LOCAL_VIDEO_STREAM_STATE_RECORDING | 本地视频采集设备启动成功 |
+| LOCAL_VIDEO_STREAM_STATE_ENCODING | 本地视频采集后，首帧编码成功 |
+| LOCAL_VIDEO_STREAM_STATE_FAILED | 本地视频启动失败 |
+
+#### LocalVideoStreamError
+
+```java
+public enum LocalVideoStreamError {
+    LOCAL_VIDEO_STREAM_ERROR_OK(0),
+    LOCAL_VIDEO_STREAM_ERROR_FAILURE(1),
+    LOCAL_VIDEO_STREAM_ERROR_DEVICE_NO_PERMISSION(2),
+    LOCAL_VIDEO_STREAM_ERROR_DEVICE_BUSY(3),
+    LOCAL_VIDEO_STREAM_ERROR_DEVICE_NOT_FOUND(4),
+    LOCAL_VIDEO_STREAM_ERROR_CAPTURE_FAILURE(5),
+    LOCAL_VIDEO_STREAM_ERROR_ENCODE_FAILURE(6);
+}
+```    
+
+错误码说明：
+
+|  **错误码**  |  **说明**  |
+| --- | --- |
+| LOCAL_VIDEO_STREAM_ERROR_OK | 状态正常 |
+| LOCAL_VIDEO_STREAM_ERROR_FAILURE | 本地视频流发布失败 |
+| LOCAL_VIDEO_STREAM_ERROR_DEVICE_NO_PERMISSION | 没有权限启动本地视频采集设备 |
+| LOCAL_VIDEO_STREAM_ERROR_DEVICE_BUSY | 本地视频采集设备被占用 |
+| LOCAL_VIDEO_STREAM_ERROR_DEVICE_NOT_FOUND | 本地视频采集设备不存在或已移除 |
+| LOCAL_VIDEO_STREAM_ERROR_CAPTURE_FAILURE | 本地视频采集失败，建议检查采集设备是否正常工作 |
+| LOCAL_VIDEO_STREAM_ERROR_ENCODE_FAILURE | 本地视频编码失败 |
+
+参考代码
+
+```java
+// 在收到 IGamePlayerListener 的 onPlaySuccess 回调后，获取 CameraManager，监听远端请求，同时调用对应的方法
+
+@Override
+public void onPlaySuccess(String roundId, int videoStreamProfile, Map<String, String> extraMap, String gameId, String reservedId) {
+
+    VeGameEngine.getInstance().getCameraManager().setRemoteRequestListener(new RemoteCameraRequestListener() {
+        @Override
+        public void onVideoStreamStartRequested(CameraId cameraId) {
+            AcLog.d(TAG, "onVideoStreamStartRequested, cameraId :" + cameraId);
+            // 用户弹窗 提示用户将打开摄像头或者照相机权限请求，有权限可以直接调用下面这行
+            VeGameEngine.getInstance().getCameraManager().startVideoStream(cameraId);
+        }
+
+        @Override
+        public void onVideoStreamStopRequested() {
+            AcLog.d(TAG, "onVideoStreamStopRequested ");
+            // 关闭推流
+            VeGameEngine.getInstance().getCameraManager().stopVideoStream();
+        }
+    });
+    VeGameEngine.getInstance().getCameraManager().setCameraManagerListener(new CameraManagerListener() {
+        @Override
+        public void onLocalVideoStateChanged(LocalVideoStreamState localVideoStreamState, LocalVideoStreamError errorCode) {
+            // 打印当前推流状态，用于排查问题
+            AcLog.d(TAG, "LocalVideoStreamState" + localVideoStreamState.toString() + ",LocalVideoStreamError" + errorCode);
+        }
+
+        @Override
+        public void onFirstCapture() {
+            AcLog.d(TAG, "onFirstCapture");
+        }
+    });
+}
 ```
