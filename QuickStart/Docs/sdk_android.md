@@ -152,11 +152,13 @@ android {
 
 ```java
 // veGameEngine class
+
 int getStatus()
 ```
 
 ```java
 // veGameEngine class
+
 void addCloudCoreManagerListener(@NonNull ICloudCoreManagerStatusListener listener)
 
 void removeCloudCoreManagerListener(@NonNull ICloudCoreManagerStatusListener listener)
@@ -221,6 +223,7 @@ public void init(Application application)
 
 ```java
 // veGameEngine class
+
 public String getServiceDeviceId()
 ```
 
@@ -236,6 +239,7 @@ public String getServiceDeviceId()
 
 ```java
 // veGameEngine class
+
 public void probeStart(@NonNull GamePlayConfig config, @NonNull IProbeNetworkListener listener)
 ```
 
@@ -389,6 +393,7 @@ public class ProbeStats {
 
 ```java
 // veGameEngine class
+
 public void probeInterrupt()
 ```
 
@@ -854,6 +859,7 @@ public class LocalStreamStats {
 
 ```java
 // veGameEngine class
+
 void pause()
 ```
 
@@ -865,6 +871,7 @@ void pause()
 
 ```java
 // veGameEngine class
+
 void resume()
 ```
 
@@ -874,6 +881,7 @@ void resume()
 
 ```java
 // veGameEngine class
+
 void stop()
 ```
 
@@ -883,6 +891,7 @@ void stop()
 
 ```java
 // veGameEngine class
+
 void restart()
 ```
 
@@ -892,6 +901,7 @@ void restart()
 
 ```java
 // veGameEngine class
+
 void muteAudio(boolean mute) //true: 静音; false: 开音。
 boolean isAudioMuted() //当前是否处在静音状态，返回：true: 静音； false:开音。
 ```
@@ -902,6 +912,7 @@ boolean isAudioMuted() //当前是否处在静音状态，返回：true: 静音�
 
 ```java
 // AudioService class
+
 int getLocalAudioPlaybackVolume() //获取客户端本地播放音量
 int setLocalAudioPlaybackVolume(int volume) //设置客户端本地播放音量，范围 [0,100]
 int setLocalAudioCaptureVolume(int volume) //设置采集客户端本地音量，范围 [0,100]
@@ -913,6 +924,7 @@ int setLocalAudioCaptureVolume(int volume) //设置采集客户端本地音量�
 
 ```java
 // AudioService class
+
 int getRemoteAudioPlaybackVolume() //获取云端游戏播放音量
 int setRemoteAudioPlaybackVolume(int volume) //设置云端游戏播放音量，范围 [0,100]
 ```
@@ -925,6 +937,7 @@ int setRemoteAudioPlaybackVolume(int volume) //设置云端游戏播放音量，
 
 ```java
 // AudioService class
+
 void setAudioPlaybackDevice(deviceId) //指定音频播放设备（系统喇叭、外接喇叭和耳机、有线外接播放器，蓝牙播放器等）
 ```
 
@@ -934,6 +947,7 @@ void setAudioPlaybackDevice(deviceId) //指定音频播放设备（系统喇叭�
 
 ```java
 // AudioService class
+
 void onRemoteAudioStartRequest() //收到云端实例请求开始发送音频数据事件
 void onRemoteAudioStopRequest() //收到云端实例请求停止发送音频数据事件
 
@@ -947,6 +961,7 @@ int stopSendAudioStream() //关闭音频数据发送，并且不进行音频采�
 
 ```java
 // veGameEngine class
+
 void volumeUp()
 void volumeDown()
 ```
@@ -957,6 +972,7 @@ void volumeDown()
 
 ```java
 // veGameEngine class
+
 public @Nullable GamePadService getGamePadService()
 
 public interface GamePadService {
@@ -988,6 +1004,7 @@ public interface GamePadService {
 
 ```java
 // veGameEngine class
+
 void enableAccelSensor(boolean enable) //是否启用加速度传感器
 void enableGyroscopeSensor(boolean enable) //是否启用陀螺仪传感器
 void enableGravitySensor(boolean enable) //是否启用重力传感器
@@ -1001,6 +1018,7 @@ void enableMagneticSensor(boolean enable) //是否启用磁力传感器
 
 ```java
 // veGameEngine class
+
 void enableVibrator(boolean enable)
 ```
 
@@ -1010,6 +1028,7 @@ void enableVibrator(boolean enable)
 
 ```java
 // veGameEngine class
+
 void enableLocationService(boolean enable)
 ```
 
@@ -1032,11 +1051,15 @@ public interface LocalInputManager {
 
 orientation 在收到 SDK IStreamListener onRotation 回调后，旋转当前的 Activity 方向。同时在 Activity  的 onConfigurationChanged(Configuration newConfiguration) 回调中，调用 VeGameEngine 的 rotate 方法，传入 newConfiguration.orientation 的值。
 
+参考示例：
+
 ```java
 // veGameEngine class
-void rotate(int orientation)
 
-参考示例：
+void rotate(int orientation)
+```
+
+```java
 private void setRotation(int rotation) {
     switch (rotation) {
         case 0:
@@ -1052,6 +1075,7 @@ private void setRotation(int rotation) {
 ```
 
 ### 收发消息
+
 描述：与云端实例之间收发消息（需要在收到 veGameEngine#addCloudCoreManagerListener 回调之后使用）。
 有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()。
 
@@ -1093,6 +1117,7 @@ private void setRotation(int rotation) {
 
 ```java
 // veGameEngine class
+
 public @Nullable IMessageChannel getMessageChannel()
 ```
 
@@ -1183,3 +1208,357 @@ public interface IMessageChannel {
 | 50006 | ERROR_MESSAGE_CONNECT_VERIFY_FAILED  | 消息通道错误。原因：鉴权失败。建议：请检查参数配置。 |
 | 50007 | ERROR_MESSAGE_OVER_SIZED | 通过客户端 SDK 发送的消息错误。原因：消息包体过大（不应超过60kb）。建议：减小发送包体大小，重新发送。 |
 | 50009 | ERROR_MESSAGE_TIMEOUT_ILLEGAL | 发送消息错误。原因：指定的消息发送超时时长不符合要求，必须为大于0的值。 |
+
+### 收发数据
+
+描述：与云端游戏之间收发数据（需要通过 start() 接口的配置参数 enableFileChannel，开启文件传输通道，并在收到 onPlaySuccess 播放成功回调之后使用）。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| sendData(byte[] payload) | 发送数据包到云端游戏，无数据发送到达回执：  <br>payload：发送的数据包（支持发送的数据包不大于5MB，如果发送的数据大于5MB，将抛出 IllegalArgumentException 异常） |
+| sendData(byte[] payload, long timeout, ISendDataListener listener) | 发送数据包到云端游戏，有数据发送到达回执：  <br>payload：发送的数据包  <br>timeout：接收回执超时时长（单位：毫秒）  <br>listener：用于接收数据发送到达回执 |
+| setReceiveDataListener(IReceiveDataListener listener) | 设置接收数据回调监听 |
+| setStatusListener(IChannelStatusListener listener) | 设置文件传输通道内部状态回调监听 |
+| getStatus() | 获取当前 FileChannelEngine 的内部状态 |
+
+
+#### ISendDataListener
+
+用于向云端游戏发送数据时，消息到达回执的回调。
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onDataSend() | 当客户端发送数据到云端游戏成功时回调 |
+| onError(int err) | 当客户端发送数据到云端游戏失败时回调 |
+
+#### IReceiveDataListener
+
+用于接收云端游戏发送给客户端数据的回调（接收的数据包不大于5MB）。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onDataReceived(byte[] payload) | 当客户端接收到云端游戏发送的数据时回调 |
+
+
+#### IChannelStatusListener
+
+用于接收当前 FileChannelEngine 通道内部状态变更的回调。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onStateUpdated(int status) | 当文件传输通道内部状态变更时回调 |
+
+状态说明如下：
+
+|  **状态**  |  **说明**  |
+| --- | --- |
+| IDLE (0x0001) | 未初始化状态 |
+| INITIALIZED (0x0002) | 初始化成功 |
+| CONNECTING (0x0004) | 正在连接远程服务端 |
+| CONNECTED (0x0008) | 与远程服务端连接中 |
+| DISCONNECTED (0x0010) | 与远程服务端断开连接中 |
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable IFileChannel getFileChannel()
+```java
+
+```java
+public interface IFileChannel {
+
+    /**
+     * 发送数据包到云端游戏，无到达回执＜br＞
+     *
+     * @param payload 发送的数据包
+     * @exception IllegalArgumentException 发送的数据包太大，无法发送
+     * @exception IllegalStateException 内部状态出错，无法完成发送数据包
+     */
+    void sendData(byte[] payload);
+
+    /**
+     * 发送数据包到云端游戏，有到达回执＜br＞
+     *
+     * @param payload 发送的数据包
+     * @exception IllegalArgumentException 发送的数据包太大，无法发送
+     * @exception IllegalStateException 内部状态出错，无法完成发送数据包
+     */
+    void sendData(byte[] payload, long timeout, ISendDataListener listener);
+
+    /**
+     * 数据发送到达回执监听
+     */
+    interface ISendDataListener {
+        /**
+         * 发送数据包到云端游戏成功后回调＜br＞
+         *
+         */
+        void onDataSend();
+
+        /**
+         * 发送数据包到云端游戏失败后回调＜br＞
+         *
+         * @param err 发送失败原因错误码
+         */
+        void onError(int err);
+    }
+
+    /**
+     * 设置接收数据回调监听＜br＞
+     *
+     * @param listener 接收数据包的回调监听器
+     */
+    void setReceiveDataListener(IReceiveDataListener listener);
+
+    /**
+     * 数据接收监听
+     */
+    interface IReceiveDataListener {
+        /**
+         * 接收云端游戏发送给客户端的数据包＜br＞
+         *
+         * @param payload 云端游戏发送给客户端的数据包
+         */
+        void onDataReceived(byte[] payload);
+    }
+
+    /**
+     * 设置通道内部状态回调监听＜br＞
+     *
+     * @param listener 接收通道内部状态变更的回调
+     */
+    void setStatusListener(IChannelStatusListener listener);
+
+    /**
+     * 获取当前FileChannelEngine的内部状态＜br＞
+     *
+     * @return 内部状态
+     */
+    int getStatus();
+
+    /**
+     * 文件传输通道内部状态监听
+     */
+    interface IChannelStatusListener {
+        /**
+         * 当状态变更时回调＜br＞
+         *
+         * IDLE  (0x0001) - 未初始化状态
+         * INITIALIZED (0x0002) - 初始化成功
+         * CONNECTING (0x0004) - 正在连接远程服务端
+         * CONNECTED (0x0008) - 与远程服务端连接中
+         * DISCONNECTED (0x0010) - 与远程服务端断开连接中
+         *
+         * @param status 新状态
+         */
+        void onStateUpdated(int status);
+    }
+}
+```
+
+### 收发文件
+
+描述：云游戏客户端 SDK 支持通过 IFileChannelExt 类实现与云端游戏进行文件传输。需要注意的是 IFileChannelExt 是一个接口类，通过 VeGameEngine 的 `getFileChannelExt()` 方法获取对象引用。
+
+> 说明：
+> - 收发文件功能需要与 Message Channel SDK V1.0.9 及以上版本配合使用。有关 Message Channel SDK 的使用方法，参考 [Message Channel SDK 接入说明]()。
+> - 收发文件功能依赖第三方库 okttp3 实现数据的发送和接收功能，请确保工程中已引入该库：
+implementation 'com.squareup.okhttp3:okhttp:4.9.0'
+
+参考示例：
+
+```java
+// veGameEngine class
+
+public @Nullable IFileChannelExt getFileChannelExt()
+```
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| startSendFile(File file, ISendFileListener listener) | 启动客户端向云端游戏发送文件（有关 File 类的详细说明，参考 [Android 官方文档说明](https://developer.android.com/reference/java/io/File)） |
+| stopSendFile(File file) | 取消客户端向云端游戏发送文件 |
+| stopReceiveFile(File file)  | 取消接收云端游戏向客户端发送的文件 |
+| setReceiveFileListener(IReceiveFileListener listener) | 设置接收云端游戏发送文件的回调监听 |
+| ISendFileListener | 向云端游戏发送文件的状态回调 |
+| IReceiveFileListener | 接收云端游戏发送文件的状态回调 |
+
+#### 发送文件数据
+
+描述：用于客户端发送文件到云端游戏，该接口支持发送本地文件，并且可通过 [ISendFileListener](#isendfilelistener) 监听发送进度以及到达情况。注意：当有多个发送任务时，SDK 内部会串行执行，依次发送。
+
+```java
+// IFileChannelExt class
+
+/**
+ * 发送本地文件到云端游戏
+ *
+ * @param file 发送的本地文件
+ * @param options 自定义参数，将传输到云端游戏
+ * @param listener 用于接收发送进度和到达回执
+ * */
+void startSendFile(File file, Map<String, String> options, ISendFileListener listener);
+```
+
+#### ISendFileListener
+
+描述：用于向云端游戏发送文件时监听发送进度以及到达情况。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onStart(File file, Map<String, String> options) | 发送启动时回调 |
+| onProgress(File file, Map<String, String> options, int progress) | 发送进度变化时回调：  <br>progress（0-100之间的整数） |
+| onComplete(File file, Map<String, String> options) | 发送完成时回调 |
+| onError(File file, Map<String, String> options, int err) | 当发送失败时回调：<br>err（指定错误类型，可参考 [错误码](#错误码)） |
+| onCancel(File file, Map<String, String> options) | 发送被取消时回调 |
+
+```java
+public interface ISendFileListener {
+    /**
+     * 发送启动时回调
+     *
+     * @param file 发送的本地文件
+     * @param options 自定义参数，将传输到云端游戏
+     */
+    void onStart(File file, Map<String, String> options);
+
+    /**
+     * 发送进度变更时回调
+     *
+     * @param file 发送的本地文件
+     * @param options 自定义参数
+     * @param progress 发送进度，取值范围(0,100)
+     */
+    void onProgress(File file, Map<String, String> options, int progress);
+
+    /**
+     * 发送完成时回调
+     *
+     * @param file 发送的本地文件
+     * @param options 自定义参数，将传输到云端游戏
+     */
+    void onComplete(File file, Map<String, String> options);
+
+    /**
+     * 发送取消时回调
+     *
+     * @param file 发送的本地文件
+     * @param options 自定义参数
+     */
+    void onCancel(File file, Map<String, String> options);
+
+    /**
+     * 当发送失败时回调
+     *
+     * @param file 发送的本地文件
+     * @param options 自定义参数
+     * @param err 发送失败错误码
+     */
+    void onError(File file, Map<String, String> options, int err);
+}
+```
+
+#### 停止发送文件数据
+
+描述：停止客户端向云端游戏发送文件。
+
+```java
+// IFileChannelExt class
+
+/**
+ * 停止发送本地文件到云端游戏
+ *
+ * @param file 要停止发送的本地文件
+ *
+ */
+void stopSendFile(File file);
+```
+
+#### 接收文件数据
+
+描述：云端游戏发送文件到客户端，通过 IReceiveFileListener 来接收文件发送状态信息。
+
+```java
+// IFileChannelExt class
+
+/**
+ * 设置接收文件回调监听
+ *
+ * @param listener 接收文件的回调监听
+ */
+void setReceiveFileListener(IReceiveFileListener listener);
+```
+
+#### IReceiveFileListener
+
+描述：用于接收云端游戏发送文件到客户端的状态信息回调。
+
+|  **接口名称**  |  **接口描述**  |
+| --- | --- |
+| onStart(File file, Map<String, String> options) | 接收文件开始时回调 |
+| onProgress(File file, Map<String, String> options, int progress) | 接收文件进度变化时回调  <br>progress（0-100之间的整数） |
+| onComplete(File file, Map<String, String> options) | 接收文件完成时回调 |
+| onError(File file, Map<String, String> options, int err) | 接收文件失败时回调：  <br>err（指定错误类型，可参考 [错误码](#错误码)） |
+| onCancel(File file, Map<String, String> options) | 接收文件被取消时回调 |
+
+```Java
+public interface IReceiveFileListener {
+    /**
+     * 接收启动时回调
+     *
+     * @param file 云端游戏发送的文件
+     * @param options 自定义参数，由云端游戏发送到客户端
+     */
+    void onStart(File file, Map<String, String> options);
+
+    /**
+     * 接收进度回调
+     *
+     * @param file 云端游戏发送的文件
+     * @param options 自定义参数，由云端游戏发送到客户端
+     * @param progress 传输进度
+     */
+    void onProgress(File file, Map<String, String> options, int progress);
+
+    /**
+     * 接收完成时回调
+     *
+     * @param file 云端游戏发送的文件
+     * @param options 自定义参数，由云端游戏发送到客户端
+     */
+    void onComplete(File file, Map<String, String> options);
+
+    /**
+     * 接收取消时回调
+     *
+     * @param file 云端游戏发送的文件
+     * @param options 自定义参数，由云端游戏发送到客户端
+     */
+    void onCancel(File file, Map<String, String> options);
+
+    /**
+     * 当接收失败时回调
+     *
+     * @param file 云端游戏发送的文件
+     * @param options 自定义参数，由云端游戏发送到客户端
+     * @param err 接收失败错误码
+     */
+    void onError(File file, Map<String, String> options, int err);
+}
+```
+
+### 停止接收文件数据
+
+描述：停止接收云端游戏向客户端发送的文件。
+
+```java
+// IFileChannelExt class
+
+/**
+ * 停止接收云端游戏发送的文件
+ *
+ * @param file 要停止接收的文件
+ *
+ */
+void stopReceiveFile(File file)
+```
