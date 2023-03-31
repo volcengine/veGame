@@ -203,7 +203,7 @@ configObj.roundId = @"";
 | --- | --- | --- |
 | 10000 | ERROR_START_GENERAL | 开始游戏失败。原因：通用错误。建议：请检查开始游戏 start() 接口参数。 |
 | 10001 | ERROR_START_AUTHENTICATION_FAILED | 开始游戏失败。原因：火山引擎服务鉴权失败。建议：检查您的 AK、SK、Token 生成，参考 生成临时 Token 接口。 |
-| 10002 | ERROR_START_GAME_ID_NOT_EXIST | 开始游戏失败。原因：当前游戏 ID 或 自定义游戏 ID 不存在。建议：请通过火山引擎云游戏控制台『游戏管理』页面获取正确的游戏 ID。 |
+| 10002 | ERROR_START_GAME_ID_OR_CUSTOM_GAME_ID_NOT_EXIST | 开始游戏失败。原因：当前游戏 ID 或 自定义游戏 ID 不存在。建议：请通过火山引擎云游戏控制台『游戏管理』页面获取正确的游戏 ID。 |
 | 10003 | ERROR_START_GAME_ID_NOT_READY | 开始游戏失败。原因：当前游戏尚在适配中。建议：游戏适配需要一定时间，如需加急，可联系火山引擎云游戏服务对接人员。 |
 | 10004 | ERROR_START_CONFIGURATION_CODE_NOT_EXIST | 开始游戏失败。原因：资源套餐 ID 不存在。建议：可通过调用服务端 ListResourceSet 接口获取（configuration_code 字段）获取正确的套餐信息。 |
 | 10005 | ERROR_START_CONFIGURATION_CODE_NOT_REDAY | 开始游戏失败。原因：游戏尚未配置资源套餐或套餐 ID 无效。建议：请通过火山引擎云游戏控制台『游戏管理』页面为游戏配置部署策略。 |
@@ -221,309 +221,300 @@ configObj.roundId = @"";
 | 10026 | ERROR_START_MISMATCH_ACCOUNTID | 开始游戏失败。原因：指定的火山引擎账号校验失败。建议：通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取正确的账号。 |
 | 10027 | ERROR_START_INVALID_LOCAL_TIME | 开始游戏失败。原因：用户手机时间和服务端时间相差超过7天，导致鉴权 Token 过期。建议：需要客户端提示用户把手机时间修正为标准时间。 |
 
-
 ## 接口说明
 
 ### 设置配置信息
 
 描述：设置配置信息（建议在程序启动的时候就调用，时机越早越好）。
 
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| accountId | NSString | 火山引擎用户账号，可通过火山引擎官网页面右上角 **用户 > 账号管理 > 主账号信息** 获取 |
 
-```
-/// 云游戏启动接口
-/// @param gameConfigObj 配置项
-/// @param viewController 当前控制器
-- (void)startGameWithConfigObject:(BDCPGameConfigObject *)gameConfigObj fromViewController:(UIViewController *)viewController;
-
-/// 当前业务的场景，默认：nil
-/// @param scenes 例如：CloudGame_TT（头条云游戏）
-- (void)configureCurrentScenes:(NSString *)scenes;
-
-/// 开始循环检测
-/// @param interval 间隔，最小值：1s
-- (void)startLoopDelayDetectionWithTimeInterval:(NSTimeInterval)interval;
-
-/// 停止循环检测
-- (void)stopLoopDelayDetection;
-
-/// 设置启动时的超时时限（仅针对Rtc, 且在调用启动接口前设置时生效）
-/// @param timeoutLimit 超时时限 默认为10s
-- (void)setLaunchTimeoutLimit:(NSInteger)timeoutLimit;
-
-/// 启动时网络探测开关，默认：关闭，每次退出房间时关闭，若要打开，每次启动云游戏或云手机前需要重新设置
-/// @param enable 是否打开网络探测
-/// @param detectionTimes 网络探测次数，该参数仅在enable为YES时生效，若参数值不合理，sdk将使用默认值进行探测
-- (void)launchTimeNetworkDetectionEnable:(BOOL)enable andDetectionTimes:(NSInteger)detectionTimes;
-
-/// 切换订阅视频流
-/// @param videoIndex 需要订阅的视频流下标
-- (void)switchVideoStreamWithIndex:(NSInteger)videoIndex;
-
-/// 获取当前视频流，全部分辨率
-- (NSArray<NSString *> *)getCurrentStreamAllVideoStreamDescriptions;
-
-/// 是否关注该消息的Ack，当attention为YES，会收到消息发送结果的回调（gameManager:didReceiveTextMessageWithMessageId:andResult:）
-/// @param message 消息实体
-/// @param attention 是否关注
-- (void)sendTextMessage:(BDCPTextMessage *)message withAttention:(BOOL)attention;
-
-/// 打开/切换游戏
-/// @param packageName 即将打开/切换到的游戏的instanceId或包名，优先匹配instanceId，然后包名。若为空，将对当前前台游戏进行操作
-- (void)launchGame:(NSString * _Nullable)packageName;
-
-/// 关闭游戏
-/// @param packageName 需要关闭的游戏的instanceId或包名，优先匹配instanceId，然后包名。若为空，将对当前前台游戏进行操作
-- (void)closeGame:(NSString * _Nullable)packageName;
-
-/// 重启游戏
-/// @param packageName 需要重启的游戏的instanceId或包名，优先匹配instanceId，然后包名。若为空，将对当前前台游戏进行操作
-- (void)restartGame:(NSString * _Nullable)packageName;
-
-/// 设置游戏手柄
-/// @param gamepadView 手柄视图
-- (void)setGamepadView:(UIView<BDCPCustomOperationViewProtocol> * _Nullable)gamepadView;
-
-/// 数据通道
-/// @param operationType 操作类型
-/// @param jsonString JSON信息
-- (void)sendOperationWithType:(BDCPOperationType)operationType andData:(NSString *)jsonString;
-
-/// 退出，注销资源
-- (void)exit;
-
-/// 提高远端pod音量
-- (void)turnUpPodVolume;
-
-/// 降低远端pod音量
-- (void)turnDownPodVolume;
-
-/// 暂停开关
-/// @param isPaused 默认：NO
-- (void)setIsPaused:(BOOL)isPaused;
+```objectivec
++ (void)setupConfigWithAccountId:(NSString *)accountId;
 ```
 
-#### 主流开关
+### 创建 VeGameManager 单例对象
 
-控制云游戏的主要开关类接口和说明如下（包括传感器开关等接口）：
+描述：创建 VeGameManager 单例对象。
 
-```
-/// 加速计开关
-/// @param enable 默认：YES
-- (void)setAccelerometerEnabled:(BOOL)enable;
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| containerView | UIView | 视图容器 |
+| delegate | NSObject | 代理 |
 
-/// 磁力计开关
-/// @param enable 默认：YES
-- (void)setMagnetometerEnabled:(BOOL)enable;
-
-/// 陀螺仪开关
-/// @param enable 默认：YES
-- (void)setGyroEnabled:(BOOL)enable;
-
-/// 重力传感器开关
-/// @param enable 默认：YES
-- (void)setGravityEnabled:(BOOL)enable;
-
-/// 方向开关
-/// @param enable 默认：YES
-- (void)setOrientationEnabled:(BOOL)enable;
-
-/// 地理位置请求开关
-/// @param enable 默认：YES
-- (void)setLocationRequestEnabled:(BOOL)enable;
-
-/// 相机开关
-/// @param enable 默认：NO
-/// @param customMediaManager 自定义媒体服务，如果值为nil，将使用默认的媒体服务
-/// @param fromViewController 展示相机控制界面的ViewController
-- (void)setCameraEnable:(BOOL)enable withCustomMediaManager:(NSObject<BDCPMediaManagerProtocol> * _Nullable)customMediaManager withFromViewController:(UIViewController * _Nonnull)fromViewController;
-
-/// 启动时网络探测开关，默认：关闭，每次退出房间时关闭，若要打开，每次启动云游戏或云手机前需要重新设置
-/// @param enable 是否打开网络探测
-/// @param detectionTimes 网络探测次数，该参数仅在enable为YES时生效，若参数值不合理，sdk将使用默认值进行探测
-- (void)launchTimeNetworkDetectionEnable:(BOOL)enable andDetectionTimes:(NSInteger)detectionTimes;
+```objectivec
++ (instancetype)sharedManagerWithContainerView:(UIView *)containerView delegate:(NSObject<VeGameManagerDelegate> *)delegate;
 ```
 
-#### API 接口参考
+### 获取 VeGameManager 单例对象
 
-有关云游戏的所有 API 接口，可以参考 `BDCPCloudGameManager.h` 文件。
+描述：获取  VeGameManager 单例对象。
 
-
-### 云手机接口说明
-
-#### 初始化
-
-参考以下代码，初始化并启动云手机：
-
-```
-// 创建 BDCPCloudPhoneManager 实例
-self. cloudPhoneManager = [[BDCPCloudGameManager alloc] initWithCustomDisplayVc: nil podScreenRatio: 0.5 delegate: self];
-// 传入参数启动云手机
-// phoneConfiguration 参考BDCPPhoneConfiguration
-// self 一般为当前控制器
-[self.cloudPhoneManager startWithPhoneConfiguration: phoneConfiguration fromViewController: self];
-
-#pragma mark - BDCPCloudPhoneManagerDelegate
-
-- (void)startPhoneSuccess
-{
-  // 启动成功，收到首帧回调
-}
-
-- (void)didPhoneOccurError:(BDCPPhoneErrorCode)errorCode
-{
-  // 加载失败，详情见BDCPPhoneErrorCode
-}
+```objectivec
++ (VeGameManager *)sharedInstance;
 ```
 
-#### 启动配置文件
+### 获取 SDK 版本信息
 
-启动云手机的配置参数如下：
+描述：获取 veGameSDK 的当前版本号。
 
+```objectivec
++ (NSString *)currentVersion;
 ```
-@interface BDCPPhoneConfiguration : NSObject
-/** 应用 ID，通过云手机控台应用管理页面获取 */
-@property (nonatomic, copy) NSString *appId;
-/** 自定义用户ID，需与调用服务端PodStart接口启动实例时传入的客户端用户ID一致 */
-@property (nonatomic, copy) NSString *userId;
-/** 房间ID，云游戏流媒体中的房间ID，通过调用服务端PodStart接口返回 */
-@property (nonatomic, copy) NSString *roomId;
-/** 用户签名，加入流媒体房间的令牌，通过调用服务端PodStart接口返回 */
-@property (nonatomic, copy) NSString *userToken;
-/** 云端用户ID，流媒体服务推流所用 User ID，通过调用服务端PodStart接口返回 */
-@property (nonatomic, copy) NSString *gamePodUserId;
+
+### 获取设备 ID
+
+描述：获取 SDK 生成的设备 ID，用于后台查询 SDK 日志，进行调试和问题排查（建议接入方在需要问题排查时，提供给火山引擎云游戏技术支持）。
+
+```objectivec
++ (NSString *)currentDeviceId;
+```
+
+### 获取设备唯一标识
+
+描述：在完成 SDK 初始化后，获取用户终端设备的唯一标识。
+
+> 最佳实践：保存获取到的设备唯一标识到业务的服务端。在通过调用服务端 PreAllocateResource 接口锁定资源、请求游戏服务时，透传保存的设备唯一标识，用于确定是否支持游戏多开。
+
+```objectivec
++ (NSString *)serviceDeviceId;
+```
+
+### 开始网络探测
+描述：在开始游戏之前，对客户端网络质量进行探测，提示用户当前的网络状态。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| configObj  | VeGameConfigObject | 启动游戏配置参数，只需指定 ak、sk、token、userId 参数（与启动游戏接口使用的配置参数一致） |
+
+```objectivec
+- (void)probeStart:(VeGameConfigObject *)configObj;
+```
+
+### 停止网络探测
+
+描述：在网络探测过程中，停止网络探测。
+
+```objectivec
+- (void)probeInterrupt;
+```
+
+#### 网络探测统计数据说明
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| rtt | Int | 往返时延时长；单位：毫秒 |
+| uploadBandwidth | Int | 上行网络带宽；单位：Kbit/s |
+| downloadBandwidth | Int | 下行网络带宽；单位：Kbit/s |
+| uploadJitter | Int | 上行网络抖动时长；单位：毫秒 |
+| downloadJitter | Int | 下行网络抖动时长；单位：毫秒 |
+| uploadLossPercent | Float | 上行网络丢包率；单位：百分比 |
+| downloadLossPercent | Float | 下行网络丢包率；单位：百分比 |
+
+```objectivec
+@interface VeGameNetworkProbeStats : NSObject
+/** 往返时延, 单位 ms */
+@property (nonatomic, assign) int rtt;
+/** 上行网络带宽, 单位 kbit/s */
+@property (nonatomic, assign) int uploadBandwidth;
+/** 下行网络带宽, 单位 kbit/s */
+@property (nonatomic, assign) int downloadBandwidth;
+/** 上行网络 jitter, 单位 ms */
+@property (nonatomic, assign) int uploadJitter;
+/** 下行网络 jitter, 单位 ms */
+@property (nonatomic, assign) int downloadJitter;
+/** 上行网络丢包率, 单位 % */
+@property (nonatomic, assign) float uploadLossPercent;
+/** 下行网络丢包率, 单位 % */
+@property (nonatomic, assign) float downloadLossPercent;
 
 @end
 ```
 
-#### 主流接口
+### 启动游戏
 
-控制云手机的主要接口和说明如下：
+描述：启动游戏接口。
 
-```
-/// 云手机启动接口
-/// @param phoneConfigObj 配置项
-/// @param viewController 当前控制器
-- (void)startWithPhoneConfigObject:(BDCPPhoneConfigObject *)phoneConfigObj fromViewController:(UIViewController *)viewController;
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| configObj | VeGameConfigObject | 启动游戏配置参数，可参考 [配置参数说明](#配置参数) |
 
-/// 当前业务的场景，默认：nil
-/// @param scenes 例如：CloudPhone_TT（头条云手机）
-- (void)configureCurrentScenes:(NSString *)scenes;
-
-/// 设置启动时的超时时限（仅针对Rtc, 且在调用启动接口前设置时生效）
-/// @param timeoutLimit 超时时限 默认：10s
-- (void)setLaunchTimeoutLimit:(NSInteger)timeoutLimit;
-
-/// 启动循环延迟检测
-/// @param interval 间隔，最小值：1s
-- (void)startLoopDelayDetectionWithTimeInterval:(NSTimeInterval)interval;
-
-/// 停止循环延迟检测
-- (void)stopLoopDelayDetection;
-
-/// 切换订阅视频流
-/// @param videoIndex 需要订阅的视频流下标
-- (void)switchVideoStreamWithIndex:(NSInteger)videoIndex;
-
-/// 获取当前视频流，全部分辨率
-- (NSArray<NSString *> *)getCurrentStreamAllVideoStreamDescriptions;
-
-/// 接入方需要实现的的文件上传服务，在使用通讯录服务或相机服务等需要文件上传作为支持的服务前，务必设置该服务
-/// @param fileUploadService 文件上传服务实例
-- (void)setFileUploadService:(NSObject<BDCPFileUploadServiceProtocol> *)fileUploadService;
-
-/// 启动时网络探测开关，默认：关闭，每次退出房间时关闭，若要打开，每次启动云游戏或云手机前需要重新设置
-/// @param enable 是否打开网络探测
-/// @param detectionTimes 网络探测次数，该参数仅在enable为YES时生效，若参数值不合理，sdk将使用默认值进行探测
-- (void)launchTimeNetworkDetectionEnable:(BOOL)enable andDetectionTimes:(NSInteger)detectionTimes;
-
-/// 是否关注该消息的Ack，当attention为YES，会收到消息发送结果的回调（phoneManager:didReceiveTextMessageWithMessageId:andResult:）
-/// @param message 消息实体
-/// @param attention 是否关注
-- (void)sendTextMessage:(BDCPTextMessage *)message withAttention:(BOOL)attention;
-
-/// 退出，注销资源
-- (void)exit;
-
-/// 暂停开关
-/// @param isPaused 默认：NO
-- (void)setIsPaused:(BOOL)isPaused;
+```objectivec
+- (void)startWithConfig:(VeGameConfigObject *)configObj;
 ```
 
-#### 主流开关
+### 重启游戏
 
-控制云手机的主要开关类接口和说明如下：
+描述：重启当前游戏。
 
-```
-/// 剪帖板同步开关
-/// @param enable 默认：YES
-- (void)setPasteBoardSyncEnable:(BOOL)enable;
-
-/// 地理位置开关
-/// @param enable 默认：YES
-- (void)setLocationRequestEnable:(BOOL)enable;
-
-/// 本地键盘开关
-/// @param enable 默认：YES
-- (void)setLocationKeyboardEnable:(BOOL)enable;
-
-/// 云通知开关
-/// @param enable 默认：NO
-- (void)setCloudNotificationEnable:(BOOL)enable;
-
-/// 相机开关
-/// @param enable 默认：NO
-/// @param customMediaManager 自定义媒体服务，如果值为nil，将使用默认的媒体服务
-/// @param fromViewController 展示相机控制界面的ViewController
-- (void)setCameraEnable:(BOOL)enable withCustomMediaManager:(NSObject<BDCPMediaManagerProtocol> * _Nullable)customMediaManager withFromViewController:(UIViewController * _Nonnull)fromViewController;
-
-/// 通讯录开关
-/// @param enable 默认：YES
-/// @param customContactsService 自定义的通讯录服务，值为nil时将使用默认的通讯录服务，所有通讯录服务仅在总开关打开时有效
-- (void)setContactsServiceEnable:(BOOL)enable withCustomContactsService:(NSObject<BDCPContactsServiceProtocol> * _Nullable)customContactsService;
+```objectivec
+- (void)restartGame
 ```
 
-#### API 接口参考
+### 停止游戏
 
-有关云手机的所有 API 接口，可以参考 `BDCPCloudPhoneManager.h` 文件。
+描述：停止从云端拉流，并且退出，但不会回收客户端本地资源。
 
-## 调试和日志
-
-### 回调接口
-
-调试和日志相关接口如下：
-
-```
-// 云游戏错误回调
-- (void)gameManager:(BDCPCloudGameManager *)manager didGameOccurError:(BDCPGameErrorCode)errorCode
-
-// 云手机错误回调
-- (void)phoneManager:(BDCPCloudPhoneManager *)manager didPhoneOccurError:(BDCPPhoneErrorCode)errorCode
+```objectivec
+- (void)stop;
 ```
 
-### 错误码
+### 设置保活时间
 
-可能返回的报错信息如下：
+描述：在游戏中动态设置客户端切后台之后，云端游戏服务的保活时间（如不设置，则使用默认保活时长300秒；支持设置的上限值为7200，即2小时；如需设置更长时间，可联系火山引擎云游戏技术支持）。
 
-|  **错误码**  |  **说明**  |
-| --- | --- |
-| 1000 | 初始化失败 |
-| 1001 | 定位服务权限受限 |
-| 1002 | 定位服务权限申请被拒 |
-| 1003 | 麦克风权限受限 |
-| 1004 | 麦克风权限申请被拒 |
-| 1005 | 通知权限申请被拒 |
-| 1006 | 通讯录权限申请被拒 |
-| 1007 | 文件上传服务实例为空 |
-| 1008 | 相机权限申请被拒 |
-| 1009 | 传输内容的大小超出限制 |
-| 1010 | 消息发送失败 |
-| 1011 | 订阅失败 |
-| 1012 | Token 无效 |
-| 1013 | 加入房间错误 |
-| 1014 | 没有发布音视频流权限 |
-| 1015 | 没有订阅音视频流权限 |
-| 1016 | 用户重复登录 |
-| 1017 | 订阅音视频流总数超过上限 |
-| 1018 | 发布流失败，发布流总数超过上限 |
-| 1019 | 发布屏幕流失败，发布流总数超过上限 |
-| 1020 | 发布视频流总数超过上限 |
+> 当客户端切后台时开始计时。如用户在设置的保活时间到达时未切回前台，服务端将断开游戏连接。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| time | NSInteger | 保活时间，单位秒 |
+
+```objectivec
+- (void)setIdleTime:(NSInteger)time;
+```
+
+### 设置无操作回收服务时间
+
+描述：在游戏中动态设置无操作回收服务时间（如不设置或设置为0，则使用默认时长300秒；支持设置的上限值为7200，即2小时；如需设置更长时间，可联系火山引擎云游戏技术支持）。
+
+> - 如果已在 VeGameConfigObject 配置参数中通过 autoRecycleTime 参数设置，动态设置的时长优先级高。
+> - 调用此接口，会触发 gameManager:setAutoRecycleTimeCallback:time: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| time | NSInteger | 无操作回收服务时间，单位秒 |
+
+```objectivec
+- (void)setAutoRecycleTime:(NSInteger)time;
+```
+
+### 获取无操作回收服务时间
+
+描述：获取已设置的无操作回收服务时间。
+
+> 调用此接口，会触发 gameManager:getAutoRecycleTimeCallback:time: 回调。
+
+```objectivec
+- (void)getAutoRecycleTime;
+```
+
+### 设置保存用户配置文件的路径
+
+描述：设置保存游戏云端配置文件的路径，当用户正常退出或异常退出（切前后台保活到期、踢下线、游戏崩溃等），按照配置的路径保存用户的配置文件。当用户再次进入游戏时，拉取和还原已保存的用户配置信息。
+
+> 调用此接口，会触发 gameManager:setUserProfilePathType:result: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| pathList | NSArray<NSString> | 保存配置文件的路径列表 |
+
+```objectivec
+- (void)setUserProfilePathList:(NSArray<NSString *> *)pathList;
+```
+
+### 获取保存用户配置文件的路径
+
+描述：当用户再次进入游戏时，获取保存用户配置文件的路径，拉取和还原已保存的用户配置信息。
+
+> 调用此接口，会触发 gameManager:getUserProfilePathList: 回调。
+
+```objectivec
+- (void)getUserProfilePathList;
+```
+
+### 设置游戏玩家角色
+
+描述：在游戏中，设置游戏玩家的角色。
+
+>调用此接口，会触发 gameManeger:onChangeRoleCallBack:result:destUserId: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| destUid | NSString | 游戏玩家用户 ID |
+| role | VeBaseRoleType | 游戏玩家角色（0：观看者；1：操作者） |
+
+```objectivec
+- (void)changeRole:(NSString *)destUid role:(VeBaseRoleType)role;
+```
+
+### 获取当前玩家的角色
+
+描述：获取当前游戏玩家的角色。
+
+```objectivec
+- (VeGameRoleType)getCurrentRole;
+```
+
+### 清晰度切换
+
+描述：在游戏运行过程中，可通过指定清晰度 ID，切换视频流的清晰度。
+
+> 调用此接口，会触发 gameManager:switchVideoStreamProfileWithCode:fromIndex:toIndex: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| streamProfileId | NSInteger | 清晰度档位 ID（清晰度档位 ID 列表和详细说明，参考 [云游戏清晰度档位说明]()） |
+
+```objectivec
+- (void)switchVideoStreamProfile:(NSInteger)streamProfileId;
+```
+
+### 客户端前后台切换
+
+描述：设置客户端应用或游戏切换前后台的状态。
+
+> 调用此接口，会触发 gameManager:onBackgroundSwitched: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| on | BOOL | 客户端切换前后台：  <br>YES（切后台）  <br>NO（切前台） |
+
+```objectivec
+- (void)switchBackground:(BOOL)on;
+```
+
+### 云端游戏切换前台
+
+描述：将云端游戏切换到前台。
+
+> 调用此接口，会触发 gameManager:onRemoteAppSwitchedForeground:switchType: 和 gameManager:onRemoteAppSwitchedBackground:switchType: 回调。
+
+```objectivec
+- (void)setRemoteGameForeground;
+```
+
+### 游戏手柄
+
+描述：设置自定义游戏手柄操作视图。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| gamepadView | UIView | 游戏手柄操作视图 |
+
+```objectivec
+- (void)setGamepadView:(UIView *)gamepadView;
+```
+
+### 设置键盘开关
+
+描述：设置是否允许用户使用键盘进行信息输入的能力。
+
+> 调用此接口，会触发 gameManeger:keyboardEnable: 回调。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| on | BOOL | 是否允许用户启用键盘进行信息输入：  <br>YES（允许，默认）  <br>NO（禁止） |
+
+```objectivec
+- (void)setKeyboardEnable:(BOOL)on;
+```
+
+### 获取键盘开关状态
+
+描述：获取键盘开关状态（即允许/禁止用户使用键盘输入信息）。
+
+```objectivec
+- (BOOL)getKeyboardEnable;
+```
