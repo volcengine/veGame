@@ -6,9 +6,9 @@
 
 |**平台** |**客户端 SDK 接口说明文档** |
 | --- | --- |
-|Android | |[文档链接](sdk_android.md) |
-|iOS |[文档链接](sdk_ios.md) |
-|Web/H5 |[文档链接](sdk_web.md) |
+|Android | [文档链接](sdk_android.md) |
+|iOS | [文档链接](sdk_ios.md) |
+|Web/H5 | [文档链接](sdk_web.md) |
 
 ## 联系我们
 
