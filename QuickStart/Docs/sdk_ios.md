@@ -902,7 +902,7 @@ typedef NS_ENUM(NSInteger, VeFileChannelEngineErrorCode) {
 
 |  **参数**  |  **类型**  |  **描述**  |
 | --- | --- | --- |
-| audioRoute | VeBaseAudioRoute | 音频播放设备类型：  1（有线耳机）  <br>2（听筒）  <br>3（扬声器）  <br>4（蓝牙耳机）  <br>5（USB 设备） |
+| audioRoute | VeBaseAudioRoute | 音频播放设备类型：  <br>1（有线耳机）  <br>2（听筒）  <br>3（扬声器）  <br>4（蓝牙耳机）  <br>5（USB 设备） |
 
 ```objectivec
 - (void)setAudioPlaybackDevice:(VeBaseAudioRoute)audioRoute;
@@ -1066,3 +1066,736 @@ typedef NS_ENUM(NSInteger, VeFileChannelEngineErrorCode) {
 /** 加速度开关，默认：NO，支持拉流过程中修改 */
 @property (nonatomic, assign) BOOL accelerometerEnable;
 ```
+
+## 数据统计
+
+### 本地流数据统计
+
+`VeBaseLocalStreamStats` 参数如下：
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| audioRtt | NSInteger | 音频往返时延，单位：ms |
+| audioSentKBitrate | CGFloat | 音频发送的码率，单位：kbps |
+| audioLossRate | CGFloat | 音频丢包率，范围：0 ~ 1 |
+| numChannels | NSInteger | 音频声道数 |
+| sentSampleRate | NSInteger | 音频发送采样率，单位：Hz |
+| recordSampleRate | NSInteger | 音频采集采样率，单位：Hz |
+| videoSentKBitrate | CGFloat | 视频发送码率，单位：kbps |
+| inputFrameRate | NSInteger | 视频采集帧率，单位：fps |
+| sentFrameRate | NSInteger | 视频发送帧率，单位：fps |
+| encoderOutputFrameRate | NSInteger | 视频编码器输出帧率，单位：fps |
+| rendererOutputFrameRate | NSInteger | 视频本地渲染帧率，单位：fps |
+| sentTargetKBitrate | NSInteger | 视频目标发送码率，单位：kbps |
+| sentTargetFrameRate | NSInteger | 视频目标发送帧率，单位：fps |
+| videoLossRate | CGFloat | 视频丢包率，范围：0 ~ 1 |
+| videoRtt | NSInteger | 视频往返时延，单位：ms |
+| encodedBitrate | NSInteger | 视频编码码率，单位：kbps |
+| encodedFrameWidth | NSInteger | 视频编码宽度，单位：px |
+| encodedFrameHeight | NSInteger | 视频编码高度，单位：px |
+| encodedFrameCount | NSInteger | 视频帧总数 |
+
+参考示例：
+
+```objectivec
+@interface VeBaseLocalStreamStats : NSObject
+
+/** 音频往返时延，ms */
+@property (assign, nonatomic) NSInteger audioRtt;
+/** 音频发送的码率，kbps */
+@property (assign, nonatomic) CGFloat audioSentKBitrate;
+/** 音频丢包率，0 ~ 1 */
+@property (assign, nonatomic) CGFloat audioLossRate;
+/** 音频声道数 */
+@property(assign, nonatomic) NSInteger numChannels;
+/** 音频发送采样率，Hz */
+@property(assign, nonatomic) NSInteger sentSampleRate;
+/** 音频采集采样率，Hz */
+@property (assign, nonatomic) NSInteger recordSampleRate;
+/** 视频发送码率，kbps */
+@property (assign, nonatomic) CGFloat videoSentKBitrate;
+/** 视频采集帧率，fps */
+@property (assign, nonatomic) NSInteger inputFrameRate;
+/** 视频发送帧率，fps */
+@property (assign, nonatomic) NSInteger sentFrameRate;
+/** 视频编码器输出帧率，fps */
+@property (assign, nonatomic) NSInteger encoderOutputFrameRate;
+/** 视频本地渲染帧率，fps */
+@property (assign, nonatomic) NSInteger rendererOutputFrameRate;
+/** 视频目标发送码率，kbps */
+@property (assign, nonatomic) NSInteger sentTargetKBitrate;
+/** 视频目标发送帧率，fps */
+@property (assign, nonatomic) NSInteger sentTargetFrameRate;
+/** 视频丢包率，0 ~ 1 */
+@property (assign, nonatomic) CGFloat videoLossRate;
+/** 视频往返时延，ms */
+@property (assign, nonatomic) NSInteger videoRtt;
+/** 视频编码码率，kbps */
+@property(assign, nonatomic) NSInteger encodedBitrate;
+/** 视频编码宽度，px */
+@property(assign, nonatomic) NSInteger encodedFrameWidth;
+/** 视频编码高度，px */
+@property(assign, nonatomic) NSInteger encodedFrameHeight;
+/** 视频帧总数 */
+@property(assign, nonatomic) NSInteger encodedFrameCount;
+
+@end
+```
+
+### 远端流数据统计
+
+`VeBaseRemoteStreamStats`  参数如下：
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| width | NSInteger | 远端视频宽度 |
+| height | NSInteger | 远端视频高度 |
+| audioRtt | NSInteger | 音频往返时延，单位：ms |
+| videoRtt | NSInteger | 视频往返时延，单位：ms |
+| audioLossRate | CGFloat | 远端音频丢包率 |
+| videoLossRate | CGFloat | 远端视频丢包率 |
+| audioStallCount | NSInteger | 远端音频卡顿次数 |
+| videoStallCount | NSInteger | 远端视频卡顿次数 |
+| audioStallDuration | NSInteger | 远端音频卡顿时长，单位：ms |
+| videoStallDuration | NSInteger | 远端视频卡顿时长，单位：ms |
+| receivedAudioKBitrate | NSInteger | 远端音频接收码率，单位：kbps |
+| receivedVideoKBitrate | NSInteger | 远端音频接收码率，单位：kbps |
+| decoderOutputFrameRate | NSInteger | 远端视频解码输出帧率 |
+| rendererOutputFrameRate | NSInteger | 远端视频渲染输出帧率 |
+| numChannels | NSInteger | 音频声道数 |
+| playoutSampleRate | NSInteger | 播放采样率 |
+
+参考示例：
+
+```objectivec
+@interface VeBaseRemoteStreamStats : NSObject
+
+/** 远端视频宽度 */
+@property (nonatomic, assign) NSInteger width;
+/** 远端视频高度 */
+@property (nonatomic, assign) NSInteger height;
+/** 音频往返时延，ms */
+@property (nonatomic, assign) NSInteger audioRtt;
+/** 视频往返时延，ms */
+@property (nonatomic, assign) NSInteger videoRtt;
+/** 远端音频丢包率 */
+@property (nonatomic, assign) CGFloat audioLossRate;
+/** 远端视频丢包率 */
+@property (nonatomic, assign) CGFloat videoLossRate;
+/** 远端音频卡顿次数 */
+@property (nonatomic, assign) NSInteger audioStallCount;
+/** 远端视频卡顿次数 */
+@property (nonatomic, assign) NSInteger videoStallCount;
+/** 远端音频卡顿时长，ms */
+@property (nonatomic, assign) NSInteger audioStallDuration;
+/** 远端视频卡顿时长，ms */
+@property (nonatomic, assign) NSInteger videoStallDuration;
+/** 远端音频接收码率 */
+@property (nonatomic, assign) NSInteger receivedAudioKBitrate;
+/** 远端视频接收码率 */
+@property (nonatomic, assign) NSInteger receivedVideoKBitrate;
+/** 远端视频解码输出帧率 */
+@property (nonatomic, assign) NSInteger decoderOutputFrameRate;
+/** 远端视频渲染输出帧率 */
+@property (nonatomic, assign) NSInteger rendererOutputFrameRate;
+/** 音频声道数 */
+@property (nonatomic, assign) NSInteger numChannels;
+/** 播放采样率 */
+@property (nonatomic, assign) NSInteger playoutSampleRate;
+
+@end
+```
+
+## 回调接口
+
+```objectivec
+#pragma mark - “核心”回调
+/// 启动成功回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - gameId: 游戏 ID
+///   - streamProfileId: 清晰度 ID
+///   - reservedId: 资源预锁定 ID
+///   - extra: 自定义扩展信息
+- (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId extra:(NSDictionary *)extra;
+
+/// 远端“首帧音频”回调
+/// - Parameter manager: VeGameManager 对象
+- (void)firstRemoteAudioFrameArrivedFromEngineManager:(VeGameManager *)manager;
+
+/// 远端“旋转”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - rotation: 旋转度
+- (void)gameManager:(VeGameManager *)manager changedDeviceRotation:(NSInteger)rotation;
+
+/// 本地“操作延迟”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - delayTime: 时间 ms
+- (void)gameManager:(VeGameManager *)manager operationDelay:(NSInteger)delayTime;
+
+/// Pod端退出回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - errCode: 错误码
+- (void)gameManager:(VeGameManager *)manager onPodExit:(VeGameErrorCode)errCode;
+
+/// “MCC”错误回调
+/// - Parameters:
+///   - manager: VeGameManager
+///   - errCode: 错误码
+- (void)gameManager:(VeGameManager *)manager onMessageChannleError:(VeGameErrorCode)errCode;
+
+/// “服务连接状态”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - state: 连接状态
+- (void)gameManager:(VeGameManager *)manager connectionChangedToState:(VeBaseConnectionState)state;
+
+/// 本地“网络类型改变”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - networkType: 变更后的网络类型
+- (void)gameManager:(VeGameManager *)manager networkTypeChangedToType:(VeBaseNetworkType)networkType;
+
+/// “网络质量”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - quality: 网络质量
+- (void)gameManager:(VeGameManager *)manager onNetworkQuality:(VeBaseNetworkQuality)quality;
+
+/// “键盘开关”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - on: 开关
+- (void)gameManeger:(VeGameManager *)manager keyboardEnable:(BOOL)on;
+
+/// 远端“切换分辨率”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - result: 结果
+///   - index1: from 切换前分辨率
+///   - index2: current 切换后分辨率
+- (void)gameManager:(VeGameManager *)manager switchVideoStreamProfile:(BOOL)result fromIndex:(NSInteger)index1 toIndex:(NSInteger)index2;
+
+#pragma mark - “网络探测”回调
+/// 开始“网络探测”回调
+/// - Parameter manager: VeGameManager 对象
+- (void)onNetProbeStartedFromEngineManager:(VeGameManager *)manager;
+
+/// “网络探测数据统计”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - stats: 统计数据
+- (void)gameManager:(VeGameManager *)manager onNetProbeProcess:(VeGameNetworkProbeStats *)stats;
+
+/// “网络探测完成”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - stats: 统计数据
+///   - quality: 网络质量
+- (void)gameManager:(VeGameManager *)manager onNetProbeCompleted:(VeGameNetworkProbeStats *)stats quality:(VeBaseNetProbeQuality)quality;
+
+/// “网络探测完成”错误
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - code: 错误码
+- (void)gameManager:(VeGameManager *)manager onNetProbeError:(VeBaseNetProbeErrorCode)code;
+
+#pragma mark - “数据通道”回调
+/// 远端“MCC”在线状态回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - channel_uid: 消息通道ID
+- (void)gameManager:(VeGameManager *)manager onRemoteMessageOnline:(NSString *)channel_uid;
+
+/// 远端“MCC”离线状态回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - channel_uid: 消息通道ID
+- (void)gameManager:(VeGameManager *)manager onRemoteMessageOffline:(NSString *)channel_uid;
+
+/// 远端通过“MCC”发送消息回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - message: 消息
+- (void)gameManager:(VeGameManager *)manager onReceiveMessage:(VeBaseChannelMessage *)message;
+
+/// 本地通过“MCC”发送消息结果回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - result: 结果；YES：成功 NO：超时失败
+///   - mid: 消息id
+- (void)gameManager:(VeGameManager *)manager onSendMessageResult:(BOOL)result messageId:(NSString *)mid;
+
+/// 远端发送“剪贴板数据”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - datArray: 数据
+- (void)gameManager:(VeGameManager *)manager receivedClipBoardMessage:(NSArray *)datArray;
+
+/// 远端发送“通用消息”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - dataDict: 消息体
+- (void)gameManager:(VeGameManager *)manager receivedGeneralMessage:(NSDictionary *)dataDict;
+
+#pragma mark - “音频采集”回调
+/// 远端“开始音频采集”请求回调
+/// - Parameter manager: VeGameManager 对象
+- (void)startAudioCaptureRequestFromGameManager:(VeGameManager *)manager;
+
+/// 远端“停止音频采集”请求回调
+/// - Parameter manager: VeGameManager 对象
+- (void)stopAudioCaptureRequestFromGameManager:(VeGameManager *)manager;
+
+/// 本地“音频流状态”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - state: 状态
+///   - error: 错误码
+- (void)gameManager:(VeGameManager *)manager onLocalAudioStreamState:(VeBaseLocalAudioStreamState)state streamError:(VeBaseLocalAudioStreamError)error;
+
+/// 远端“音频流状态”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - state: 状态
+///   - reason: 原因
+- (void)gameManager:(VeGameManager *)manager onRemoteAudioStreamState:(VeBaseRemoteAudioStreamState)state streamReason:(VeBaseRemoteAudioStreamStateChangeReason)reason;
+
+/// 本地“音频采集设备启动成功”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - success: 是否成功
+- (void)gameManager:(VeGameManager *)manager onAudioCaptureDeviceStartState:(BOOL)success;
+
+/// 本地“音频播放设备变化”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - audioRoute: 设备类型
+- (void)gameManager:(VeGameManager *)manager onAudioRouteChanged:(VeBaseAudioRoute)audioRoute;
+
+#pragma mark - “视频采集”回调
+/// 远端“开始视频采集”请求回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - cameraId: 摄像头类型
+- (void)gameManager:(VeGameManager *)manager startVideoCaptureRequest:(VeBaseCameraId)cameraId;
+
+/// 远端“停止视频采集”请求回调
+/// - Parameter manager: VeGameManager 对象
+- (void)stopVideoCaptureRequestFromGameManager:(VeGameManager *)manager;
+
+/// 本地“视频流状态”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - state: 状态
+///   - error: 错误码
+- (void)gameManager:(VeGameManager *)manager onLocalVideoStreamState:(VeBaseLocalVideoStreamState)state streamError:(VeBaseLocalVideoStreamError)error;
+
+/// 远端“视频流状态”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - state: 状态
+///   - reason: 原因
+- (void)gameManager:(VeGameManager *)manager onRemoteVideoStreamState:(VeBaseRemoteVideoStreamState)state streamReason:(VeBaseRemoteVideoStreamStateChangeReason)reason;
+
+#pragma mark - “无操作回收时长”回调
+/// 设置“无操作回收时长”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - code: 错误码；0：成功 -1：失败
+///   - time: 无操作时长
+- (void)gameManager:(VeGameManager *)manager setAutoRecycleTimeCallback:(NSInteger)code time:(NSInteger)time;
+
+/// 获取“无操作回收时长”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - code: 错误码；0：成功 -1：失败
+///   - time: 无操作时长
+- (void)gameManager:(VeGameManager *)manager getAutoRecycleTimeCallback:(NSInteger)code time:(NSInteger)time;
+
+#pragma mark - 切换“APP前后台”回调
+/// 本地“切换前后台”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - code 0：后台；1：前台
+- (void)gameManager:(VeGameManager *)manager onBackgroundSwitched:(NSInteger)code;
+
+/// 远端“游戏切换到前台”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - switchType: 切换类型
+- (void)gameManager:(VeGameManager *)manager onRemoteGameSwitchedForeground:(VeBaseRemoteAppSwitchedType)switchType;
+
+/// 远端“游戏切换到后台”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - switchType: 切换类型
+- (void)gameManager:(VeGameManager *)manager onRemoteGameSwitchedBackground:(VeBaseRemoteAppSwitchedType)switchType;
+
+/// 远端“游戏切换前后台失败”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - warningCode: 警告码
+///   - errorMsg: 错误信息
+- (void)gameManager:(VeGameManager *)manager onRemoteGameSwitchedFailedWithCode:(VeGameWarningCode)warningCode errorMsg:(NSString *)errorMsg;
+
+#pragma mark - 设置“用户配置信息保存还原路径”回调
+/// 设置“用户配置信息保存还原路径”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - type: 0：设置；1：还原
+///   - result: 结果
+- (void)gameManager:(VeGameManager *)manager setUserProfilePathType:(NSInteger)type result:(BOOL)result;
+
+/// 获取“用户配置信息保存还原路径”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - stats: list 配置列表
+- (void)gameManager:(VeGameManager *)manager getUserProfilePathList:(NSArray<NSString *> *)list;
+
+#pragma mark - 媒体流“统计数据”回调
+/// 本地“流数据统计”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - stats: 统计数据
+- (void)gameManager:(VeGameManager *)manager onLocalStreamStats:(VeBaseLocalStreamStats *)stats;
+
+/// 远端“流数据统计”回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - stats: 统计数据
+- (void)gameManager:(VeGameManager *)manager onRemoteStreamStats:(VeBaseRemoteStreamStats *)stats;
+
+#pragma mark - 游戏“控制权”转移回调
+/// 首次加入房间后，当前“控制权”信息回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - role: 当前用户角色
+///   - reason: 初始化角色 与 最终角色的结果，0：成功；其他：失败
+///   - player_uid: 当前 Player 的 Uid
+- (void)gameManeger:(VeGameManager *)manager onJoinRoomRoleResult:(VeBaseRoleType)role reason:(NSInteger)reason playerUserId:(NSString *)player_uid;
+
+/// 游戏过程中“控制权”发生转移，给发起方的结果回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - role: 目标用户最终角色
+///   - result: 目标用户之前角色 与 最终角色的结果，0：成功；其他：失败
+///   - dest_uid: 目标用户的 Uid
+- (void)gameManeger:(VeGameManager *)manager onChangeRoleCallBack:(VeBaseRoleType)role result:(NSInteger)result destUserId:(NSString *)dest_uid;
+
+/// 游戏过程中“控制权”发生转移，向房间内所有人进行广播的回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - player_uid: 当前房间内 Player 的 Uid
+- (void)gameManeger:(VeGameManager *)manager onPlayerChanged:(NSString *)player_uid;
+
+#pragma mark - “定位信息”回调
+/// 远端请求定位时，位置信息回调
+/// - Parameters:
+///   - manager: VeGameManager 对象
+///   - location: 位置信息
+- (void)gameManager:(VeGameManager *)manager onSentLocalLocation:(VeBaseLocationInfo *)location;
+
+#pragma mark - “警告&错误”回调
+/// “警告”回调
+/// - Parameters:
+///   - manager: VeGameManager
+///   - warnCode: 警告码
+- (void)gameManager:(VeGameManager *)manager onWarning:(VeGameWarningCode)warnCode;
+
+/// “错误”回调
+/// - Parameters:
+///   - manager: VeGameManager
+///   - errCode: 错误码
+- (void)gameManager:(VeGameManager *)manager onError:(VeGameErrorCode)errCode;
+```
+
+## 枚举说明
+
+### 摄像头类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseCameraIdFront | 0 | 前置摄像头 |
+| VeBaseCameraIdBack | 1 | 后置摄像头 |
+
+### SDK 与信令服务器连接状态
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseConnectionStateDisconnected | 1 | 连接中断 |
+| VeBaseConnectionStateConnecting | 2 | 连接建立中 |
+| VeBaseConnectionStateConnected | 3 | 连接已建立 |
+| VeBaseConnectionStateReconnecting | 4 | 连接重连中 |
+| VeBaseConnectionStateReconnected | 5 | 连接已重连 |
+| VeBaseConnectionStateLost | 6 | 网络连接断开超过 10 秒，仍然会继续重连 |
+| VeBaseConnectionStateFailed | 7 | 连接失败，服务端状态异常 |
+
+### 网络连接类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseNetworkTypeUnknown | -1 | 未知 |
+| VeBaseNetworkTypeDisconnected | 0 | 断开 |
+| VeBaseNetworkTypeLAN | 1 | LAN |
+| VeBaseNetworkTypeWIFI | 2 | WIFI |
+| VeBaseNetworkTypeMobile2G | 3 | 2G |
+| VeBaseNetworkTypeMobile3G | 4 | 3G |
+| VeBaseNetworkTypeMobile4G | 5 | 4G |
+| VeBaseNetworkTypeMobile5G | 6 | 5G |
+
+### 本地音频流状态
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseLocalAudioStreamStateStopped | 0 | 本地音频默认初始状态 |
+| VeBaseLocalAudioStreamStateRecording | 1 | 本地音频录制设备启动成功 |
+| VeBaseLocalAudioStreamStateEncoding | 2 | 本地音频首帧编码成功 |
+| VeBaseLocalAudioStreamStateFailed | 3 | 本地音频启动失败 |
+
+### 本地音频流相关错误码
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseLocalAudioStreamErrorOk | 0 | 本地音频状态正常 |
+| VeBaseLocalAudioStreamErrorFailure | 1 | 本地音频出错原因未知 |
+| VeBaseLocalAudioStreamErrorDeviceNoPermission | 2 | 没有权限启动本地音频录制设备 |
+| VeBaseLocalAudioStreamErrorDeviceBusy | 3 | 本地音频录制设备已经在使用中（该错误码暂未使用 |
+| VeBaseLocalAudioStreamErrorRecordFailure | 4 | 本地音频录制失败，建议你检查录制设备是否正常工作 |
+| VeBaseLocalAudioStreamErrorEncodeFailure | 5 | 本地音频编码失败 |
+| VeBaseLocalAudioStreamErrorNoRecordingDevice | 6 | 没有可用的音频录制设备 |
+
+### 远端音频流状态
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRemoteAudioStreamStateStopped | 0 | 远端音频流默认初始状态 |
+| VeBaseRemoteAudioStreamStateStarting | 1 | 开始接收远端音频流首包 |
+| VeBaseRemoteAudioStreamStateDecoding | 2 | 远端音频流正在解码，正常播放 |
+| VeBaseRemoteAudioStreamStateFrozen | 3 | 远端音频流卡顿 |
+
+### 远端音频流状态改变的原因
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRemoteAudioStreamStateChangeReasonInternal | 0 | 内部原因 |
+| VeBaseRemoteAudioStreamStateChangeReasonNetworkCongestion | 1 | 网络阻塞 |
+| VeBaseRemoteAudioStreamStateChangeReasonNetworkRecovery | 2 | 网络恢复正常 |
+| VeBaseRemoteAudioStreamStateChangeReasonLocalMuted | 3 | 本地用户停止接收远端音频流 |
+| VeBaseRemoteAudioStreamStateChangeReasonLocalUnmuted | 4 | 本地用户恢复接收远端音频流 |
+| VeBaseRemoteAudioStreamStateChangeReasonRemoteMuted | 5 | 远端用户停止发送音频流 |
+| VeBaseRemoteAudioStreamStateChangeReasonRemoteUnmuted | 6 | 远端用户恢复发送音频流 |
+| VeBaseRemoteAudioStreamStateChangeReasonRemoteOffline | 7 | 远端用户离开房间 |
+
+### 音频播放设备类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseAudioRouteHeadset | 1 | 有线耳机 |
+| VeBaseAudioRouteEarpiece | 2 | 听筒。设备自带的，一般用于通话的播放硬件 |
+| VeBaseAudioRouteSpeakerphone | 3 | 扬声器。设备自带的，一般用于免提播放的硬件 |
+| VeBaseAudioRouteHeadsetBluetooth | 4 | 蓝牙耳机 |
+| VeBaseAudioRouteHeadsetUSB | 5 | USB设备 |
+
+### 本地视频流状态
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseLocalVideoStreamStateStopped | 0 | 本地视频默认初始状态 |
+| VeBaseLocalVideoStreamStateRecording | 1 | 本地视频录制设备启动成功 |
+| VeBaseLocalVideoStreamEncoding | 2 | 本地视频首帧编码成功 |
+| VeBaseLocalVideoStreamStateFailed | 3 | 本地视频启动失败 |
+
+### 本地视频流相关错误码
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseLocalVideoStreamErrorOk | 0 | 本地视频状态正常 |
+| VeBaseLocalVideoStreamErrorFailure | 1 | 本地视频流发布失败 |
+| VeBaseLocalVideoStreamErrorDeviceNoPermission | 2 | 没有权限启动本地视频采集设备 |
+| VeBaseLocalVideoStreamErrorDeviceBusy | 3 | 本地视频采集设备被占用 |
+| VeBaseLocalVideoStreamErrorDeviceNotFound | 4 | 本地视频采集设备不存在或已移除 |
+| VeBaseLocalVideoStreamErrorCaptureFailure | 5 | 本地视频采集失败，建议检查采集设备是否正常工作 |
+| VeBaseLocalVideoStreamErrorEncodeFailure | 6 | 本地视频编码失败 |
+
+### 远端视频流状态
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRemoteVideoStreamStateStopped | 0 | 远端视频流默认初始状态 |
+| VeBaseRemoteVideoStreamStateStarting | 1 | 本地用户已接收远端视频首包 |
+| VeBaseRemoteVideoStreamStateDecoding | 2 | 远端视频流正在解码，正常播放 |
+| VeBaseRemoteVideoStreamStateFrozen | 3 | 远端视频流卡顿 |
+| VeBaseRemoteVideoStreamStateFailed | 4 | 远端音频流播放失败 |
+
+### 远端视频流状态改变的原因
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRemoteVideoStreamStateChangeReasonInternal | 0 | 内部原因 |
+| VeBaseRemoteVideoStreamStateChangeReasonNetworkCongestion | 1 | 网络阻塞 |
+| VeBaseRemoteVideoStreamStateChangeReasonNetworkRecovery | 2 | 网络恢复正常 |
+| aseRemoteVideoStreamStateChangeReasonLocalMuted | 3 | 本地用户停止接收远端视频流或本地用户禁用视频模块 |
+| VeBaseRemoteVideoStreamStateChangeReasonLocalUnmuted | 4 | 本地用户恢复接收远端视频流或本地用户启用视频模块 |
+| VeBaseRemoteVideoStreamStateChangeReasonRemoteMuted | 5 | 远端用户停止发送视频流或远端用户禁用视频模块 |
+| VeBaseRemoteVideoStreamStateChangeReasonRemoteUnmuted | 6 | 远端用户恢复发送视频流或远端用户启用视频模块 |
+| VeBaseRemoteVideoStreamStateChangeReasonRemoteOffline | 7 | 远端用户离开房间 |
+
+### 本地视频采集渲染模式
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRenderModeHidden | 1 | 视窗填满优先（视频帧等比缩放，直至视窗被视频填满） |
+| VeBaseRenderModeFit | 2 | 视频帧内容全部显示优先（视频帧等比缩放，直至视频帧能够在视窗上全部显示） |
+| VeBaseRenderModeAdaptive | 3 | 视频帧自适应视窗（视频帧非等比缩放，直至视窗被视频填满） |
+
+### 本地视频画面镜像模式
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseMirrorTypeNone | 0 | 关闭本地镜像 |
+| VeBaseMirrorTypeRender | 1 | 开启本地镜像 |
+
+### 本地视频采集编码选项
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseVideoEncoderPreferenceDisabled | 0 | 不降级 |
+| VeBaseVideoEncoderPreferenceMaintainFramerate | 1 | 优先保证帧率，以保证视频流畅度 |
+| VeBaseVideoEncoderPreferenceMaintainQuality | 2 | 优先保证画质 |
+| VeBaseVideoEncoderPreferenceBalance | 3 | 平衡画质与帧率 |
+
+### 云端游戏切换类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRemoteAppSwitchedTypeManualSucceed | 0 | 主动切换成功 |
+| VeBaseRemoteAppSwitchedTypeAutoSucceed | 1 | 自动切换成功 |
+
+### 网络探测错误类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseNetProbeErrorCodeBadNetwork | 1 | 网络错误 |
+| VeBaseNetProbeErrorCodeCancelByUser | 2 | 用户取消探测 |
+| VeBaseNetProbeErrorCodeEmptyStats | 3 | 数据为空 |
+
+### 网络探测结果
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseNetProbeQualityExcellent | 1 | 网络极好 |
+| VeBaseNetProbeQualityGood | 2 | 网络较好 |
+| VeBaseNetProbeQualityPoor | 3 | 网络较差 |
+
+### 网络质量回调
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseNetworkQualityUnknown | 0 | 网络状况未知，无法判断网络质量 |
+| VeBaseNetworkQualityExcellent | 1 | 网络质量极佳，能够高质量承载当前业务 |
+| VeBaseNetworkQualityGood | 2 | 网络状况良好，能够较好地承载当前业务 |
+| VeBaseNetworkQualityPoor | 3 | 网络状况有轻微劣化，但不影响正常使用 |
+| VeBaseNetworkQualityBad | 4 | 网络质量欠佳，会影响当前业务的主观体验 |
+| VeBaseNetworkQualityVeryBad | 5 | 网络已经无法承载当前业务的媒体流，需要采取相应策略，比如降低媒体流的码率或者更换网络 |
+| VeBaseNetworkQualityDown | 6 | 当前网络完全无法正常通信 |
+
+### 游戏玩家角色类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeGameRoleTypeViewer | 0 | 观看者 |
+| VeGameRoleTypePlayer | 1 | 操作者 |
+
+### 游戏房间类型
+
+|  **枚举项**  |  **枚举值**  |  **说明**  |
+| --- | --- | --- |
+| VeBaseRoomTypeDefault | 0 | 单人控制单人读 |
+| VeBaseRoomTypeNonTransferable | 1 | 单人控制多人读，游戏控制权不能转移 |
+| VeBaseRoomTypeControlTransferable | 2 | 单人控制多人读，游戏控制权可以转移 |
+
+## 警告码
+
+可能返回的警告信息如下：
+
+|  **警告码**  |  **警告信息**  | **说明**  |
+| --- | --- | --- |
+| 10010 | WARNING_START_NO_STOP_BEFORE | 开始游戏失败。原因：同一个客户端连续调用了两次 `start()` 接口启动游戏，之前未调用 `stop()` 接口停止游戏。建议：请调用服务端 [GameStop]() 接口结束上一次 “游戏”，再调用 `start()` 接口开始游戏。 |
+| 10019 | WARNING_START_INVALID_AUTO_RECYCLE_TIME | 设置无操作回收服务时长出错。建议：请参考 [autoRecycleTime]() 参数描述进行设置。 |
+| 10023 | WARNING_START_WITH_FRAMEWORK_NOT_FOUND | 指定的伴随程序不存在。原因：传入的伴随程序包名错误。建议：检查是否已上传指定的伴随程序、且伴随程序包名称正确。 |
+| 10024 | WARNING_START_WITH_FRAMEWORK_PART_MATCH | 指定的部分伴随程序不存在。原因：传入的伴随程序包名部分错误。建议：检查是否已上传指定的伴随程序、且伴随程序包名称是否正确。 |
+| 10025 | WARNING_START_WITH_FRAMEWORK_WRONG_INPUT_FORMAT | 指定的伴随程序包名格式错误。建议：检查启动游戏接口的 `extra` 参数格式是否正确。 |
+| 30007 | WARNING_SDK_LACK_OF_LOCATION_PERMISSION | SDK 无定位服务权限。原因：定位服务权限未开启。建议：检查设备定位服务权限是否开启。 |
+| 40037 | WARNING_LOCAL_ALREADY_SET_BACKGROUND | 本地客户端应用已切换到后台，请勿重复调用切换后台接口。 |
+| 40038 | WARNING_LOCAL_ALREADY_SET_FOREGROUND | 本地客户端应用已切换到前台，请勿重复调用切换前台接口。 |
+| 40040 | WARNING_REMOTE_<package name>_FOREGROUND_FAILURE_NO_SUCH_PACKAGE_NAME | 云端游戏切换前台失败。原因：游戏包名不存在。建议：请检查指定的游戏包名是否正确。 |
+| 40041 | WARNING_REMOTE_<package name>_ALREADY_FOREGROUND | 云端游戏切换前台失败。原因：云端游戏已处于前台。 |
+| 40043 | WARNING_REMOTE_<package name>_FOREGROUND_FAILURE_NO_PACKAGE_NAME_BACKGROUND | 云端游戏切换前台失败。原因：指定的游戏不在后台或已被关闭。 |
+| 40044 | WARNING_GAME_STOPPED_INGAME_EXIT | 游戏停止。原因：一般是因为云端运行的游戏主动退出了。建议：客户端需要提示用户目前游戏主动被结束了，如果需要，可以重新开始游戏。 |
+
+## 错误码
+
+可能返回的报错信息如下：
+
+|  **错误码**  |  **错误信息**  | **说明**  |
+| --- | --- | --- |
+| 20000 | ERROR_STREAM_GENERAL | 游戏串流连接错误。原因：网络原因。建议：请检查网络。 |
+| 20002 | ERROR_STREAM_CHANGE_CLARITY_ID_NOT_IN_START_STATE | 切换清晰度失败。原因：当前处于非播放状态 。建议：请调用 `start()` 接口，在收到播放成功回调后，再调用切换清晰度档位接口。 |
+| 30000 | ERROR_SDK_GENERAL | 客户端 SDK 通用错误。 |
+| 30001 | ERROR_SDK_INIT_FAILED | 客户端 SDK 初始化失败。 |
+| 30002 | ERROR_SDK_<Parameter>_PARAMETER_EMPTY | 客户端调用 SDK 接口错误。原因：接口参数为空。建议：请参考接口说明文档，检查接口参数。 |
+| 30003 | ERROR_SDK_<Parameter>_PARAMETER_ERROR | 客户端调用 SDK 接口错误。原因：接口参数错误。建议：请参考接口说明文档，检查接口参数。 |
+| 30008 | ERROR_SDK_INVALID_VIDEO_CONTAINER | 指定的视图尺寸无效。原因：在启动游戏时传入的视图尺寸无效。建议：在手动布局视图时，需要在开始游戏前自行设置视图的尺寸，且需要确认在启动游戏时传入的视图的宽和高是正确的，且不能为0。 |
+| 30009 | ERROR_INIT_ACCOUNT_ID_ILLEGAL | 未指定火山引擎账号。建议：通过火山引擎官网页面右上角 **用户 > 账号管理 > 主账号信息** 获取正确的账号。 |
+| 40000 | ERROR_GAME_ABNORMAL_EXIT | 游戏停止。原因：云端服务异常退出。 |
+| 40001 | ERROR_POD_EXIT_CRASH  | 游戏停止。原因：服务端游戏崩溃。建议：请尝试复现游戏在本地设备是否运行异常，如本地未复现，可以联系火山引擎云游戏服务技术支持。 |
+| 40002 | ERROR_GAME_OFFLINE | 游戏停止。原因：当前游戏被下架。建议：请通过火山引擎云游戏控制台『游戏管理』页面或调用服务端 [ListGame]() 接口查看当前游戏的上架状态。 |
+| 40003 | ERROR_GAME_EXIT_TIMEOUT | 游戏停止。原因：超时退出。 |
+| 40004 | ERROR_GAME_STOPPED_IDLE | 游戏停止。原因：用户长时间未操作，服务端自动断开游戏连接。建议：客户端需要提示用户长时间无操作被踢下线。 |
+| 40005 | ERROR_GAME_STOPPED_RESET | 游戏停止。原因：服务端主动重置了游戏。建议：请联系火山引擎云游戏服务对接人员。 |
+| 40006 | ERROR_GAME_STOPPED_API | 游戏停止。原因：服务端主动停止了游戏。 |
+| 40007 | ERROR_GAME_STOPPED_DUPLICATE_START | 游戏停止。原因：某个 start() 请求使用了与当前游戏相同的 userId 和 gameId，导致当前游戏停止。建议：请检查调用 start() 接口的参数是否重复。如果需要重新启动被停止的游戏，请再次使用相同的 userId 和 gameId 调用 start() 接口。 |
+| 40008 | ERROR_POD_STOPPED_BACKGROUND_TIMEOUT | 游戏停止。原因：游戏切换后台，超过指定的保活时长未切换前台，服务端自动断开游戏连接。建议：客户端需要提示用户因为游戏切后台超过保活时长，连接断开。 |
+| 40011 | MESSAGE_START_RESERVED_ID_EXPIRED | 资源预锁定 ID 已过期。建议：调用服务端 [PreAllocateResource]() 接口重新获取。 |
+| 40012 | MESSAGE_RESERVED_ID_NOT_APPLIED | 未通过指定的资源预锁定 ID 启动游戏。建议：确保启动游戏时指定的资源预锁定 ID 正确。 |
+| 40013 | MESSAGE_START_RESERVED_ID_RELEASED | 与指定的资源预锁定 ID 相对应的实例资源已被退订。建议：确保申请的实例资源可用。 |
+| 40014 | MESSAGE_RESOURCE_OFFLINE | 实例已离线。建议：检查实例资源的运行状态。 |
+| 40015 | MESSAGE_RESOURCE_UPDATING | 实例升级中。建议：检查实例资源的运行状态。 |
+| 40016 | MESSAGE_RESOURCE_REBOOTING | 实例重启中。建议：检查实例资源的运行状态。 |
+| 40017 | MESSAGE_RESOURCE_MAINTANENCE | 实例运维中。建议：检查实例资源的运行状态。 |
+| 40018 | MESSAGE_RESOURCE_SERVICE_UPDATING | 实例的云服务升级中。建议：检查实例资源的运行状态。 |
+| 40019 | MESSAGE_RESOURCE_OCCUPIED | 实例被占用。建议：检查实例资源的运行状态。 |
+| 40020 | MESSAGE_RESOURCE_LAUNCHING_GAME | 实例正在启动游戏。 |
+| 40021 | MESSAGE_RESOURCE_IS_RUNNING | 实例正在运行。 |
+| 40022 | MESSAGE_RESOURCE_IS_PUBLISH | 实例正在推流。 |
+| 40023 | MESSAGE_RESOURCE_RELEASED_NORMAL | 实例正常释放。 |
+| 40024 | MESSAGE_RESOURCE_RELEASED_NO_USER | 实例异常释放：客户端超时未加入。 |
+| 40025 | MESSAGE_RESOURCE_RELEASED_IDLE | 实例异常释放：客户端无操作释放。 |
+| 40026 | MESSAGE_RESOURCE_RELEASED_OS_MISSED | 实例异常释放：游戏镜像缺失。 |
+| 40027 | MESSAGE_RESOURCE_RELEASED_GAME_START_FAILURE | 实例异常释放：游戏启动失败。 |
+| 40028 | MESSAGE_RESOURCE_RELEASED_STREAMING_ERROR | 实例异常释放：RTC 推流成功，但是推流过程中出现异常。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40029 | MESSAGE_RESOURCE_RELEASED_3RD_APP_MISSED | 实例异常释放：伴随包镜像缺失。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40030 | MESSAGE_RESOURCE_ERROR | 实例故障。建议：检查实例资源的运行状态或联系火山引擎云游戏服务技术支持。 |
+| 40031 | MESSAGE_3RD_APP_START_FAILURE | 伴随包启动失败。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40032 | MESSAGE_CLOUD_GAME_CRASH_OFTEN | 游戏频繁崩溃。建议：请尝试复现游戏在本地设备是否运行异常，如本地未复现，可以联系火山引擎云游戏服务技术支持。 |
+| 40033 | MESSAGE_GAME_STEAMING_FAILURE | RTC 推流不成功。建议：请联系火山引擎云游戏服务技术支持。 |
+| 40047 | MESSAGE_RESOURCE_RELEASED_INVALID_PARAMETER | 云端实例接收到的参数非法。 |
+| 40048 | MESSAGE_RESOURCE_RELEASED_HEART_BEAT_TIMEOUT | 云端实例离线60秒，中间没有任何心跳。 |
+| 40049 | MESSAGE_RESOURCE_RELEASED_INGAME_EXIT | 游戏停止。原因：一般是因为云端运行的游戏主动退出了。建议：客户端需要提示用户目前游戏主动被结束了，如果需要，可以重新开始游戏。 |
+| 50000 | ERROR_MESSAGE_GENERAL | 未知错误 |
+| 50001 | ERROR_MESSAGE_NOT_CONNECTED | 发送消息错误。原因：客户端 SDK 与火山引擎云游戏 PaaS 服务未连接。建议：请检查网络后，重新调用发送消息接口，进行消息发送。 |
+| 50002 | ERROR_MESSAGE_FAILED_TO_PARSE_MSG | 消息通道数据解析失败。原因：无法解析接收到的消息。 |
+| 50003 | ERROR_MESSAGE_CHANNEL_UID_ILLEGAL | 指定的消息通道 ID 无效。原因：指定的消息通道 ID 与云端初始化 veMessageChannelClient 时填入的用户 ID 不符。 |
+| 50007 | ERROR_MESSAGE_OVER_SIZED | 通过客户端 SDK 发送的消息错误。原因：消息包体过大（不应超过60kb）。建议：减小发送包体大小，重新发送。 |
+| 50009 | ERROR_MESSAGE_TIMEOUT_ILLEGAL | 发送消息错误。原因：指定的消息发送超时时长不符合要求，必须为大于0的值。 |
+| 60001 | ERROR_NET_REQUEST_ERROR | 网络请求失败 |
+| 60002 | ERROR_HTTP_REQUEST_ERROR | 网络请求失败 |
+| 71001 | ERROR_FILE_CHANNEL_FILE_NOT_FOUND | 文件传输失败。原因：上传或下载的文件不存在。建议：请检查文件名是否正确且确保文件存在后重试。 |
+| 71002 | ERROR_FILE_CHANNEL_FILE_NO_ACCESS | 文件传输失败。原因：上传或下载的文件无权限访问。建议：请检查文件的访问权限。 |
+| 71003 | ERROR_FILE_CHANNEL_NETWORK_ABORT | 文件传输失败。原因：上传或下载文件过程中网络异常中断。建议：请检查网络连接后重试。 |
+| 71004 | ERROR_FILE_CHANNEL_TIMEOUT | 文件传输失败。原因：上传或下载文件过程中超时。建议：请检查网络连接后重试。 |
+| 71005 | ERROR_FILE_CHANNEL_STORAGE_NOT_ENOUGH | 文件传输失败。原因：上传或下载文件磁盘空间不足。建议：请确保有足够的存储空间保存文件。 |
