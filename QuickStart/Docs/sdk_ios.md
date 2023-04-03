@@ -811,3 +811,258 @@ typedef NS_ENUM(NSInteger, VeFileChannelEngineErrorCode) {
 ```objectivec
 - (void)sendGamepadData:(NSDictionary *)dataDict;
 ```
+
+### 开启音频采集
+
+描述：获取麦克风权限后，采集并发送音频数据。
+
+```objectivec
+- (void)startAudioStream;
+```
+
+### 停止音频采集
+
+描述：关闭音频数据发送，并且不进行音频采集。
+
+```objectivec
+- (void)stopAudioStream;
+```
+
+### 获取音频采集音量
+
+描述：获取麦克风采集音频的音量
+
+```objectivec
+- (NSInteger)getLocalAudioCaptureVolume;
+```
+
+### 调节音频采集音量
+
+描述：调节麦克风采集音频的音量。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| volume | NSInteger | 指定采集音量大小（百分比，范围：[0, 100]，默认值：100） |
+
+```objectivec
+- (void)setLocalAudioCaptureVolume:(NSInteger)volume;
+```
+
+### 获取本地音频音量
+
+描述：获取本地音频的播放音量。
+
+```objectivec
+- (NSInteger)getLocalAudioPlaybackVolume;
+```
+
+### 调节本地音频播放音量
+
+描述：调节本地音频的播放音量。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| volume | NSInteger | 指定播放音量大小（百分比，范围：[0, 100]，默认值：100） |
+
+```objectivec
+- (void)setLocalAudioPlaybackVolume:(NSInteger)volume;
+```
+
+### 获取远端音频音量
+
+描述：获取远端音频的播放音量。
+
+```objectivec
+- (NSInteger)getRemoteAudioPlaybackVolume;
+```
+
+### 调节远端音频播放音量
+
+描述：调节远端音频的播放音量。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| volume | NSInteger | 指定播放音量大小（百分比，范围：[0, 100]，默认值：100） |
+
+```objectivec
+- (void)setRemoteAudioPlaybackVolume:(NSInteger)volume;
+```
+
+### 获取音频播放设备
+
+描述：获取可用的音频播放设备
+
+```objectivec
+- (VeBaseAudioRoute)getAudioPlaybackDevice;
+```
+
+### 设置音频播放设备
+
+描述：指定音频播放设备。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| audioRoute | VeBaseAudioRoute | 音频播放设备类型：  1（有线耳机）  <br>2（听筒）  <br>3（扬声器）  <br>4（蓝牙耳机）  <br>5（USB 设备） |
+
+```objectivec
+- (void)setAudioPlaybackDevice:(VeBaseAudioRoute)audioRoute;
+```
+
+### 开启视频采集
+
+描述：获取本地摄像头权限后，采集并发送摄像头视频数据。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| cameraId | VeBaseCameraId | 指定前后摄像头：  <br>0（前置摄像头）  <br>1（后置摄像头） |
+
+```objectivec
+- (void)startVideoStream:(VeBaseCameraId)cameraId;
+```
+
+### 切换摄像头
+
+描述：切换前后摄像头。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| cameraId | VeBaseCameraId | 切换前后摄像头：  <br>0（前置摄像头）  <br>1（后置摄像头） |
+
+```objectivec
+- (void)switchCamera:(VeBaseCameraId)cameraId;
+```
+
+### 停止视频采集
+
+描述：关闭视频数据发送，并且不进行视频采集。
+
+```objectivec
+- (void)stopVideoStream;
+```
+
+### 设置本地视频渲染视图
+
+描述：设置本地视频渲染时使用的视图，并使用默认渲染模式（VeBaseRenderModeHidden，视窗填满优先）。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| view | UIView | 视图 |
+
+```objectivec
+- (void)setLocalVideoCanvas:(UIView *)view;
+```
+
+### 设置本地视频渲染视图和模式
+
+描述：设置本地视频渲染时使用的视图，并设置渲染模式。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| view | UIView | 视图 |
+| mode | VeBaseRenderMode | 设置渲染模式：  <br>1（VeBaseRenderModeHidden；默认）  <br>2（VeBaseRenderModeFit）  <br>3（VeBaseRenderModeAdaptive） |
+
+```objectivec
+- (void)setLocalVideoCanvas:(UIView *)view renderMode:(VeBaseRenderMode)mode;
+```
+
+### 镜像翻转本地摄像头画面
+描述：使用“前置摄像头”采集时，是否开启镜像翻转本地摄像头画面。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| type | VeBaseMirrorType | 可选枚举值及说明如下：  <br>0（VeBaseMirrorTypeNone，默认）  <br>1（VeBaseMirrorTypeRender） |
+
+```objectivec
+- (void)setLocalVideoMirrorType:(VeBaseMirrorType)type;
+```
+
+### 设置视频编码质量参数
+
+描述：根据客户端的网络情况，配置本地最大视频编码质量参数。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| videoSolutions | NSArray<VeBaseVideoSolution> | 本地视频采集和编码质量参数，参考以下 **视频采集参数说明**|
+
+```objectivec
+- (void)setVideoEncoderConfig:(NSArray<VeBaseVideoSolution *> *)videoSolutions;
+```
+
+#### 视频采集参数说明
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| width | NSInteger | 视频宽度，单位：px |
+| height | NSInteger | 视频高度，单位：px |
+| frameRate | NSInteger | 视频帧率，单位：fps |
+| maxBitrate | NSInteger | 最大编码码率，单位：kbps |
+| encoderPreference | VeBaseVideoEncoderPreference | 视频编码质量策略，枚举值及说明，参考 [本地视频采集编码选项](本地视频采集编码选项) |
+
+```objectivec
+@interface VeBaseVideoSolution : NSObject
+/** 视频宽度，单位：px */
+@property(nonatomic, assign) NSInteger width;
+/** 视频高度，单位：px */
+@property(nonatomic, assign) NSInteger height;
+/** 视频帧率，单位：fps */
+@property(nonatomic, assign) NSInteger frameRate;
+/** 最大编码码率，单位：kbps */
+@property(nonatomic, assign) NSInteger maxBitrate;
+/** 视频编码质量策略 */
+@property (nonatomic, assign) VeBaseVideoEncoderPreference encoderPreference;
+
+@end
+```
+
+### 暂停开关
+
+描述：暂停游戏开关。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| on | BOOL | 暂停游戏开关，默认为关闭 |
+
+```objectivec
+- (void)switchPaused:(BOOL)on;
+```
+
+### 静音开关
+
+描述：静音开关。
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| on | BOOL | 静音开关，默认为关闭 |
+
+```objectivec
+- (void)muteAudio:(BOOL)on;
+```
+
+### 视频开关
+描述：视频开关。
+
+|  **参数**  |  **类型**  |  **描述**  |
+| --- | --- | --- |
+| on | BOOL | 视频开关，默认为关闭 |
+
+```objectivec
+- (void)muteVideo:(BOOL)on;
+```
+
+### 传感器开关
+
+描述：各类传感器和功能的使用权限开关（默认值 YES 表示开启；默认值 NO 表示关闭）。
+
+```objectivec
+/** 陀螺仪开关，默认：NO，支持拉流过程中修改 */
+@property (nonatomic, assign) BOOL gyroEnable;
+/** 震动开关，默认：NO，支持拉流过程中修改 */
+@property (nonatomic, assign) BOOL vibratorEnable;
+/** 定位开关，默认：NO，支持拉流过程中修改 */
+@property (nonatomic, assign) BOOL locationEnable;
+/** 方向开关，默认：NO，支持拉流过程中修改 */
+@property (nonatomic, assign) BOOL oritationEnable;
+/** 磁力开关，默认：NO，支持拉流过程中修改 */
+@property (nonatomic, assign) BOOL magnetometerEnable;
+/** 加速度开关，默认：NO，支持拉流过程中修改 */
+@property (nonatomic, assign) BOOL accelerometerEnable;
+```
