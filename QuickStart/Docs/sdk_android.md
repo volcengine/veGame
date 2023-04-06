@@ -492,31 +492,36 @@ GamePlayConfig config = builder.userId("your_user_id")
 
 |  **参数名**  |  **类型**  |  **用途**  |
 | --- | --- | --- |
-| debug_info | String | 开启日志上传功能所需要的对象存储信息，示例如下：<br>
-```Java
-"debug_info":{
-   "schema":"ali_oss",
-   "config":{
-      "ak":"xxxxxxx",
-      "sk":"xxxxxxxx",
-      "bucket":"lbhaima",
-      "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
-   }
-   "key": "test/adc.txt"
-}
-```
-<br>注：开启日志上传至对象存储功能，需向云游戏技术支持提供火山引擎云游戏业务 ID（可通过云游戏控制台 业务详情 页面获取）  |
+| debug_info | String | 开启日志上传功能所需要的对象存储信息  <br>注：开启日志上传至对象存储功能，需向云游戏技术支持提供火山引擎云游戏业务 ID（可通过云游戏控制台 **业务详情** 页面获取）  |
 | serviceReserveTime | Int | 指定用户退出游戏后服务端保留游戏运行资源的时长（单位：秒）；即调用客户端本地 `stop` 接口将不会引起实例资源退出，需要用户手动调用服务端 [GameStop](https://www.volcengine.com/docs/6512/102175) 接口释放实例资源 |
 | gameArchiveUrl | String | 下载用户游戏存档文件的完整链接，文件格式为 .tar.gz，解压内容：  <br>`data/data/<pkgname>/`  <br>`sdcard/Android/data/<pkgname>/` |
 | gameArchiveKey | String | 使用对象存储时，保存和下载用户游戏存档文件的 Key |
 | gameArchivePathList | String[] | 使用对象存储时，保存和下载用户游戏存档文件的绝对路径列表，例如：  <br>`["/data/data/com.xx/files/1.txt","/data/data/com.xx/cache/2.txt"]` |
-| userFrameworkApp | String[] | 指定运行游戏需要的伴随程序列表，格式为：<br>
-```Java
-"extra":{
-    "userFrameworkApp":"["com.pkg1","com.pkg2","com.pkg3"]"
-}
+| userFrameworkApp | String[] | 指定运行游戏需要的伴随程序列表  <br>注：已上传的伴随程序列表以及伴随程序包名可通过调用服务端 [伴随程序管理](https://www.volcengine.com/docs/6512/128774) 接口获取 |
+| characteristics | String | 设备类型  |
+
+参考示例：
+
+```java
+"extra": {
+        "debug_info":{
+           "schema":"ali_oss",
+           "config":{
+              "ak":"xxxxxxx",
+              "sk":"xxxxxxxx",
+              "bucket":"lbhaima",
+              "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
+            }
+            "key": "test/adc.txt"
+         }
+        "serviceReserveTime": 60,
+        "gameArchiveUrl": "https://www.exapmple.com/data",
+        "gameArchiveKey": "example.tar.gz",
+        "gameArchivePathList": "["/data/data/com.demo/files","/data/data/com.demo/cache/preferences.xml"]",
+        "userFrameworkApp":"["com.pkg1","com.pkg2","com.pkg3"]",
+        "characteristics": "tablet"
+    }
 ```
-<br>已上传的伴随程序列表以及伴随程序包名可通过调用服务端 [伴随程序管理](https://www.volcengine.com/docs/6512/128774) 接口获取 |
 
 #### IGamePlayerListener
 

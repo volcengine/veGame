@@ -123,7 +123,7 @@ configObj.roundId = @"";
 | userProfilePath | NSArray<NSString> | 否 | 保存用户游戏配置文件的路径列表（如需在游戏进行中通过 setUserProfilePath 接口设置保存配置文件的路径，需要配置该参数） |
 | userTag | NSString | 否 | 用户标签，由业务方指定，可通过调用服务端 CreateUserTag 接口创建，参考 [创建用户属性](https://www.volcengine.com/docs/6512/102176) |
 | keyboardEnable | BOOL | 否 | 是否允许用户使用键盘进行信息输入，默认：YES |
-| extraDict | NSDictionary | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考 [自定义扩展参数列表]() |
+| extraDict | NSDictionary | 否 | 根据业务需要，自定义的扩展参数 |
 
 参考示例：
 

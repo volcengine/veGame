@@ -103,7 +103,7 @@ veGame.getDeviceId();
 | videoRenderMode（仅支持云游戏端游） | String | VIDEO_RENDER_MODE.CONTAIN | 否 | 指定视频流渲染模式：  <br>VIDEO_RENDER_MODE.CONTAIN：默认  <br>VIDEO_RENDER_MODE.COVER：根据视频画面分辨率长边做裁剪 |
 | systemCursorShowStatManual | Boolean | null | 否 | 是否手动控制光标显示/隐藏：  <br>true：手动控制光标显示/隐藏  <br>false：由 SDK 自动控制光标显示/隐藏（默认） |
 | customLocalKeyboardInputId | String | null | 否 | 自定义 Input 元素的 DOM ID（在使用本地输入法场景下，用于对输入框的 UI 和位置进行自定义）；详细使用方法，参考 [Web SDK iOS 本地输入法方案]() |
-| extra | Map<String,String> | null | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考 [自定义扩展参数列表]() |
+| extra | Map<String,String> | null | 否 | 根据业务需要，自定义的扩展参数|
 
 Promise 「成功」的返回值如下：
 
