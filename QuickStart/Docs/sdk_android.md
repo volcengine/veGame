@@ -511,9 +511,9 @@ GamePlayConfig config = builder.userId("your_user_id")
               "sk":"xxxxxxxx",
               "bucket":"lbhaima",
               "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
-            }
+            },
             "key": "test/adc.txt"
-         }
+         },
         "serviceReserveTime": 60,
         "gameArchiveUrl": "https://www.exapmple.com/data",
         "gameArchiveKey": "example.tar.gz",
