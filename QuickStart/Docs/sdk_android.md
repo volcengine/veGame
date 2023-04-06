@@ -507,9 +507,9 @@ GamePlayConfig config = builder.userId("your_user_id")
         "debug_info":{
            "schema":"ali_oss",
            "config":{
-              "ak":"xxxxxxx",
-              "sk":"xxxxxxxx",
-              "bucket":"lbhaima",
+              "ak":"your_ak",
+              "sk":"your_sk",
+              "bucket":"your_backet",
               "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
             },
             "key": "test/adc.txt"
