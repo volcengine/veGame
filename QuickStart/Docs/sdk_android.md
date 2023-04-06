@@ -190,8 +190,8 @@ public interface ICloudCoreManagerStatusListener {
 描述：初始化 veGameEngine，建议在 Application 初始的时候调用。
 
 > 说明：
-> - 第一次初始化时，SDK 会进行一次资源异步加载。如果在初始化时资源加载失败，不需要重新调用 init。SDK 会在调用 start 接口启动游戏时检查资源是否已成功加载，如果没有，则会重新加载。资源加载完成后会由 ICloudCoreManagerStatusListener 的 onInitialed() 回调。
-> - 初始化只需要执行一次。特别注意：多进程会多次执行 Application 的 onCreate，需要在 onCreate 中添加当前进程判断，详情可参考 [Github Demo](https://github.com/volcengine/veGame/tree/master/QuickStart/Android)。
+> - 第一次初始化时，SDK 会进行一次资源异步加载。如果在初始化时资源加载失败，不需要重新调用 `init`。SDK 会在调用 `start` 接口启动游戏时检查资源是否已成功加载，如果没有，则会重新加载。资源加载完成后会由 `ICloudCoreManagerStatusListener` 的 `onInitialed()` 回调。
+> - 初始化只需要执行一次。特别注意：多进程会多次执行 Application 的 `onCreate`，需要在 `onCreate` 中添加当前进程判断，详情可参考 [Github Demo](https://github.com/volcengine/veGame/tree/master/QuickStart/Android)。
 
 ```java
 /**
@@ -217,7 +217,7 @@ public void init(Application application)
 
 描述：获取用户终端设备的唯一标识。
 
-> 最佳实践：保存获取到的设备唯一标识到业务的服务端。在通过调用服务端 PreAllocateResource 接口锁定资源、请求游戏服务时，透传保存的设备唯一标识，用于确定是否支持游戏多开。
+> 最佳实践：保存获取到的设备唯一标识到业务的服务端。在通过调用服务端 [PreAllocateResource](https://www.volcengine.com/docs/6512/107714) 接口锁定资源、请求游戏服务时，透传保存的设备唯一标识，用于确定是否支持游戏多开。
 
 参考以下示例：
 
@@ -401,7 +401,7 @@ public void probeInterrupt()
 
 描述：当成功初始化完成后，可以调用 `start()`，拉流开始播放。
 
-入参：config
+入参：`config`
 
 返回值：开始播放触发的回调为 `IStreamListener` 的 `onFirstRemoteVideoFrame`
 
@@ -423,11 +423,11 @@ public void start(@NonNull GamePlayConfig config, @NonNull IPlayerListener playe
 | customGameId | String | 是 | 注册游戏时指定的用户自定义游戏 ID；当传入 gameId 时，可不传入 |
 | roundId | String | 是 | 当次游戏生命周期的标识符，命名规则如下：  <br>-最大长度为128位的非空字符串，支持的字符集范围为:  <br>-大写字母 A ~ Z  <br>-小写字母 a ~ z  <br>-数字 0 ~ 9  <br>-下划线、减号 |
 | roomType | Int | 否 | 启动游戏的场景，用于控制是否开启多人游戏及游戏控制权转移：  <br>0（单用户，默认）  <br>1（单房间多用户，不可转移游戏控制权）  <br>2（单房间多用户, 可转移游戏控制权） |
-| role | Role | 否 | 启动游戏时，游戏玩家的角色：  <br>Role.PLAYER（操作者）  <br>Role.VIEWER（观看者）；注：当游戏场景类型为1和2时，如不指定则游戏玩家的角色默认为观看者（游戏场景类型为1或2时才有多用户之分） |
+| role | Role | 否 | 启动游戏时，游戏玩家的角色：  <br>Role.PLAYER（操作者）  <br>Role.VIEWER（观看者）  <br>注：当游戏场景类型为1和2时，如不指定游戏玩家角色，则游戏玩家的角色默认为观看者（游戏场景类型为1或2时才有多用户之分） |
 | container | FrameLayout 或其子类 | 是 | 用来承载画面的 Container |
 | planId | String | 否 | 火山侧套餐 ID，可通过调用服务端 [ListResourceSet](https://www.volcengine.com/docs/6512/102116) 接口获取（configuration_code 字段） |
 | enableFileChannel | Boolean | 否 | 是否使能文件传输通道（默认为 false） |
-| enableLocalKeyboard | Boolean | 否 | 是否使能手机本地输入法，（默认为 false）；注：焦点拦截、以及 activity 设置能弹出软键盘等，都会导致本地键盘无法弹出 |
+| enableLocalKeyboard | Boolean | 否 | 是否使能手机本地输入法，（默认为 false）  <>br>注：焦点拦截、以及 activity 设置能弹出软键盘等，都会导致本地键盘无法弹出 |
 | keyBoardEnable | Boolean | 否 | 默认输入法开启，true ：开启， false: 关闭（默认为 true） |
 | enableMagneticSensor | Boolean | 否 | 是否使能磁力传感器（默认为 false） |
 | enableAcceleratorSensor | Boolean | 否 | 是否使能加速度传感器（默认为 false） |
@@ -435,12 +435,12 @@ public void start(@NonNull GamePlayConfig config, @NonNull IPlayerListener playe
 | enableGyroscopeSensor | Boolean | 否 | 是否使能陀螺仪传感器（默认为 false） |
 | enableLocationService | Boolean | 否 | 是否使能定位服务（默认为 false） |
 | enableVibrator | Boolean | 否 | 是否开启震动（默认为 true） |
-| videoStreamProfileId | Int | 否 | 游戏视频流清晰度 ID；如不传入，则使用默认清晰度（清晰度档位 ID 列表和详细说明，参考 [云游戏清晰度档位说明]()） |
+| videoStreamProfileId | Int | 否 | 游戏视频流清晰度 ID；如不传入，则使用默认清晰度（清晰度档位 ID 列表和详细说明，参考 [清晰度切换](#清晰度切换)） |
 | userTag | String | 否 | 用户标签，由业务方指定，可通过调用服务端 CreateUserTag 接口创建，参考 [创建用户属性](https://www.volcengine.com/docs/6512/102176) |
 | reservedId | String | 否 | 资源预锁定 ID，通过调用服务端 [PreAllocateResource](https://www.volcengine.com/docs/6512/107714) 接口获取（如不传入，将在开始播放成功 onPlaySuccess 回调中返回）；资源预锁定 ID 用于申请火山引擎云游戏的每次服务，建议业务记录此 ID，用于每次服务会话的唯一标识，可用于调试和问题排查 |
 | autoRecycleTime | Int | 否 | 设置无操作自动回收服务时长，单位秒（如不设置或设置为0，则使用默认时长300秒，支持设置的上限值为7200，即2小时） |
 | userProfilePath | String[] | 否 | 保存用户游戏配置文件的路径列表（如需在游戏进行中通过 [setUserProfilePath](#保存还原用户配置信息) 接口设置保存配置文件的路径，需要配置该参数） |
-| extra | Map<String,String> | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考 [自定义扩展参数列表]() |
+| extra | Map<String,String> | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考以下 **自定义扩展参数列表** |
 
 `config` 最简配置参考示例（必填参数）：
 
@@ -485,6 +485,32 @@ GamePlayConfig config = builder.userId("your_user_id")
         .userProfilePath("/a/b/", "/c/d/")
         .extra(new HashMap<String,String>());
 ```
+
+#### 自定义扩展参数列表
+
+根据业务需要，在申请云游戏服务时，可通过 `extra` 参数透传的自定义业务参数和相关说明如下：
+
+|  **参数名**  |  **类型**  |  **用途**  |
+| --- | --- | --- |
+| debug_info | String | 开启日志上传功能所需要的对象存储信息，示例如下：<br>
+"debug_info":{
+   "schema":"ali_oss",
+   "config":{
+      "ak":"xxxxxxx",
+      "sk":"xxxxxxxx",
+      "bucket":"lbhaima",
+      "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
+   }
+   "key": "test/adc.txt"
+}  <br>注：开启日志上传至对象存储功能，需向云游戏技术支持提供火山引擎云游戏业务 ID（可通过云游戏控制台 业务详情 页面获取）  |
+| serviceReserveTime | Int | 指定用户退出游戏后服务端保留游戏运行资源的时长（单位：秒）；即调用客户端本地 `stop` 接口将不会引起实例资源退出，需要用户手动调用服务端 [GameStop](https://www.volcengine.com/docs/6512/102175) 接口释放实例资源 |
+| gameArchiveUrl | String | 下载用户游戏存档文件的完整链接，文件格式为 .tar.gz，解压内容：  <br>`data/data/<pkgname>/`  <br>`sdcard/Android/data/<pkgname>/` |
+| gameArchiveKey | String | 使用对象存储时，保存和下载用户游戏存档文件的 Key |
+| gameArchivePathList | String[] | 使用对象存储时，保存和下载用户游戏存档文件的绝对路径列表，例如：  <br>`["/data/data/com.xx/files/1.txt","/data/data/com.xx/cache/2.txt"]` |
+| userFrameworkApp | String[] | 指定运行游戏需要的伴随程序列表，格式为：<br>
+"extra":{
+    "userFrameworkApp":"["com.pkg1","com.pkg2","com.pkg3"]"
+}  <br>已上传的伴随程序列表以及伴随程序包名可通过调用服务端 伴随程序管理 接口获取 |
 
 #### IGamePlayerListener
 
@@ -1656,7 +1682,7 @@ interface RemoteInputCallBack {
 
 |  **接口名称**  |  **接口描述**  |
 | --- | --- |
-| switchVideoStreamProfile(int streamProfileId) | 切换游戏的清晰度（streamProfileId 的可选值和清晰度配置说明，参考 [云游戏清晰度档位说明]()） |
+| switchVideoStreamProfile(int streamProfileId) | 切换游戏的清晰度（streamProfileId 的可选值和清晰度配置说明，参考以下 **清晰度档位说明**） |
 | setStreamProfileChangeListener(StreamProfileChangeCallBack streamProfileChangeCallBack) | 设置清晰度切换成功的回调 |
 
 #### StreamProfileChangeCallBack
@@ -1666,6 +1692,34 @@ interface RemoteInputCallBack {
 |  **接口名称**  |  **接口描述**  |
 | --- | --- |
 | onVideoStreamProfileChange(boolean isSuccess, int from, int current) | 清晰切换结果：  <br>isSuccess（清晰度是否成功切换）  <br>from（切换前的清晰度）  <br>current（当前的清晰度） |
+
+#### 清晰度档位说明
+
+|  **档位 ID**  |  **宽**  |  **高**  |  **码率（kbps）**  |  **帧率**  |
+| --- | --- | --- | --- | --- |
+| 1 | 720 | 1280 | 4000 | 30 |
+| 2（流畅） | 720 | 1280 | 4000 | 60 |
+| 3 | 720 | 1280 | 5000 | 30 |
+| 4 | 720 | 1280 | 5000 | 60 |
+| 5 | 720 | 1280 | 6000 | 30 |
+| 6（标清，默认档位） | 720 | 1280 | 6000 | 60 |
+| 7 | 720 | 1280 | 8000 | 30 |
+| 8 | 720 | 1280 | 8000 | 60 |
+| 9 | 1080 | 1920 | 4000 | 30 |
+| 10 | 1080 | 1920 | 4000 | 60 |
+| 11 | 1080 | 1920 | 5000 | 30 |
+| 12 | 1080 | 1920 | 5000 | 60 |
+| 13 | 1080 | 1920 | 6000 | 30 |
+| 14（高清） | 1080 | 1920 | 6000 | 60 |
+| 15 | 1080 | 1920 | 8000 | 30 |
+| 16（超清） | 1080 | 1920 | 8000 | 60 |
+| 17 | 540 | 960 | 4000 | 30 |
+| 18 | 450 | 800 | 4000 | 30 |
+| 19 | 360 | 640 | 3000 | 30 |
+| 20 | 1080 | 1920 | 10000 | 30 |
+| 21 | 1080 | 1920 | 10000 | 60 |
+| 22 | 1440 | 2560 | 12000 | 30 |
+| 23 | 1440 | 2560 | 12000 | 60 |
 
 参考示例：
 
