@@ -455,7 +455,7 @@ configObj.roundId = @"";
 
 |  **参数**  |  **类型**  |  **描述**  |
 | --- | --- | --- |
-| streamProfileId | NSInteger | 清晰度档位 ID（清晰度档位 ID 列表和详细说明，参考以下 **清晰度档位说明**） |
+| streamProfileId | NSInteger | 清晰度档位 ID（清晰度档位 ID 列表和详细说明，参考以下 [清晰度档位说明](#清晰度档位说明)） |
 
 #### 清晰度档位说明
 

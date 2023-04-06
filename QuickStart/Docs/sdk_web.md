@@ -225,7 +225,7 @@ btn.onclick = () => {
 veGame.switchVideoStreamProfile(streamProfileId);
 ```
 
-有关 `streamProfileId` 的可选值和详细的清晰度配置，参考以下 **清晰度档位说明**。
+有关 `streamProfileId` 的可选值和详细的清晰度配置，参考以下 [清晰度档位说明](#清晰度档位说明)。
 
 #### 清晰度档位说明
 

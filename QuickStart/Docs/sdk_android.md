@@ -440,7 +440,7 @@ public void start(@NonNull GamePlayConfig config, @NonNull IPlayerListener playe
 | reservedId | String | 否 | 资源预锁定 ID，通过调用服务端 [PreAllocateResource](https://www.volcengine.com/docs/6512/107714) 接口获取（如不传入，将在开始播放成功 onPlaySuccess 回调中返回）；资源预锁定 ID 用于申请火山引擎云游戏的每次服务，建议业务记录此 ID，用于每次服务会话的唯一标识，可用于调试和问题排查 |
 | autoRecycleTime | Int | 否 | 设置无操作自动回收服务时长，单位秒（如不设置或设置为0，则使用默认时长300秒，支持设置的上限值为7200，即2小时） |
 | userProfilePath | String[] | 否 | 保存用户游戏配置文件的路径列表（如需在游戏进行中通过 [setUserProfilePath](#保存还原用户配置信息) 接口设置保存配置文件的路径，需要配置该参数） |
-| extra | Map<String,String> | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考以下 **自定义扩展参数列表** |
+| extra | Map<String,String> | 否 | 根据业务需要，自定义的扩展参数；详细信息，参考以下 [自定义扩展参数列表](#自定义扩展参数列表) |
 
 `config` 最简配置参考示例（必填参数）：
 
@@ -493,6 +493,7 @@ GamePlayConfig config = builder.userId("your_user_id")
 |  **参数名**  |  **类型**  |  **用途**  |
 | --- | --- | --- |
 | debug_info | String | 开启日志上传功能所需要的对象存储信息，示例如下：<br>
+```Java
 "debug_info":{
    "schema":"ali_oss",
    "config":{
@@ -502,15 +503,20 @@ GamePlayConfig config = builder.userId("your_user_id")
       "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
    }
    "key": "test/adc.txt"
-}  <br>注：开启日志上传至对象存储功能，需向云游戏技术支持提供火山引擎云游戏业务 ID（可通过云游戏控制台 业务详情 页面获取）  |
+}
+```
+<br>注：开启日志上传至对象存储功能，需向云游戏技术支持提供火山引擎云游戏业务 ID（可通过云游戏控制台 业务详情 页面获取）  |
 | serviceReserveTime | Int | 指定用户退出游戏后服务端保留游戏运行资源的时长（单位：秒）；即调用客户端本地 `stop` 接口将不会引起实例资源退出，需要用户手动调用服务端 [GameStop](https://www.volcengine.com/docs/6512/102175) 接口释放实例资源 |
 | gameArchiveUrl | String | 下载用户游戏存档文件的完整链接，文件格式为 .tar.gz，解压内容：  <br>`data/data/<pkgname>/`  <br>`sdcard/Android/data/<pkgname>/` |
 | gameArchiveKey | String | 使用对象存储时，保存和下载用户游戏存档文件的 Key |
 | gameArchivePathList | String[] | 使用对象存储时，保存和下载用户游戏存档文件的绝对路径列表，例如：  <br>`["/data/data/com.xx/files/1.txt","/data/data/com.xx/cache/2.txt"]` |
 | userFrameworkApp | String[] | 指定运行游戏需要的伴随程序列表，格式为：<br>
+```Java
 "extra":{
     "userFrameworkApp":"["com.pkg1","com.pkg2","com.pkg3"]"
-}  <br>已上传的伴随程序列表以及伴随程序包名可通过调用服务端 伴随程序管理 接口获取 |
+}
+```
+<br>已上传的伴随程序列表以及伴随程序包名可通过调用服务端 [伴随程序管理](https://www.volcengine.com/docs/6512/128774) 接口获取 |
 
 #### IGamePlayerListener
 
@@ -1682,7 +1688,7 @@ interface RemoteInputCallBack {
 
 |  **接口名称**  |  **接口描述**  |
 | --- | --- |
-| switchVideoStreamProfile(int streamProfileId) | 切换游戏的清晰度（streamProfileId 的可选值和清晰度配置说明，参考以下 **清晰度档位说明**） |
+| switchVideoStreamProfile(int streamProfileId) | 切换游戏的清晰度（streamProfileId 的可选值和清晰度配置说明，参考以下 [清晰度档位说明](#清晰度档位说明)） |
 | setStreamProfileChangeListener(StreamProfileChangeCallBack streamProfileChangeCallBack) | 设置清晰度切换成功的回调 |
 
 #### StreamProfileChangeCallBack
