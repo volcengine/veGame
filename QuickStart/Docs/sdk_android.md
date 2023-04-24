@@ -509,7 +509,7 @@ GamePlayConfig config = builder.userId("your_user_id")
            "config":{
               "ak":"your_ak",
               "sk":"your_sk",
-              "bucket":"your_backet",
+              "bucket":"your_bucket",
               "endpoint":"https://oss-cn-hangzhou.aliyuncs.com"
             },
             "key": "test/adc.txt"
