@@ -5,18 +5,25 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.CompoundButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
+import androidx.appcompat.widget.SwitchCompat;
 
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.IMessageChannel;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -36,6 +43,10 @@ public class MessageChannelActivity extends AppCompatActivity
     private ViewGroup mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
+    private IMessageChannel mMessageChannel;
+    private SwitchCompat mSwShowOrHide;
+    private LinearLayoutCompat mLlButtons;
+    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
 
 
     @Override
@@ -49,12 +60,41 @@ public class MessageChannelActivity extends AppCompatActivity
 
     private void initView() {
         mContainer = findViewById(R.id.container);
+        mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
+        mLlButtons = findViewById(R.id.ll_buttons);
+        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
+        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
+        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
+        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+
+        mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+
+        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
+        mBtnAckMsg.setOnClickListener(v -> {
+            if (mMessageChannel != null) {
+                mMessageChannel.sendMessage("AckMsg", true);
+            }
+        });
+        mBtnUidAckMsg.setOnClickListener(v -> {
+            if (mMessageChannel != null) {
+                mMessageChannel.sendMessage("UidAckMsg", true, channelUid);
+            }
+        });
+        mBtnTimeoutMsg.setOnClickListener(v -> {
+            if (mMessageChannel != null) {
+                mMessageChannel.sendMessage("TimeoutMsg", 3000);
+            }
+        });
+        mBtnUidTimeoutMsg.setOnClickListener(v -> {
+            if (mMessageChannel != null) {
+                mMessageChannel.sendMessage("UidTimeoutMsg", 3000, channelUid);
+            }
+        });
     }
 
     private void initGamePlayConfig() {
-        mBuilder = new GamePlayConfig.Builder();
-        String userId = "userId_" + System.currentTimeMillis();
-
         String ak = "", sk = "", token = "";  // 这里需要替换成你的 ak/sk/token
         String sts = AssetsUtil.getTextFromAssets(this.getApplicationContext(), "sts.json");
         try {
@@ -66,13 +106,18 @@ public class MessageChannelActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
+        String gameId = "7212894215896849207";
+        String roundId = "roundId_123";
+        String userId = "userId_" + System.currentTimeMillis();
+
+        mBuilder = new GamePlayConfig.Builder();
         mBuilder.userId(userId)
                 .ak(ak)
                 .sk(sk)
                 .token(token)
                 .container(mContainer)
-                .roundId("roundId_123")
-                .gameId("7212894215896849207")
+                .roundId(roundId)
+                .gameId(gameId)
                 .streamListener(this);
 
         mGamePlayConfig = mBuilder.build();
@@ -133,12 +178,12 @@ public class MessageChannelActivity extends AppCompatActivity
 
     @Override
     public void onError(int i, String s) {
-        AcLog.d(TAG, "[onError] errorCode: " + i + ", errorMessage: " + s);
+        AcLog.e(TAG, "[onError] errorCode: " + i + ", errorMsg: " + s);
     }
 
     @Override
     public void onWarning(int i, String s) {
-        AcLog.d(TAG, "[onWarning] errorCode: " + i + ", errorMessage: " + s);
+        AcLog.d(TAG, "[onWarning] errorCode: " + i + ", errorMsg: " + s);
     }
 
     @Override
@@ -149,6 +194,46 @@ public class MessageChannelActivity extends AppCompatActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
+        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
+        if (mMessageChannel != null) {
+            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+                @Override
+                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
+                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
+                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onSentResult(boolean b, String s) {
+                    AcLog.d(TAG, "[onSentResult] success: " + b + ", mid: " + s);
+                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + b + ", mid: " + s, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void ready() {
+                    AcLog.d(TAG, "[ready]");
+                    Toast.makeText(MessageChannelActivity.this, "[ready]", Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onError(int i, String s) {
+                    AcLog.d(TAG, "[onError] errorCode: " + i + ", errorMsg: " + s);
+                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + i + ", errorMsg: " + s, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onRemoteOnline(String s) {
+                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + s);
+                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + s, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onRemoteOffline(String s) {
+                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + s);
+                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + s, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
     }
 
     @Override
@@ -204,7 +289,7 @@ public class MessageChannelActivity extends AppCompatActivity
 
     @Override
     public void onPodExit(int i, String s) {
-        AcLog.d(TAG, "[onPodExit] errorCode: " + i + ", errorMessage: " + s);
+        AcLog.d(TAG, "[onPodExit] errorCode: " + i + ", errorMsg: " + s);
     }
 
     @Override
