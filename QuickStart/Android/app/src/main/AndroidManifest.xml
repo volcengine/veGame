@@ -66,6 +66,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name=".feature.MessageChannelActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
     </application>
 
 </manifest>
