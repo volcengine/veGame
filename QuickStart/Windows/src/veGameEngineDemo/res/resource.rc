@@ -1,0 +1,188 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// 中文(简体，中国) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_CHS)
+LANGUAGE LANG_CHINESE, SUBLANG_CHINESE_SIMPLIFIED
+#pragma code_page(65001)
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_VEGAMEENGINEDEMO    ICON                    "veGameEngineDemo.ico"
+
+IDI_SMALL               ICON                    "small.ico"
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_VEGAMEENGINEDEMO MENU
+BEGIN
+    POPUP "file"
+    BEGIN
+        MENUITEM "exitWithoutStop",             ID_FILE_EXITWITHOUTSTOP
+    END
+    POPUP "vegame"
+    BEGIN
+        MENUITEM "start",                       ID_VEGAME_START
+        MENUITEM "stop",                        ID_VEGAME_STOP
+        MENUITEM "restart",                     ID_VEGAME_RESTART
+    END
+    POPUP "play"
+    BEGIN
+        MENUITEM "pauseStream",                 ID_PLAY_PAUSEAVSTREAM
+        MENUITEM "resumeStream",                ID_PLAY_RESUMEAVSTREAM
+        MENUITEM "setAudioMute",                ID_PLAY_SETAUDIOMUTE
+        MENUITEM "startSendAudioStream",        ID_PLAY_STARTSENDAUDIOSTREAM
+        MENUITEM "stopSendAudioStream",         ID_PLAY_STOPSENDAUDIOSTREAM
+        POPUP "switchVideoStreamProfile"
+        BEGIN
+            MENUITEM "01 640x360x30x3",             ID_SWITCHVIDEOSTREAMPROFILE_640X360x30x3
+            MENUITEM "02 848x480x30x4",             ID_SWITCHVIDEOSTREAMPROFILE_848X480x30x4
+            MENUITEM "03 960x540x30x4",             ID_SWITCHVIDEOSTREAMPROFILE_960X540x30x4
+            MENUITEM "04 1024x576x30x4",            ID_SWITCHVIDEOSTREAMPROFILE_1024X576x30x4
+            MENUITEM "05 1024x576x60x4",            ID_SWITCHVIDEOSTREAMPROFILE_1024X576x60x4
+            MENUITEM "10 1280x720x30x6",            ID_SWITCHVIDEOSTREAMPROFILE_1280X720x30x6
+            MENUITEM "11 1280x720x60x6",            ID_SWITCHVIDEOSTREAMPROFILE_1280X720x60x6
+            MENUITEM "24 1920x1080x30x12",          ID_SWITCHVIDEOSTREAMPROFILE_1920X1080x30x12
+            MENUITEM "25 1920x1080x60x12",          ID_SWITCHVIDEOSTREAMPROFILE_1920X1080x60x12
+            MENUITEM "35 2560x1440x60x16",          ID_SWITCHVIDEOSTREAMPROFILE_2560X1440x60x16
+        END
+    END
+    POPUP "test"
+    BEGIN
+        MENUITEM "sendStringMessage",           ID_TEST_SENDSTRINGMESSAGE
+        MENUITEM "sendStringMessageAck",        ID_TEST_SENDSTRINGMESSAGEACK
+        MENUITEM "sendStringMessageTimeout",    ID_TEST_SENDSTRINGMESSAGETIMEOUT
+        MENUITEM "sendBinaryMessage",           ID_TEST_SENDBINARYMESSAGE
+        MENUITEM SEPARATOR
+        MENUITEM "setKeepAliveTime",            ID_TEST_SETIDLETIME
+        MENUITEM "setAutoRecycleTime",          ID_TEST_SETAUTORECYCLETIME
+        MENUITEM "getAutoRecycleTime",          ID_TEST_GETAUTORECYCLETIME
+        MENUITEM "setUserProfilePath",          ID_TEST_SETUSERPROFILEPATH
+        MENUITEM "getUserProfilePath",          ID_TEST_GETUSERPROFILEPATH
+        MENUITEM SEPARATOR
+        MENUITEM "switchBackground",            ID_TEST_SWITCHBACKGROUND
+        MENUITEM "setRemoteGameForeground",     ID_TEST_SETREMOTEGAMEFOREGROUND
+        MENUITEM SEPARATOR
+        MENUITEM "setKeyboardEnable",           ID_TEST_SETKEYBOARDENABLE
+        MENUITEM "getKeyboardEnable",           ID_TEST_GETKEYBOARDENABLE
+        MENUITEM SEPARATOR
+        MENUITEM "setReconnectTime",            ID_TEST_SETRECONNECTTIME
+    END
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_GETVALUE DIALOGEX 0, 0, 200, 60
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "输入参数（长度最多100）"
+FONT 9, "宋体"
+BEGIN
+    DEFPUSHBUTTON   "确定",IDOK,35,43,50,14
+    PUSHBUTTON      "取消",IDCANCEL,115,43,50,14
+    EDITTEXT        IDC_EDIT_GETVALUE,25,20,150,14,ES_AUTOHSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO
+BEGIN
+    IDD_DIALOG_GETVALUE, DIALOG
+    BEGIN
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE           "veGameEngineDemo"
+    IDC_VEGAMEENGINEDEMO    "VEGAMEENGINEDEMO"
+END
+
+#endif    // 中文(简体，中国) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
