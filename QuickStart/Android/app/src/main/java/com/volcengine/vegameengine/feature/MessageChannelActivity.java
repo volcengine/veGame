@@ -35,6 +35,9 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+/**
+ * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ */
 public class MessageChannelActivity extends AppCompatActivity
         implements IGamePlayerListener, IStreamListener {
 
@@ -74,22 +77,64 @@ public class MessageChannelActivity extends AppCompatActivity
         String channelUid = "com.bytedance.vemessagechannelprj.prj1";
         mBtnAckMsg.setOnClickListener(v -> {
             if (mMessageChannel != null) {
-                mMessageChannel.sendMessage("AckMsg", true);
+                /**
+                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
+                 *
+                 * @param payload 发送内容，size：60KB
+                 * @param needAck 是否需要云端Ack回执
+                 * @return 消息实体
+                 */
+                IMessageChannel.IChannelMessage ackMsg =
+                        mMessageChannel.sendMessage("ackMsg", true);
+                AcLog.d(TAG, "ackMsg: " + ackMsg);
             }
         });
         mBtnUidAckMsg.setOnClickListener(v -> {
             if (mMessageChannel != null) {
-                mMessageChannel.sendMessage("UidAckMsg", true, channelUid);
+                /**
+                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
+                 *
+                 * @param payload        发送内容，size：60KB
+                 * @param needAck        是否需要云端Ack回执
+                 * @param destChannelUid 目标用户消息通道ID
+                 * @return 消息实体
+                 */
+                IMessageChannel.IChannelMessage uidAckMsg =
+                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
+                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
             }
         });
         mBtnTimeoutMsg.setOnClickListener(v -> {
             if (mMessageChannel != null) {
-                mMessageChannel.sendMessage("TimeoutMsg", 3000);
+                /**
+                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
+                 *
+                 * @param payload 发送内容，size：60KB
+                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
+                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
+                 *                  返回错误信息
+                 * @return 消息实体
+                 */
+                IMessageChannel.IChannelMessage timeoutMsg =
+                        mMessageChannel.sendMessage("timeoutMsg", 3000);
+                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
             }
         });
         mBtnUidTimeoutMsg.setOnClickListener(v -> {
             if (mMessageChannel != null) {
-                mMessageChannel.sendMessage("UidTimeoutMsg", 3000, channelUid);
+                /**
+                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
+                 *
+                 * @param payload        发送内容，size：60KB
+                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
+                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
+                 *                         返回错误信息
+                 * @param destChannelUid 目标用户消息通道ID
+                 * @return 消息实体
+                 */
+                IMessageChannel.IChannelMessage uidTimeoutMsg =
+                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
+                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
             }
         });
     }
@@ -196,37 +241,71 @@ public class MessageChannelActivity extends AppCompatActivity
         AcLog.d(TAG, "[onServiceInit]");
         mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
         if (mMessageChannel != null) {
+            /**
+             * 设置消息接收回调监听
+             *
+             * @param listener 消息接收回调监听器
+             */
             mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+                /**
+                 * 消息接收回调
+                 *
+                 * @param iChannelMessage 接收的消息实体
+                 */
                 @Override
                 public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
                     AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
                     Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
                 }
 
+                /**
+                 * 发送消息结果回调
+                 *
+                 * @param b 是否发送成功
+                 * @param s 消息ID
+                 */
                 @Override
                 public void onSentResult(boolean b, String s) {
                     AcLog.d(TAG, "[onSentResult] success: " + b + ", mid: " + s);
                     Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + b + ", mid: " + s, Toast.LENGTH_SHORT).show();
                 }
 
+                /**
+                 * 已弃用，可忽略
+                 */
                 @Override
                 public void ready() {
                     AcLog.d(TAG, "[ready]");
-                    Toast.makeText(MessageChannelActivity.this, "[ready]", Toast.LENGTH_SHORT).show();
                 }
 
+                /**
+                 * 错误信息回调
+                 *
+                 * @param i 错误码
+                 * @param s 错误信息
+                 */
                 @Override
                 public void onError(int i, String s) {
                     AcLog.d(TAG, "[onError] errorCode: " + i + ", errorMsg: " + s);
                     Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + i + ", errorMsg: " + s, Toast.LENGTH_SHORT).show();
                 }
 
+                /**
+                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
+                 *
+                 * @param s 云端游戏的用户ID
+                 */
                 @Override
                 public void onRemoteOnline(String s) {
                     AcLog.d(TAG, "[onRemoteOnline] channelUid: " + s);
                     Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + s, Toast.LENGTH_SHORT).show();
                 }
 
+                /**
+                 * 云端游戏离线回调
+                 *
+                 * @param s 云端游戏的用户ID
+                 */
                 @Override
                 public void onRemoteOffline(String s) {
                     AcLog.d(TAG, "[onRemoteOffline] channelUid: " + s);
