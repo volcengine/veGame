@@ -17,7 +17,6 @@ sdkpublic
 *.idb
 *.ilk
 *.lastbuildstate
-*.lib
 *.log
 *.map
 *.obj
