@@ -34,8 +34,9 @@
  - veGameEngine.dll
  - VolcEngineRTC.dll
 
-#### 头文件
- - inclue\
+#### 依赖
+ - third_party\common
+ - third_party{platform}\include
 
 #### libs
  - lib\
@@ -55,6 +56,8 @@
 #### 一、初始化 vegame::IGameEngine
 
 ```C++
+参考demo_instance.cpp
+
 vegame::EngineConfig engineConfig = {0};
 // 必须填写，火山引擎用户账号ID
 engineConfig.account_id = "";
@@ -67,24 +70,28 @@ gameEngine->init(engineConfig , dynamic_cast<vegame::IEngineEventHandler*>(this)
 #### 二、参数配置
 
 ```C++
-    // ak、sk、token，通过云游戏控制台获取临时密钥，详情见https://www.volcengine.com/docs/6512/136537
-    vegame::GameConfig gameConfig = { 0 };
-    gameConfig.canvas = DemoCore::instance().getMainWnd();  // 必填字段
-    gameConfig.ak = "";                                     // 必填字段
-    gameConfig.sk = "";                                     // 必填字段
-    gameConfig.token = "";                                  // 必填字段
-    gameConfig.round_id = "";                               // 必填字段
-    gameConfig.game_id = "";                                // 必填字段
-    gameConfig.custom_game_id = "";                         // 选填字段
-    gameConfig.profile_path_list = "";                      // 选填字段
-    gameConfig.auto_recycle_time = 0;                       // 选填字段
-    gameConfig.video_stream_profile_id = 24;                // 选填字段
+参考demo_instance.cpp
+
+// ak、sk、token，通过云游戏控制台获取临时密钥，详情见https://www.volcengine.com/docs/6512/136537
+vegame::GameConfig gameConfig = { 0 };
+gameConfig.canvas = DemoCore::instance().getMainWnd();  // 必填字段
+gameConfig.ak = "";                                     // 必填字段
+gameConfig.sk = "";                                     // 必填字段
+gameConfig.token = "";                                  // 必填字段
+gameConfig.round_id = "";                               // 必填字段
+gameConfig.game_id = "";                                // 必填字段
+gameConfig.custom_game_id = "";                         // 选填字段
+gameConfig.profile_path_list = "";                      // 选填字段
+gameConfig.auto_recycle_time = 0;                       // 选填字段
+gameConfig.video_stream_profile_id = 24;                // 选填字段
 
 ```
 #### 三、开始游戏
 ```C++
+参考demo_instance.cpp
+
 // 启动云游戏
-    vegame_engine_->start(gameConfig);
+vegame_engine_->start(gameConfig);
 ```
 
 ## 参考资料
