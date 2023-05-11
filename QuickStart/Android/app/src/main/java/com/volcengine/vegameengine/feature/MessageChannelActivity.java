@@ -140,6 +140,15 @@ public class MessageChannelActivity extends AppCompatActivity
     }
 
     private void initGamePlayConfig() {
+        /**
+         * ak/sk/token的值从assets目录下的sts.json文件中读取，该目录及文件需要自行创建。
+         * sts.json的格式形如
+         * {
+         *     "ak": "your_ak",
+         *     "sk": "your_sk",
+         *     "token": "your_token"
+         * }
+         */
         String ak = "", sk = "", token = "";  // 这里需要替换成你的 ak/sk/token
         String sts = AssetsUtil.getTextFromAssets(this.getApplicationContext(), "sts.json");
         try {
@@ -151,7 +160,7 @@ public class MessageChannelActivity extends AppCompatActivity
             e.printStackTrace();
         }
 
-        String gameId = "7212894215896849207";
+        String gameId = "7212894215896849207";  // 这里需要替换成你的 gameId
         String roundId = "roundId_123";
         String userId = "userId_" + System.currentTimeMillis();
 
@@ -214,28 +223,65 @@ public class MessageChannelActivity extends AppCompatActivity
         VeGameEngine.getInstance().rotate(newConfig.orientation);
     }
 
+    /**
+     * 播放成功回调
+     *
+     * @param roundId 当次游戏生命周期标识符
+     * @param clarityId 当前游戏画面的清晰度，首帧渲染到画面时触发该回调
+     * @param extraMap 自定义的扩展参数
+     * @param gameId 游戏ID
+     * @param reservedId 资源预锁定ID
+     */
     @Override
     public void onPlaySuccess(String roundId, int clarityId, Map<String, String> extraMap, String gameId, String reservedId) {
-        AcLog.d(TAG, "[onPlaySuccess] ");
-        AcLog.d(TAG, "roundId " + roundId + " clarityId " + clarityId + "extra:" + extraMap +
+        AcLog.d(TAG, "[onPlaySuccess] roundId " + roundId + " clarityId " + clarityId + "extra:" + extraMap +
                 "gameId : " + gameId + " reservedId" + reservedId);
     }
 
+    /**
+     * SDK内部产生的错误回调
+     *
+     * @param errorCode 错误码
+     * @param errorMsg 错误详情
+     */
     @Override
-    public void onError(int i, String s) {
-        AcLog.e(TAG, "[onError] errorCode: " + i + ", errorMsg: " + s);
+    public void onError(int errorCode, String errorMsg) {
+        AcLog.e(TAG, "[onError] errorCode: " + errorCode + ", errorMsg: " + errorMsg);
+        Toast.makeText(this, "[onError] errorCode: " + errorCode + ", errorMsg: " + errorMsg, Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * SDK内部产生的警告回调
+     *
+     * @param warningCode 警告码
+     * @param warningMsg 警告详情
+     */
     @Override
-    public void onWarning(int i, String s) {
-        AcLog.d(TAG, "[onWarning] errorCode: " + i + ", errorMsg: " + s);
+    public void onWarning(int warningCode, String warningMsg) {
+        AcLog.d(TAG, "[onWarning] warningCode: " + warningCode + ", warningMsg: " + warningMsg);
     }
 
+    /**
+     * 网络连接类型和状态切换回调
+     *
+     * @param networkType 当前的网络类型
+     *         -1 -- 网络连接类型未知
+     *          0 -- 网络连接已断开
+     *          1 -- 网络类型为 LAN
+     *          2 -- 网络类型为 Wi-Fi（包含热点）
+     *          3 -- 网络类型为 2G 移动网络
+     *          4 -- 网络类型为 3G 移动网络
+     *          5 -- 网络类型为 4G 移动网络
+     *          6 -- 网络类型为 5G 移动网络
+     */
     @Override
-    public void onNetworkChanged(int i) {
-        AcLog.d(TAG, "[onNetworkChanged] network: " + i);
+    public void onNetworkChanged(int networkType) {
+        AcLog.d(TAG, "[onNetworkChanged] networkType: " + networkType);
     }
 
+    /**
+     * 加入房间前回调，用于获取并初始化各个功能服务，例如设置各种事件监听回调。
+     */
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
@@ -315,64 +361,136 @@ public class MessageChannelActivity extends AppCompatActivity
         }
     }
 
+    /**
+     * 收到音频首帧时的回调
+     *
+     * @param audioStreamId 远端实例音频流的ID
+     */
     @Override
-    public void onFirstAudioFrame(String s) {
-        AcLog.d(TAG, "[onFirstAudioFrame] audioStreamId: " + s);
+    public void onFirstAudioFrame(String audioStreamId) {
+        AcLog.d(TAG, "[onFirstAudioFrame] audioStreamId: " + audioStreamId);
     }
 
+    /**
+     * 收到视频首帧时的回调
+     *
+     * @param videoStreamId 远端实例视频流的ID
+     */
     @Override
-    public void onFirstRemoteVideoFrame(String s) {
-        AcLog.d(TAG, "[onFirstRemoteVideoFrame] videoStreamId: " + s);
+    public void onFirstRemoteVideoFrame(String videoStreamId) {
+        AcLog.d(TAG, "[onFirstRemoteVideoFrame] videoStreamId: " + videoStreamId);
     }
 
+    /**
+     * 开始播放的回调
+     */
     @Override
     public void onStreamStarted() {
         AcLog.d(TAG, "[onStreamStarted]");
     }
 
+    /**
+     * 暂停播放后的回调，调用{@link VeGameEngine#pause()}后会触发
+     */
     @Override
     public void onStreamPaused() {
         AcLog.d(TAG, "[onStreamPaused]");
     }
 
+    /**
+     * 恢复播放后的回调，调用{@link VeGameEngine#resume()} 或 VeGameEngine#muteAudio(false) 后会触发
+     */
     @Override
     public void onStreamResumed() {
         AcLog.d(TAG, "[onStreamResumed]");
     }
 
+    /**
+     * 周期为2秒的音视频网络状态的回调，可用于内部数据分析或监控
+     *
+     * @param streamStats 远端视频流的性能状态
+     */
     @Override
     public void onStreamStats(StreamStats streamStats) {
         AcLog.d(TAG, "[onStreamStats] streamStats: " + streamStats);
     }
 
+    /**
+     * 周期为2秒的本地推送的音视频流的状态回调
+     *
+     * @param localStreamStats 本地音视频流的性能状态
+     */
     @Override
     public void onLocalStreamStats(LocalStreamStats localStreamStats) {
         AcLog.d(TAG, "[onLocalStreamStats] localStreamStats: " + localStreamStats);
     }
 
+    /**
+     * 视频流连接状态变化
+     *
+     * @param state 视频流连接状态
+     *              1 -- 连接断开
+     *              2 -- 首次连接，正在连接中
+     *              3 -- 首次连接成功
+     *              4 -- 连接断开后，重新连接中
+     *              5 -- 连接断开后，重新连接成功
+     *              6 -- 连接断开超过10秒，但仍然会继续连接
+     *              7 -- 连接失败，不会继续连接
+     */
     @Override
-    public void onStreamConnectionStateChanged(int i) {
-        AcLog.d(TAG, "[onStreamConnectionStateChanged] connectionState: " + i);
+    public void onStreamConnectionStateChanged(int state) {
+        AcLog.d(TAG, "[onStreamConnectionStateChanged] connectionState: " + state);
     }
 
+    /**
+     * 操作延迟回调
+     *
+     * @param elapse 操作延迟的具体值，单位:毫秒
+     */
     @Override
-    public void onDetectDelay(long l) {
-        AcLog.d(TAG, "[onDetectDelay] detectDelay: " + l);
+    public void onDetectDelay(long elapse) {
+        AcLog.d(TAG, "[onDetectDelay] detectDelay: " + elapse);
     }
 
+    /**
+     * 客户端旋转回调
+     *
+     * @param rotation 旋转方向
+     *          0, 180 -- 竖屏
+     *         90, 270 -- 横屏
+     */
     @Override
-    public void onRotation(int i) {
-        AcLog.d(TAG, "[onRotation] rotation: " + i);
-        setRotation(i);
+    public void onRotation(int rotation) {
+        AcLog.d(TAG, "[onRotation] rotation: " + rotation);
+        setRotation(rotation);
     }
 
+    /**
+     * 远端实例退出回调
+     *
+     * @param reasonCode 退出的原因码
+     * @param reasonMsg 退出的原因详情
+     */
     @Override
-    public void onPodExit(int i, String s) {
-        AcLog.d(TAG, "[onPodExit] errorCode: " + i + ", errorMsg: " + s);
+    public void onPodExit(int reasonCode, String reasonMsg) {
+        AcLog.d(TAG, "[onPodExit] reasonCode: " + reasonCode + ", reasonMsg: " + reasonMsg);
     }
 
+    /**
+     * 周期为2秒的游戏中的网络质量回调
+     *
+     * @param quality 网络质量评级
+     *                0 -- 网络状况未知，无法判断网络质量
+     *                1 -- 网络状况极佳，能够高质量承载当前业务
+     *                2 -- 当前网络状况良好，能够较好地承载当前业务
+     *                3 -- 当前网络状况有轻微劣化，但不影响正常使用
+     *                4 -- 当前网络质量欠佳，会影响当前业务的主观体验
+     *                5 -- 当前网络已经无法承载当前业务的媒体流，需要采取相应策略，
+     *                      比如降低媒体流的码率或者更换网络
+     *                6 -- 当前网络完全无法正常通信
+     */
     @Override
-    public void onNetworkQuality(int i) {
-        AcLog.d(TAG, "[onNetworkQuality] quality: " + i);
+    public void onNetworkQuality(int quality) {
+        AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
     }
 }
