@@ -7,6 +7,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class BasePlayActivity extends AppCompatActivity {
 
+    /**
+     * 调整Activity的显示方向
+     *
+     * @param rotation 旋转方向
+     *                 0/180  -- 将Activity调整为竖屏显示
+     *                 90/270 -- 将Activity调整为横屏显示
+     */
     protected void setRotation(int rotation) {
         switch (rotation) {
             case 0:
