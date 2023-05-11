@@ -32,7 +32,6 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_MESSAGE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MULTI_USER;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PAD_CONSOLE;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
@@ -74,7 +73,6 @@ import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
-import com.volcengine.vegameengine.feature.MessageChannelView;
 import com.volcengine.vegameengine.feature.MultiUserManagerView;
 import com.volcengine.vegameengine.feature.PadConsoleManagerView;
 import com.volcengine.vegameengine.feature.PodControlServiceView;
@@ -419,13 +417,6 @@ public class GameActivity extends AppCompatActivity
                     new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
                 } else {
                     AcLog.d(TAG, "LocationService is null!");
-                }
-                break;
-            case FEATURE_MESSAGE_CHANNEL: // 消息通道
-                if (veGameEngine.getMessageChannel() != null) {
-                    new MessageChannelView(this, veGameEngine.getMessageChannel(), btnMessageChannel);
-                } else {
-                    AcLog.d(TAG, "MessageChannel is null!");
                 }
                 break;
             case FEATURE_MULTI_USER: // 多用户

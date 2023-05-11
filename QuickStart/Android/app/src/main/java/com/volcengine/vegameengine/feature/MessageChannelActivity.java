@@ -1,20 +1,15 @@
 package com.volcengine.vegameengine.feature;
 
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
-import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
-
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -27,6 +22,7 @@ import com.volcengine.cloudphone.apiservice.IMessageChannel;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
+import com.volcengine.vegameengine.base.BasePlayActivity;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.ScreenUtil;
 
@@ -38,7 +34,7 @@ import java.util.Map;
 /**
  * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
  */
-public class MessageChannelActivity extends AppCompatActivity
+public class MessageChannelActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
     private final String TAG = getClass().getSimpleName();
@@ -141,6 +137,10 @@ public class MessageChannelActivity extends AppCompatActivity
 
     private void initGamePlayConfig() {
         /**
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+         * ak/sk/token需要从火山官网上获取，具体步骤详见README[鉴权相关]。
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+         *
          * ak/sk/token的值从assets目录下的sts.json文件中读取，该目录及文件需要自行创建。
          * sts.json的格式形如
          * {
@@ -176,19 +176,6 @@ public class MessageChannelActivity extends AppCompatActivity
 
         mGamePlayConfig = mBuilder.build();
         VeGameEngine.getInstance().start(mGamePlayConfig, this);
-    }
-
-    private void setRotation(int rotation) {
-        switch (rotation) {
-            case 0:
-            case 180:
-                setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_PORTRAIT);
-                break;
-            case 90:
-            case 270:
-                setRequestedOrientation(SCREEN_ORIENTATION_SENSOR_LANDSCAPE);
-                break;
-        }
     }
 
     @Override
@@ -242,23 +229,23 @@ public class MessageChannelActivity extends AppCompatActivity
      * SDK内部产生的错误回调
      *
      * @param errorCode 错误码
-     * @param errorMsg 错误详情
+     * @param errorMessage 错误详情
      */
     @Override
-    public void onError(int errorCode, String errorMsg) {
-        AcLog.e(TAG, "[onError] errorCode: " + errorCode + ", errorMsg: " + errorMsg);
-        Toast.makeText(this, "[onError] errorCode: " + errorCode + ", errorMsg: " + errorMsg, Toast.LENGTH_SHORT).show();
+    public void onError(int errorCode, String errorMessage) {
+        AcLog.e(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
+        Toast.makeText(this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
     }
 
     /**
      * SDK内部产生的警告回调
      *
      * @param warningCode 警告码
-     * @param warningMsg 警告详情
+     * @param warningMessage 警告详情
      */
     @Override
-    public void onWarning(int warningCode, String warningMsg) {
-        AcLog.d(TAG, "[onWarning] warningCode: " + warningCode + ", warningMsg: " + warningMsg);
+    public void onWarning(int warningCode, String warningMessage) {
+        AcLog.d(TAG, "[onWarning] warningCode: " + warningCode + ", warningMessage: " + warningMessage);
     }
 
     /**
@@ -307,13 +294,13 @@ public class MessageChannelActivity extends AppCompatActivity
                 /**
                  * 发送消息结果回调
                  *
-                 * @param b 是否发送成功
-                 * @param s 消息ID
+                 * @param success 是否发送成功
+                 * @param messageId 消息ID
                  */
                 @Override
-                public void onSentResult(boolean b, String s) {
-                    AcLog.d(TAG, "[onSentResult] success: " + b + ", mid: " + s);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + b + ", mid: " + s, Toast.LENGTH_SHORT).show();
+                public void onSentResult(boolean success, String messageId) {
+                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
+                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
                 }
 
                 /**
@@ -327,35 +314,35 @@ public class MessageChannelActivity extends AppCompatActivity
                 /**
                  * 错误信息回调
                  *
-                 * @param i 错误码
-                 * @param s 错误信息
+                 * @param errorCode 错误码
+                 * @param errorMessage 错误信息
                  */
                 @Override
-                public void onError(int i, String s) {
-                    AcLog.d(TAG, "[onError] errorCode: " + i + ", errorMsg: " + s);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + i + ", errorMsg: " + s, Toast.LENGTH_SHORT).show();
+                public void onError(int errorCode, String errorMessage) {
+                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
+                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
                 }
 
                 /**
                  * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
                  *
-                 * @param s 云端游戏的用户ID
+                 * @param channelUid 云端游戏的用户ID
                  */
                 @Override
-                public void onRemoteOnline(String s) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + s);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + s, Toast.LENGTH_SHORT).show();
+                public void onRemoteOnline(String channelUid) {
+                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
+                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
                 }
 
                 /**
                  * 云端游戏离线回调
                  *
-                 * @param s 云端游戏的用户ID
+                 * @param channelUid 云端游戏的用户ID
                  */
                 @Override
-                public void onRemoteOffline(String s) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + s);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + s, Toast.LENGTH_SHORT).show();
+                public void onRemoteOffline(String channelUid) {
+                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
+                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -469,11 +456,11 @@ public class MessageChannelActivity extends AppCompatActivity
      * 远端实例退出回调
      *
      * @param reasonCode 退出的原因码
-     * @param reasonMsg 退出的原因详情
+     * @param reasonMessage 退出的原因详情
      */
     @Override
-    public void onPodExit(int reasonCode, String reasonMsg) {
-        AcLog.d(TAG, "[onPodExit] reasonCode: " + reasonCode + ", reasonMsg: " + reasonMsg);
+    public void onPodExit(int reasonCode, String reasonMessage) {
+        AcLog.d(TAG, "[onPodExit] reasonCode: " + reasonCode + ", reasonMessage: " + reasonMessage);
     }
 
     /**
