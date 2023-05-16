@@ -198,7 +198,7 @@ main
 │               │   ├── FileChannelView.java // 文件通道
 │               │   ├── LocalInputManagerView.java // 本地输入
 │               │   ├── LocationServiceView.java // 定位服务
-│               │   ├── MessageChannelView.java // 消息通道
+│               │   ├── MessageChannelActivity.java // 消息通道
 │               │   ├── MultiUserManagerView.java // 多用户
 │               │   ├── PadConsoleManagerView.java // 游戏手柄
 │               │   ├── PodControlServiceView.java //实例控制
