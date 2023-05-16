@@ -188,6 +188,7 @@ main
 │               ├── WebViewActivity.kt // 用于展示火山引擎的官网
 │               ├── base
 │               │   ├── BaseListActivity.java
+│               │   ├── BasePlayActivity.java
 │               │   └── BaseSampleActivity.kt
 │               ├── feature // 用于体验SDK不同的特性
 │               │   ├── AudioServiceView.java // 音频
@@ -202,7 +203,7 @@ main
 │               │   ├── MultiUserManagerView.java // 多用户
 │               │   ├── PadConsoleManagerView.java // 游戏手柄
 │               │   ├── PodControlServiceView.java //实例控制
-│               │   ├── SensorView.java // 传感器
+│               │   ├── SensorActivity.java // 传感器
 │               │   └── UnclassifiedView.java // 其他
 │               └── util
 │                   ├── AssetsUtil.java // 用于读取并解析sts.json文件中的ak/sk/token
@@ -217,6 +218,7 @@ main
 其中, **sts.json** 的格式如下：
 ```java
 {
+    "gameId": "your_game_id",
     "ak": "your_ak",
     "sk": "your_sk",
     "token": "your_token"
