@@ -36,7 +36,6 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_MULTI_USER;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PAD_CONSOLE;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_SENSOR;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
 
 import android.app.Activity;
@@ -77,7 +76,6 @@ import com.volcengine.vegameengine.feature.MultiUserManagerView;
 import com.volcengine.vegameengine.feature.PadConsoleManagerView;
 import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
-import com.volcengine.vegameengine.feature.SensorView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.DialogUtils;
@@ -446,9 +444,6 @@ public class GameActivity extends AppCompatActivity
                     final ProbeNetworkView dialog = new ProbeNetworkView(this, v -> veGameEngine.probeInterrupt());
                     dialog.showProbeNetworkDialogForGame(mGamePlayConfig);
                 });
-                break;
-            case FEATURE_SENSOR: // 传感器
-                new SensorView(this, btnSensor);
                 break;
             case FEATURE_UNCLASSIFIED: // 其他
                 new UnclassifiedView(this, btnUnclassified);

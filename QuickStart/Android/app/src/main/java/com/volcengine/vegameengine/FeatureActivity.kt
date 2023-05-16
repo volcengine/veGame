@@ -21,11 +21,7 @@ class FeatureActivity : BaseSampleActivity() {
     private lateinit var btnStartGame: Button
 
     // 这里请输入你的gameId
-//    private val testBean = TestBean("7104356860098059039") // 抖音
-    private val testBean = TestBean("7200722234032413498") // 消息通道
-//    private val testBean = TestBean("7153954521692003079") // 原神
-//    private val testBean = TestBean("7148631686065052446") // 光遇
-//    private val testBean = TestBean("7068174254205967111") // 汤姆猫
+    private val testBean = TestBean("your_game_id") // 消息通道
 
     override fun onCreate(savedInstanceState: Bundle?) {
         mFeatureId = intent.getIntExtra("featureId", -1)

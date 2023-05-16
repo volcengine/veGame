@@ -3,6 +3,7 @@ package com.volcengine.vegameengine;
 import android.os.Bundle;
 import com.volcengine.vegameengine.base.BaseListActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
+import com.volcengine.vegameengine.feature.SensorActivity;
 import com.volcengine.vegameengine.util.Feature;
 
 public class MainActivity extends BaseListActivity {
@@ -26,7 +27,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.pad_console, R.string.pad_console_desc, FeatureActivity.class, Feature.FEATURE_PAD_CONSOLE);
         holder.addItem(R.string.pod_control, R.string.pod_control_desc, FeatureActivity.class, Feature.FEATURE_POD_CONTROL);
         holder.addItem(R.string.probe_network, R.string.probe_network_desc, FeatureActivity.class, Feature.FEATURE_PROBE_NETWORK);
-        holder.addItem(R.string.sensor, R.string.sensor_desc, FeatureActivity.class, Feature.FEATURE_SENSOR);
+        holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class, Feature.FEATURE_SENSOR);
         holder.addItem(R.string.unclassified, R.string.unclassified_desc, FeatureActivity.class, Feature.FEATURE_UNCLASSIFIED);
     }
 

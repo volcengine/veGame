@@ -122,10 +122,10 @@
 
     <!--  传感器相关  -->
     <string name="sensor">传感器</string>
-    <string name="magnetic">磁力传感器</string>
-    <string name="accelerator">加速度传感器</string>
-    <string name="gravity">重力传感器</string>
-    <string name="orientation">方向传感器</string>
+    <string name="magnetic">磁力</string>
+    <string name="accelerator">加速度</string>
+    <string name="gravity">重力</string>
+    <string name="orientation">方向</string>
     <string name="gyroscope">陀螺仪</string>
     <string name="vibrator">振动</string>
     <string name="sensor_desc">在该演示中你可以体验与传感器相关的功能接口</string>
