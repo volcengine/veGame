@@ -20,7 +20,8 @@ import java.util.List;
 
 public abstract class BaseListActivity extends BaseSampleActivity {
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final RecyclerView recyclerView = (RecyclerView) LayoutInflater.from(this).inflate(R.layout.vertical_recycler_view, null);

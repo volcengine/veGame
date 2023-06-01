@@ -1,0 +1,31 @@
+ext{
+    android = [
+            compileSdkVersion: 32,
+            buildToolsVersion: "30.0.3",
+            minSdkVersion: 19,
+            targetSdkVersion: 29,
+            versionCode: gitVersionCode,
+            versionName: gitVersionName
+    ]
+
+
+    gitVersionCode = getGitVersionCode()
+    gitVersionName = getGitVersionName()
+    buildTime = new Date().format('yyyy/MM/dd HH:mm:ss')
+
+//    dependencies = [
+//            "arouter":'com.alibaba:arouter-compiler:1.1.4'
+//    ]
+}
+
+
+int getGitVersionCode() {
+    return "git rev-list --count HEAD".execute().text.trim().toInteger()
+}
+
+String getGitVersionName() {
+    def branch = "git rev-parse --abbrev-ref HEAD".execute().text.trim()
+    def commitId = "git rev-parse --short HEAD".execute().text.trim()
+    def dirty = "git status -s".execute().text.trim()
+    return dirty.isEmpty() ? "${branch}-${commitId}" : "${branch}-${commitId}-dirty"
+}

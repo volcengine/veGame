@@ -24,12 +24,12 @@ package com.volcengine.vegameengine;
 
 import android.app.Application;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.ProcessUtils;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.outinterface.ICloudCoreManagerStatusListener;
 
 public class InitApplication extends Application {
 
@@ -43,56 +43,62 @@ public class InitApplication extends Application {
         instance = this;
         CrashUtils.init(); //默认日志目录：/storage/emulated/0/Android/data/com.example.sdkdemo/files/crash/
 
+        /**
+         * 目前仅支持在主进程中初始化VeGameEngine
+         */
         if (ProcessUtils.isMainProcess()) {
-            VeGameEngine gameEngine = VeGameEngine.getInstance();
-            gameEngine.init(this);
-            gameEngine.addCloudCoreManagerListener(new ICloudCoreManagerStatusListener() {
-                @Override
-                public void onInitialed() {
-                    AcLog.d(TAG, "onInitialed :" + gameEngine.getStatus());
-                }
-            });
-            VeGameEngine.setDebug(true);
-            VeGameEngine.setLogger(new AcLog.ILogger() {
-                @Override
-                public void onVerbose(String TAG, String message) {
-                    Log.v(TAG, message);
-                }
-
-                @Override
-                public void onDebug(String TAG, String message) {
-                    Log.d(TAG, message);
-                }
-
-                @Override
-                public void onInfo(String TAG, String message) {
-                    Log.i(TAG, message);
-                }
-
-                @Override
-                public void onWarn(String TAG, String message) {
-                    Log.w(TAG, message);
-                }
-
-                @Override
-                public void onError(String TAG, String message) {
-                    Log.e(TAG, message);
-                }
-
-                @Override
-                public void onError(String TAG, String message, Throwable throwable) {
-                    Log.e(TAG, message);
-                    if (throwable != null) {
-                        throwable.printStackTrace();
-                    }
-                }
-            });
-
-            Log.d(TAG, "deviceId" + gameEngine.getDeviceId());
+            initVeGameEngine();
+        }
+        else {
+            Toast.makeText(this, "请在主进程进行初始化!", Toast.LENGTH_LONG).show();
         }
     }
 
     public static InitApplication getInstance() {
         return instance;
+    }
+
+    private void initVeGameEngine() {
+        VeGameEngine gameEngine = VeGameEngine.getInstance();
+        gameEngine.init(this);
+        gameEngine.addCloudCoreManagerListener(() -> {
+            // SDK初始化是一个异步过程，在这个回调中监听初始化完成状态
+            AcLog.d(TAG, "onInitialed :" + gameEngine.getStatus());
+        });
+        VeGameEngine.setDebug(true);
+        VeGameEngine.setLogger(new AcLog.ILogger() {
+            @Override
+            public void onVerbose(String TAG, String message) {
+                Log.v(TAG, message);
+            }
+
+            @Override
+            public void onDebug(String TAG, String message) {
+                Log.d(TAG, message);
+            }
+
+            @Override
+            public void onInfo(String TAG, String message) {
+                Log.i(TAG, message);
+            }
+
+            @Override
+            public void onWarn(String TAG, String message) {
+                Log.w(TAG, message);
+            }
+
+            @Override
+            public void onError(String TAG, String message) {
+                Log.e(TAG, message);
+            }
+
+            @Override
+            public void onError(String TAG, String message, Throwable throwable) {
+                Log.e(TAG, message);
+                if (throwable != null) {
+                    throwable.printStackTrace();
+                }
+            }
+        });
     }
 }

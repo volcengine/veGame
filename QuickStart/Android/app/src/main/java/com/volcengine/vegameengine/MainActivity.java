@@ -1,6 +1,10 @@
 package com.volcengine.vegameengine;
 
+import static com.volcengine.vegameengine.util.PrefUtilsKt.getPrefBoolean;
+import static com.volcengine.vegameengine.util.PrefUtilsKt.putPrefBoolean;
+
 import android.os.Bundle;
+import androidx.appcompat.app.AlertDialog;
 import com.volcengine.vegameengine.base.BaseListActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
 import com.volcengine.vegameengine.feature.SensorActivity;
@@ -34,5 +38,31 @@ public class MainActivity extends BaseListActivity {
     @Override
     public int titleRes() {
         return R.string.app_name;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (getPrefBoolean(String.valueOf(R.string.first_open_app), true)) {
+            showAlertDialog("火山引擎隐私政策", "balabala");
+        }
+    }
+
+    private void showAlertDialog(String title, String message) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("同意并继续", (dialog, which) -> {
+                    putPrefBoolean(String.valueOf(R.string.first_open_app), false);
+                    dialog.dismiss();
+                })
+                .setNegativeButton("不同意并退出应用", (dialog, which) -> {
+                    dialog.dismiss();
+                    putPrefBoolean(String.valueOf(R.string.first_open_app), true);
+                    finish();
+                }).create();
+
+        alertDialog.show();
+        alertDialog.setCancelable(false);
     }
 }
