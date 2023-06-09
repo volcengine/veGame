@@ -15,6 +15,13 @@
     <string name="reserved_id">reservedId</string>
     <string name="hide_or_show">点击隐藏/显示</string>
     <string name="back_again_to_exit">连按两次退出</string>
+    <string name="privacy_and_service">隐私政策与服务条款</string>
+    <string name="cancel_tip">不同意并退出应用</string>
+    <string name="confirm_tip">同意并继续</string>
+    <string name="content">\t\t\t\t\t欢迎使用火山引擎云游戏! 我们非常重视您的个人信息和隐私保护。
+                为了更好地保障您的个人权益，在您使用我们的产品前，请务必审慎阅读《隐私政策》和《服务条款》内的所有条款。
+                您点击【同意并继续】的行为即表示您已阅读完毕并同意以上协议的全部内容。\n\n
+                \t\t\t\t\t如您同意以上协议内容，请点击【同意并继续】开始使用我们的产品和服务!\n</string>
 
     <!--  音频相关  -->
     <string name="audio">音频</string>

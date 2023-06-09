@@ -66,22 +66,18 @@ public class MainActivity extends BaseListActivity {
     private void showAlertDialog() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.show();
-        alertDialog.setCancelable(false);
+        alertDialog.setCancelable(false); // 设置点击弹窗外部或者按返回键不消失
 
-        String str = "欢迎使用火山引擎云游戏! 我们非常重视您的个人信息和隐私保护。" +
-                "为了更好地保障您的个人权益，在您使用我们的产品前，请务必审慎阅读《隐私政策》和《服务条款》内的所有条款。" +
-                "您点击\"同意并继续\"的行为即表示您已阅读完毕并同意以上协议的全部内容。\n\n" +
-                "如您同意以上协议内容，请点击\"同意并继续\"，开始使用我们的产品和服务!";
+        String content = getString(R.string.content);
         SpannableStringBuilder ssb = new SpannableStringBuilder();
-        ssb.append(str);
-        int privacyIndex = str.indexOf("《");
+        ssb.append(content);
+        int privacyIndex = content.indexOf("《");
         ssb.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View view) {
                 Intent intent = new Intent(MainActivity.this, WebViewActivity.class);
                 intent.putExtra("uri", "https://www.volcengine.com/docs/6256/64902");
                 startActivity(intent);
-                alertDialog.cancel();
             }
 
             @Override
@@ -92,14 +88,13 @@ public class MainActivity extends BaseListActivity {
             }
         }, privacyIndex, privacyIndex + 6, 0);
 
-        int serviceIndex = str.lastIndexOf("《");
+        int serviceIndex = content.lastIndexOf("《");
         ssb.setSpan(new ClickableSpan() {
             @Override
             public void onClick(@NonNull View view) {
                 Intent intent = new Intent(getApplication(), WebViewActivity.class);
                 intent.putExtra("uri", "https://www.volcengine.com/docs/6256/64903");
                 startActivity(intent);
-                alertDialog.cancel();
             }
 
             @Override
