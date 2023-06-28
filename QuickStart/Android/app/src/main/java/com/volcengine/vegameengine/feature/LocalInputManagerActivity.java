@@ -34,6 +34,9 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+/**
+ * 该类用于展示与消息通道{@link LocalInputManager}相关的功能接口
+ */
 public class LocalInputManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
@@ -391,7 +394,7 @@ public class LocalInputManagerActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link MessageChannelActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link LocalInputManagerActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向
