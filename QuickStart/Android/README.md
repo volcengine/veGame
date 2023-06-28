@@ -197,7 +197,7 @@ main
 │               │   ├── ClipBoardServiceManagerView.java // 剪切板
 │               │   ├── FileChannelExtView.java // 大文件通道
 │               │   ├── FileChannelView.java // 文件通道
-│               │   ├── LocalInputManagerView.java // 本地输入
+│               │   ├── LocalInputManagerActivity.java // 本地输入
 │               │   ├── LocationServiceView.java // 定位服务
 │               │   ├── MessageChannelActivity.java // 消息通道
 │               │   ├── MultiUserManagerView.java // 多用户

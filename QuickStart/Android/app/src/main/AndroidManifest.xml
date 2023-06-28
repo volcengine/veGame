@@ -68,6 +68,13 @@
         </activity>
 
         <activity
+            android:name=".feature.LocalInputManagerActivity"
+            android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="landscape"
+            android:theme="@style/Theme.AppCompat.DayNight.NoActionBar" />
+
+        <activity
             android:name=".feature.MessageChannelActivity"
             android:configChanges="orientation|screenSize|keyboard|keyboardHidden"
             android:launchMode="singleTask"

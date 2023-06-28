@@ -30,7 +30,6 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_CAMERA;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCAL_INPUT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MULTI_USER;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PAD_CONSOLE;
@@ -70,7 +69,6 @@ import com.volcengine.vegameengine.feature.ClarityServiceView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
-import com.volcengine.vegameengine.feature.LocalInputManagerView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.feature.MultiUserManagerView;
 import com.volcengine.vegameengine.feature.PadConsoleManagerView;
@@ -401,13 +399,6 @@ public class GameActivity extends AppCompatActivity
                 }
                 else {
                     AcLog.d(TAG, "FileChannelExt is null!");
-                }
-                break;
-            case FEATURE_LOCAL_INPUT: // 本地输入
-                if (veGameEngine.getLocalInputManager() != null) {
-                    new LocalInputManagerView(this, veGameEngine.getLocalInputManager(), btnLocalInput);
-                } else {
-                    AcLog.d(TAG, "LocalInputManager is null!");
                 }
                 break;
             case FEATURE_LOCATION: // 定位服务
