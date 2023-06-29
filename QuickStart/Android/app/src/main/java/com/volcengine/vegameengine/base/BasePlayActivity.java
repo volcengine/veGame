@@ -44,4 +44,8 @@ public class BasePlayActivity extends AppCompatActivity {
         }
     }
 
+    protected void showToast(String s) {
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
+    }
+
 }

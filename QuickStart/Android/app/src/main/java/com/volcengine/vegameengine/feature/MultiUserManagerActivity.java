@@ -3,10 +3,12 @@ package com.volcengine.vegameengine.feature;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -17,12 +19,12 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
+import com.volcengine.cloudcore.common.mode.Role;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.StreamProfileChangeCallBack;
-import com.volcengine.cloudphone.apiservice.StreamProfileManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
+import com.volcengine.cloudphone.apiservice.outinterface.MultiUserService;
 import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.base.BasePlayActivity;
 import com.volcengine.vegameengine.util.AssetsUtil;
@@ -31,31 +33,51 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Locale;
 import java.util.Map;
 
 /**
- * 该类用于展示与清晰度{@link StreamProfileManager}相关的功能接口
+ * 该类用于展示与多用户{@link MultiUserService}相关的功能接口
+ *
+ * 多用户功能适用于多人游戏及转移游戏控制权的场景。
+ * 需要指定roomType(房间类型)、role(玩家角色)以及reservedId(资源预锁定ID)，
+ * 可以通过{@link com.volcengine.cloudgame.GamePlayConfig.Builder}来设置。
+ *
+ * (1) roomType有三种，0--单房间单用户(默认)，1--单房间多用户(不可转移游戏控制权)，
+ * 2--单房间多用户(可转移游戏控制权)。
+ * (2) role有两种，操作者{@link Role#PLAYER}和观看者{@link Role#VIEWER}，
+ * 当roomType为1或2时，指定玩家角色才有效，如不指定玩家角色，则默认为观看者。
+ * (3) reservedId可以在{@link IGamePlayerListener#onPlaySuccess(String, int, Map, String, String)}
+ * 回调中获取，或者调用服务端PreAllocateResource接口获取。要保证进入同一游戏的用户使用相同的reservedId。
+ *
+ * 指定roomType和role后，可以在游戏中调用
+ * {@link MultiUserService#changeRole(String, Role, MultiUserService.ChangeRoleCallBack)}接口
+ * 将观看者设置为操作者，以转移游戏控制权。
+ *
+ * 注意: 进入游戏的观看者也会占用实例资源，建议控制观看者数量。
  */
-public class ClarityServiceActivity extends BasePlayActivity
+public class MultiUserManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = "ClarityServiceActivity";
+    private final String TAG = "MultiUserManagerActivity";
 
-    private ViewGroup mContainer;
+    private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private StreamProfileManager mClarityService;
+    private MultiUserService mMultiUserManager;
+    private Role mRole = Role.PLAYER;
     private SwitchCompat mSwShowOrHide;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnSend, mBtnGet;
-    EditText mEtClarityId;
-
+    private RadioGroup mRgChooseRole;
+    private EditText mEtUserId;
+    private Button mBtnUpdateRole, mBtnGetCurrentRole;
+    private TextView mTvCurrentRole;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_clarity);
+        setContentView(R.layout.activity_multi_user);
         initView();
         initGamePlayConfig();
     }
@@ -64,25 +86,45 @@ public class ClarityServiceActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mEtClarityId = findViewById(R.id.et_clarity_id);
-        mBtnSend = findViewById(R.id.btn_send);
-        mBtnGet = findViewById(R.id.btn_get_profile);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        mBtnSend.setOnClickListener(view -> {
-            int clarityId = Integer.parseInt(mEtClarityId.getText().toString());
-            if (mClarityService != null) {
-                mClarityService.switchVideoStreamProfileId(clarityId);
+        mRgChooseRole = findViewById(R.id.rg_choose_role);
+        mRgChooseRole.setOnCheckedChangeListener((group, checkedId) -> {
+            if (checkedId == R.id.rb_player) {
+                mRole = Role.PLAYER;
+            } else if (checkedId == R.id.rb_viewer) {
+                mRole = Role.VIEWER;
             }
         });
 
-        mBtnGet.setOnClickListener(view -> {
-            if (mClarityService != null) {
-                Toast.makeText(this, mClarityService.getCurrentVideoStreamProfile().toString(), Toast.LENGTH_SHORT).show();
-            }
+        /**
+         * changeRole(String userId, Role role, ChangeRoleCallback callback) -- 修改用户的角色
+         *
+         * @param userId 用户ID
+         * @param role 用户角色
+         *             VIEWER(0) -- 观看者
+         *             PLAYER(1) -- 操作者
+         * @param callback 用户角色修改的回调
+         */
+        mBtnUpdateRole = findViewById(R.id.btn_update_role);
+        mEtUserId = findViewById(R.id.et_userId);
+        mBtnUpdateRole.setOnClickListener(v -> {
+            mMultiUserManager.changeRole(mEtUserId.getText().toString(), mRole, (userId, role, result) -> {
+                showToast("result " + result + ", userId " + userId + ", role " + role);
+                AcLog.d(TAG, "change result " + userId + ", role " + role + "result " + result);
+            });
+        });
+
+        /**
+         * getCurrentRole() -- 获取当前用户的角色
+         */
+        mBtnGetCurrentRole = findViewById(R.id.btn_get_current_role);
+        mTvCurrentRole = findViewById(R.id.tv_current_role);
+        mBtnGetCurrentRole.setOnClickListener(v -> {
+            mTvCurrentRole.setText(mMultiUserManager.getCurrentRole().toString());
         });
     }
 
@@ -122,9 +164,11 @@ public class ClarityServiceActivity extends BasePlayActivity
                 .sk(sk)
                 .token(token)
                 .container(mContainer)
-                .enableLocalKeyboard(true)
                 .roundId(roundId)
                 .gameId(gameId)
+                .role(mRole)
+                .roomType(2)
+                .reservedId("")
                 .streamListener(this);
 
         mGamePlayConfig = mBuilder.build();
@@ -174,8 +218,8 @@ public class ClarityServiceActivity extends BasePlayActivity
      */
     @Override
     public void onPlaySuccess(String roundId, int clarityId, Map<String, String> extraMap, String gameId, String reservedId) {
-        AcLog.d(TAG, "[onPlaySuccess] roundId " + roundId + " clarityId " + clarityId + "extra:" + extraMap +
-                "gameId : " + gameId + " reservedId" + reservedId);
+        AcLog.d(TAG, "[onPlaySuccess] roundId: " + roundId + ", clarityId: " + clarityId + ", extra:" + extraMap +
+                ", gameId : " + gameId + ", reservedId" + reservedId);
     }
 
     /**
@@ -225,18 +269,33 @@ public class ClarityServiceActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mClarityService = VeGameEngine.getInstance().getClarityService();
-        if (mClarityService != null) {
-            mClarityService.setStreamProfileChangeListener(new StreamProfileChangeCallBack() {
+        mMultiUserManager = VeGameEngine.getInstance().getMultiUserService();
+        if (mMultiUserManager != null) {
+            mMultiUserManager.setRoomListener(new MultiUserService.RoomListener() {
+                /**
+                 * 用户角色发生变化时的回调
+                 *
+                 * @param userId 发生变化的用户ID
+                 */
                 @Override
-                public void onVideoStreamProfileChange(boolean success, int from, int to) {
-                    AcLog.d(TAG, "[onVideoStreamProfileChange] success: " + success + ", from: " + from + ", to: " + to);
-                    Toast.makeText(ClarityServiceActivity.this, "success: " + success + ", from: " + from + ", to: " + to, Toast.LENGTH_SHORT).show();
+                public void onPlayerChanged(String userId) {
+                    AcLog.d(TAG, "[onPlayerChanged] userId: " + userId);
+                    showToast("onPlayerChanged" + userId);
                 }
 
+                /**
+                 * 用户加入房间并收到首帧后，获得用户角色的回调
+                 *
+                 * @param role 用户获得的角色
+                 * @param reason 0 -- 成功，获得角色与请求的一致
+                 *               else -- 失败的具体原因
+                 * @param playerUid 当前的操作者ID
+                 */
                 @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
+                public void onJoinRoomRoleResult(Role role, int reason, String playerUid) {
+                    AcLog.d(TAG, "[onJoinRoomRoleResult] role: " + role + ", reason: " + reason + ", playerUid: " + playerUid);
+                    showToast(String.format(Locale.getDefault(), "onJoinRoomRoleResult role: %d, reason : %d, playerUid %S",
+                            role.id, reason, playerUid));
                 }
             });
         }
@@ -339,7 +398,7 @@ public class ClarityServiceActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link ClarityServiceActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link MultiUserManagerActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向
@@ -352,7 +411,7 @@ public class ClarityServiceActivity extends BasePlayActivity
         setRotation(rotation);
     }
 
-    /**
+    /**ro
      * 远端实例退出回调
      *
      * @param reasonCode 退出的原因码

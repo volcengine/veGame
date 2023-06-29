@@ -35,7 +35,7 @@ import org.json.JSONObject;
 import java.util.Map;
 
 /**
- * 该类用于展示与消息通道{@link LocalInputManager}相关的功能接口
+ * 该类用于展示与本地输入{@link LocalInputManager}相关的功能接口
  */
 public class LocalInputManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {

@@ -68,7 +68,6 @@ import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
-import com.volcengine.vegameengine.feature.MultiUserManagerView;
 import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
@@ -397,13 +396,6 @@ public class GameActivity extends AppCompatActivity
                     new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
                 } else {
                     AcLog.d(TAG, "LocationService is null!");
-                }
-                break;
-            case FEATURE_MULTI_USER: // 多用户
-                if (veGameEngine.getMultiUserService() != null) {
-                    new MultiUserManagerView(this, veGameEngine.getMultiUserService(), btnMultiUser);
-                } else {
-                    AcLog.d(TAG, "MultiUserService is null!");
                 }
                 break;
             case FEATURE_POD_CONTROL: // Pod控制

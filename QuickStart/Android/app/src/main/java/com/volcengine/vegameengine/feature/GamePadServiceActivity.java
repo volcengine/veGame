@@ -36,7 +36,7 @@ import java.util.Map;
 
 
 /**
- * 该类用于展示与消息通道{@link GamePadService}相关的功能接口
+ * 该类用于展示与游戏手柄{@link GamePadService}相关的功能接口
  */
 public class GamePadServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {

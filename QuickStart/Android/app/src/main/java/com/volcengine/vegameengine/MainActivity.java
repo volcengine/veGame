@@ -23,6 +23,7 @@ import com.volcengine.vegameengine.feature.ClarityServiceActivity;
 import com.volcengine.vegameengine.feature.GamePadServiceActivity;
 import com.volcengine.vegameengine.feature.LocalInputManagerActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
+import com.volcengine.vegameengine.feature.MultiUserManagerActivity;
 import com.volcengine.vegameengine.feature.SensorActivity;
 import com.volcengine.vegameengine.util.Feature;
 
@@ -46,7 +47,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class, Feature.FEATURE_LOCAL_INPUT);
         holder.addItem(R.string.location, R.string.location_desc, FeatureActivity.class, Feature.FEATURE_LOCATION);
         holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class, Feature.FEATURE_MESSAGE_CHANNEL);
-        holder.addItem(R.string.multi_user, R.string.multi_user_desc, FeatureActivity.class, Feature.FEATURE_MULTI_USER);
+        holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class, Feature.FEATURE_MULTI_USER);
         holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class, Feature.FEATURE_GAME_PAD);
         holder.addItem(R.string.pod_control, R.string.pod_control_desc, FeatureActivity.class, Feature.FEATURE_POD_CONTROL);
         holder.addItem(R.string.probe_network, R.string.probe_network_desc, FeatureActivity.class, Feature.FEATURE_PROBE_NETWORK);
