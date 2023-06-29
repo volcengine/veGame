@@ -52,6 +52,7 @@
 
     <!--  清晰度相关  -->
     <string name="clarity">清晰度</string>
+    <string name="clarity_desc">在该演示中你可以体验与清晰度相关的功能接口</string>
 
     <!--  剪切板相关  -->
     <string name="clipboard">剪切板</string>

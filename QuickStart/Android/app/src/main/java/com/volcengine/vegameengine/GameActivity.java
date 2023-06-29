@@ -65,7 +65,6 @@ import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
 import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.CamaraManagerView;
-import com.volcengine.vegameengine.feature.ClarityServiceView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
@@ -338,12 +337,6 @@ public class GameActivity extends AppCompatActivity
             mIsHideButtons = !mIsHideButtons;
             mContainers.setVisibility(mIsHideButtons ? View.GONE : View.VISIBLE);
         });
-
-        if (veGameEngine.getClarityService() != null) {
-            new ClarityServiceView(this, veGameEngine.getClarityService(), btnClarity);
-        } else {
-            AcLog.d(TAG, "ClarityService is null!");
-        }
 
         btnRotation.setOnClickListener(view -> {
             if (isLand) {
