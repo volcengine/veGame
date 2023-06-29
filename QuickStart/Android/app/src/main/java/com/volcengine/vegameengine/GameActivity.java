@@ -26,12 +26,10 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAP
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
 
 import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_CAMERA;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_MULTI_USER;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
@@ -54,16 +52,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.volcengine.cloudcore.common.mode.CameraId;
-import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
-import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
 import com.volcengine.cloudcore.common.mode.Role;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
-import com.volcengine.cloudphone.apiservice.StreamProfileChangeCallBack;
-import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
-import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
 import com.volcengine.vegameengine.feature.AudioServiceView;
-import com.volcengine.vegameengine.feature.CamaraManagerView;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
@@ -240,42 +231,6 @@ public class GameActivity extends AppCompatActivity
                               String reservedId) {
         AcLog.d(TAG, "roundId " + roundId + " clarityId " + clarityId + "extra:" + extraMap +
                 "gameId : " + gameId + " reservedId" + reservedId);
-        VeGameEngine.getInstance().getCameraManager().setRemoteRequestListener(new RemoteCameraRequestListener() {
-            @Override
-            public void onVideoStreamStartRequested(CameraId cameraId) {
-                AcLog.d(TAG, "onVideoStreamStartRequested, cameraId :" + cameraId);
-                VeGameEngine.getInstance().getCameraManager().startVideoStream(cameraId);
-            }
-
-            @Override
-            public void onVideoStreamStopRequested() {
-                AcLog.d(TAG, "onVideoStreamStopRequested ");
-                VeGameEngine.getInstance().getCameraManager().stopVideoStream();
-            }
-        });
-        VeGameEngine.getInstance().getCameraManager().setCameraManagerListener(new CameraManagerListener() {
-            @Override
-            public void onLocalVideoStateChanged(LocalVideoStreamState localVideoStreamState, LocalVideoStreamError errorCode) {
-                AcLog.d(TAG, "LocalVideoStreamState" + localVideoStreamState.toString() + ",LocalVideoStreamError" + errorCode);
-            }
-
-            @Override
-            public void onFirstCapture() {
-                AcLog.d(TAG, "onFirstCapture");
-            }
-        });
-
-        veGameEngine.getClarityService().setStreamProfileChangeListener(new StreamProfileChangeCallBack() {
-            @Override
-            public void onVideoStreamProfileChange(boolean isSuccess, int from, int to) {
-                AcLog.d(TAG, "VideoStreamProfileChange  isSuccess " + isSuccess + "from " + from + "to " + to);
-            }
-
-            @Override
-            public void onError(int i, String s) {
-                AcLog.d(TAG, "onError - " + s);
-            }
-        });
 
         veGameEngine.getClipBoardServiceManager().setBoardSyncClipListener(new IClipBoardListener() {
             @Override
@@ -356,13 +311,6 @@ public class GameActivity extends AppCompatActivity
                         AcLog.d(TAG, "AudioService is null!");
                     }
                 });
-                break;
-            case FEATURE_CAMERA: // 相机
-                if (veGameEngine.getCameraManager() != null) {
-                    new CamaraManagerView(this, veGameEngine.getCameraManager(), btnCamera);
-                } else {
-                    AcLog.d(TAG, "CameraManager is null!");
-                }
                 break;
             case FEATURE_CLIPBOARD: // 剪切板
                 if (veGameEngine.getClipBoardServiceManager() != null) {
