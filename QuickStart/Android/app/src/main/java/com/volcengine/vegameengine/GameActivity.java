@@ -32,7 +32,6 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_MULTI_USER;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_PAD_CONSOLE;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
@@ -70,7 +69,6 @@ import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.feature.MultiUserManagerView;
-import com.volcengine.vegameengine.feature.PadConsoleManagerView;
 import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
@@ -406,13 +404,6 @@ public class GameActivity extends AppCompatActivity
                     new MultiUserManagerView(this, veGameEngine.getMultiUserService(), btnMultiUser);
                 } else {
                     AcLog.d(TAG, "MultiUserService is null!");
-                }
-                break;
-            case FEATURE_PAD_CONSOLE: // 游戏手柄
-                if (veGameEngine.getGamePadService() != null) {
-                    new PadConsoleManagerView(this, veGameEngine.getGamePadService(), btnPadConsole);
-                } else {
-                    AcLog.d(TAG, "GamePadService is null!");
                 }
                 break;
             case FEATURE_POD_CONTROL: // Pod控制

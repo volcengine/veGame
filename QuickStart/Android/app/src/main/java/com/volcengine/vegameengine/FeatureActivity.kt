@@ -100,8 +100,8 @@ class FeatureActivity : BaseSampleActivity() {
             Feature.FEATURE_MULTI_USER -> {
                 return R.string.multi_user
             }
-            Feature.FEATURE_PAD_CONSOLE -> {
-                return R.string.pad_console
+            Feature.FEATURE_GAME_PAD -> {
+                return R.string.game_pad
             }
             Feature.FEATURE_POD_CONTROL -> {
                 return R.string.pod_control

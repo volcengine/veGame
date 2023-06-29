@@ -20,6 +20,7 @@ import androidx.appcompat.app.AlertDialog;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.vegameengine.base.BaseListActivity;
 import com.volcengine.vegameengine.feature.ClarityServiceActivity;
+import com.volcengine.vegameengine.feature.GamePadServiceActivity;
 import com.volcengine.vegameengine.feature.LocalInputManagerActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
 import com.volcengine.vegameengine.feature.SensorActivity;
@@ -46,7 +47,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.location, R.string.location_desc, FeatureActivity.class, Feature.FEATURE_LOCATION);
         holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class, Feature.FEATURE_MESSAGE_CHANNEL);
         holder.addItem(R.string.multi_user, R.string.multi_user_desc, FeatureActivity.class, Feature.FEATURE_MULTI_USER);
-        holder.addItem(R.string.pad_console, R.string.pad_console_desc, FeatureActivity.class, Feature.FEATURE_PAD_CONSOLE);
+        holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class, Feature.FEATURE_GAME_PAD);
         holder.addItem(R.string.pod_control, R.string.pod_control_desc, FeatureActivity.class, Feature.FEATURE_POD_CONTROL);
         holder.addItem(R.string.probe_network, R.string.probe_network_desc, FeatureActivity.class, Feature.FEATURE_PROBE_NETWORK);
         holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class, Feature.FEATURE_SENSOR);

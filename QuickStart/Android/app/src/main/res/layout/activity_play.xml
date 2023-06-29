@@ -121,7 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:visibility="gone"
-                    android:text="@string/pad_console" />
+                    android:text="@string/game_pad" />
 
                 <Button
                     android:id="@+id/btn_pod_control"
