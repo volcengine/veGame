@@ -53,9 +53,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.volcengine.cloudcore.common.mode.Role;
-import com.volcengine.cloudphone.apiservice.IClipBoardListener;
 import com.volcengine.vegameengine.feature.AudioServiceView;
-import com.volcengine.vegameengine.feature.ClipBoardServiceManagerView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
@@ -232,13 +230,6 @@ public class GameActivity extends AppCompatActivity
         AcLog.d(TAG, "roundId " + roundId + " clarityId " + clarityId + "extra:" + extraMap +
                 "gameId : " + gameId + " reservedId" + reservedId);
 
-        veGameEngine.getClipBoardServiceManager().setBoardSyncClipListener(new IClipBoardListener() {
-            @Override
-            public void onClipBoardMessageReceived(ClipData clipData) {
-                AcLog.d(TAG, "clipBoard : " + clipData.toString());
-            }
-        });
-//        tvInfo.setText("roundId:" + roundId + "\n" + "streamProfile:" + clarityId);
         tvInfo.setText(String.format(
                 "roundId: %s\nstreamProfile: %s\nextraMap: %s\ngameId: %s\nreservedId: %s\n",
                 roundId,
@@ -311,13 +302,6 @@ public class GameActivity extends AppCompatActivity
                         AcLog.d(TAG, "AudioService is null!");
                     }
                 });
-                break;
-            case FEATURE_CLIPBOARD: // 剪切板
-                if (veGameEngine.getClipBoardServiceManager() != null) {
-                    new ClipBoardServiceManagerView(this, veGameEngine.getClipBoardServiceManager(), btnClipBoard);
-                } else {
-                    AcLog.d(TAG, "ClipBoardServiceManager is null!");
-                }
                 break;
             case FEATURE_FILE_CHANNEL: // 文件通道
                 btnFileChannel.setVisibility(View.VISIBLE);
