@@ -26,16 +26,13 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAP
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
 
 import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_CLIPBOARD;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_POD_CONTROL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
 
 import android.app.Activity;
-import android.content.ClipData;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -57,7 +54,6 @@ import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
-import com.volcengine.vegameengine.feature.PodControlServiceView;
 import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
 import com.volcengine.vegameengine.util.AssetsUtil;
@@ -328,13 +324,6 @@ public class GameActivity extends AppCompatActivity
                     new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
                 } else {
                     AcLog.d(TAG, "LocationService is null!");
-                }
-                break;
-            case FEATURE_POD_CONTROL: // Pod控制
-                if (veGameEngine.getPodControlService() != null) {
-                    new PodControlServiceView(this, veGameEngine.getPodControlService(), btnPodControl);
-                } else {
-                    AcLog.d(TAG, "PodControlService is null!");
                 }
                 break;
             case FEATURE_PROBE_NETWORK: // 网络探测
