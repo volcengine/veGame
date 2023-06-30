@@ -27,6 +27,7 @@ import com.volcengine.vegameengine.feature.LocalInputManagerActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
 import com.volcengine.vegameengine.feature.MultiUserManagerActivity;
 import com.volcengine.vegameengine.feature.PodControlServiceActivity;
+import com.volcengine.vegameengine.feature.ProbeNetworkActivity;
 import com.volcengine.vegameengine.feature.SensorActivity;
 import com.volcengine.vegameengine.util.Feature;
 
@@ -53,7 +54,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class, Feature.FEATURE_MULTI_USER);
         holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class, Feature.FEATURE_GAME_PAD);
         holder.addItem(R.string.pod_control, R.string.pod_control_desc, PodControlServiceActivity.class, Feature.FEATURE_POD_CONTROL);
-        holder.addItem(R.string.probe_network, R.string.probe_network_desc, FeatureActivity.class, Feature.FEATURE_PROBE_NETWORK);
+        holder.addItem(R.string.probe_network, R.string.probe_network_desc, ProbeNetworkActivity.class, Feature.FEATURE_PROBE_NETWORK);
         holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class, Feature.FEATURE_SENSOR);
         holder.addItem(R.string.unclassified, R.string.unclassified_desc, FeatureActivity.class, Feature.FEATURE_UNCLASSIFIED);
     }

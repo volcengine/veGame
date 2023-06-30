@@ -29,7 +29,6 @@ import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_PROBE_NETWORK;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_UNCLASSIFIED;
 
 import android.app.Activity;
@@ -54,7 +53,6 @@ import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.feature.LocationServiceView;
-import com.volcengine.vegameengine.feature.ProbeNetworkView;
 import com.volcengine.vegameengine.feature.UnclassifiedView;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.DialogUtils;
@@ -325,13 +323,6 @@ public class GameActivity extends AppCompatActivity
                 } else {
                     AcLog.d(TAG, "LocationService is null!");
                 }
-                break;
-            case FEATURE_PROBE_NETWORK: // 网络探测
-                btnProbeNetwork.setVisibility(View.VISIBLE);
-                btnProbeNetwork.setOnClickListener(view -> {
-                    final ProbeNetworkView dialog = new ProbeNetworkView(this, v -> veGameEngine.probeInterrupt());
-                    dialog.showProbeNetworkDialogForGame(mGamePlayConfig);
-                });
                 break;
             case FEATURE_UNCLASSIFIED: // 其他
                 new UnclassifiedView(this, btnUnclassified);
