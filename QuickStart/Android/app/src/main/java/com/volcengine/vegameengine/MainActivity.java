@@ -24,6 +24,7 @@ import com.volcengine.vegameengine.feature.ClarityServiceActivity;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerActivity;
 import com.volcengine.vegameengine.feature.GamePadServiceActivity;
 import com.volcengine.vegameengine.feature.LocalInputManagerActivity;
+import com.volcengine.vegameengine.feature.LocationServiceActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
 import com.volcengine.vegameengine.feature.MultiUserManagerActivity;
 import com.volcengine.vegameengine.feature.OthersActivity;
@@ -50,7 +51,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.file_channel, R.string.file_channel_desc, FeatureActivity.class, Feature.FEATURE_FILE_CHANNEL);
         holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FeatureActivity.class, Feature.FEATURE_FILE_CHANNEL_EXT);
         holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class, Feature.FEATURE_LOCAL_INPUT);
-        holder.addItem(R.string.location, R.string.location_desc, FeatureActivity.class, Feature.FEATURE_LOCATION);
+        holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class, Feature.FEATURE_LOCATION);
         holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class, Feature.FEATURE_MESSAGE_CHANNEL);
         holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class, Feature.FEATURE_MULTI_USER);
         holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class, Feature.FEATURE_GAME_PAD);

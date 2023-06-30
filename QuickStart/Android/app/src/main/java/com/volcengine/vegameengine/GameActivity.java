@@ -51,7 +51,6 @@ import com.volcengine.cloudcore.common.mode.Role;
 import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
-import com.volcengine.vegameengine.feature.LocationServiceView;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.DialogUtils;
 import com.volcengine.vegameengine.util.ScreenUtil;
@@ -313,13 +312,6 @@ public class GameActivity extends AppCompatActivity
                 }
                 else {
                     AcLog.d(TAG, "FileChannelExt is null!");
-                }
-                break;
-            case FEATURE_LOCATION: // 定位服务
-                if (veGameEngine.getLocationService() != null) {
-                    new LocationServiceView(this, veGameEngine.getLocationService(), btnLocation);
-                } else {
-                    AcLog.d(TAG, "LocationService is null!");
                 }
                 break;
             default:
