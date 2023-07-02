@@ -23,6 +23,7 @@ import com.volcengine.vegameengine.feature.AudioServiceActivity;
 import com.volcengine.vegameengine.feature.CameraManagerActivity;
 import com.volcengine.vegameengine.feature.ClarityServiceActivity;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerActivity;
+import com.volcengine.vegameengine.feature.FileChannelExtActivity;
 import com.volcengine.vegameengine.feature.GamePadServiceActivity;
 import com.volcengine.vegameengine.feature.LocalInputManagerActivity;
 import com.volcengine.vegameengine.feature.LocationServiceActivity;
@@ -50,7 +51,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.clarity, R.string.clarity_desc, ClarityServiceActivity.class, Feature.FEATURE_CLARITY);
         holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class, Feature.FEATURE_CLIPBOARD);
         holder.addItem(R.string.file_channel, R.string.file_channel_desc, FeatureActivity.class, Feature.FEATURE_FILE_CHANNEL);
-        holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FeatureActivity.class, Feature.FEATURE_FILE_CHANNEL_EXT);
+        holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FileChannelExtActivity.class, Feature.FEATURE_FILE_CHANNEL_EXT);
         holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class, Feature.FEATURE_LOCAL_INPUT);
         holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class, Feature.FEATURE_LOCATION);
         holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class, Feature.FEATURE_MESSAGE_CHANNEL);

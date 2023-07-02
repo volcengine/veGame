@@ -26,7 +26,6 @@ import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAP
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
 
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -46,7 +45,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.volcengine.cloudcore.common.mode.Role;
-import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.DialogUtils;
@@ -290,14 +288,6 @@ public class GameActivity extends AppCompatActivity
                         AcLog.d(TAG, "FileChannel is null!");
                     }
                 });
-                break;
-            case FEATURE_FILE_CHANNEL_EXT: // 大文件通道
-                if (veGameEngine.getFileChannelExt() != null) {
-                    new FileChannelExtView(this, veGameEngine.getFileChannelExt(), btnFileChannelExt);
-                }
-                else {
-                    AcLog.d(TAG, "FileChannelExt is null!");
-                }
                 break;
             default:
                 break;
