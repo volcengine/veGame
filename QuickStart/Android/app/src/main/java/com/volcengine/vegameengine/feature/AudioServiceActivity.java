@@ -1,5 +1,7 @@
 package com.volcengine.vegameengine.feature;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
@@ -13,11 +15,14 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.blankj.utilcode.util.PermissionUtils;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
+import com.volcengine.cloudcore.common.mode.AudioPlaybackDevice;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.AudioService;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -30,27 +35,26 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
-/**
- * 该类用于展示主功能以外的其他功能接口
- */
-public class OthersActivity extends BasePlayActivity
+public class AudioServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = "OthersActivity";
+    private final String TAG = "AudioServiceActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private SwitchCompat mSwShowOrHide;
+    private AudioService mAudioService;
+    private SwitchCompat mSwShowOrHide, mSwSendAudio;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnPause, mBtnResume, mBtnRestart;
+    private Button mBtnMute, mBtnVolumeUp, mBtnVolumeDown, mBtnGetSettings,
+            mBtnStartSendAudio, mBtnStopSendAudio, mBtnChangeAudioPlaybackDevice;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_others);
+        setContentView(R.layout.activity_audio);
         initView();
         initGamePlayConfig();
     }
@@ -59,31 +63,93 @@ public class OthersActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnPause = findViewById(R.id.btn_pause);
-        mBtnResume = findViewById(R.id.btn_resume);
-        mBtnRestart = findViewById(R.id.btn_restart);
+        mBtnMute = findViewById(R.id.btn_mute);
+        mBtnVolumeUp = findViewById(R.id.btn_volume_up);
+        mBtnVolumeDown = findViewById(R.id.btn_volume_down);
+        mSwSendAudio = findViewById(R.id.sw_send_audio);
+        mBtnStartSendAudio = findViewById(R.id.btn_start_send_audio);
+        mBtnStopSendAudio = findViewById(R.id.btn_stop_send_audio);
+        mBtnGetSettings = findViewById(R.id.btn_get_settings);
+        mBtnChangeAudioPlaybackDevice = findViewById(R.id.btn_change_audio_playback_device);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        mBtnPause.setOnClickListener(view -> {
+        mBtnMute.setOnClickListener(view -> {
             /**
-             * pause() -- 暂停从云端拉流
+             * isAudioMuted() -- 查询云端实例是否静音
+             * muteAudio(boolean mute) -- 云端实例静音开关
              */
-            VeGameEngine.getInstance().pause();
+            VeGameEngine.getInstance().muteAudio(!VeGameEngine.getInstance().isAudioMuted());
         });
-        mBtnResume.setOnClickListener(view -> {
+        mBtnVolumeUp.setOnClickListener(view -> {
             /**
-             * resume() -- 恢复从云端拉流
+             * volumeUp() -- 升高云端实例音量大小
              */
-            VeGameEngine.getInstance().resume();
+            VeGameEngine.getInstance().volumeUp();
         });
-        mBtnRestart.setOnClickListener(view -> {
+        mBtnVolumeDown.setOnClickListener(view -> {
             /**
-             * restart() -- 重启服务端游戏进程
+             * volumeDown() -- 降低云端实例音量大小
              */
-            VeGameEngine.getInstance().restart();
+            VeGameEngine.getInstance().volumeDown();
+        });
+
+        mSwSendAudio.setOnCheckedChangeListener((compoundButton, enable) -> {
+            if (mAudioService != null) {
+                /**
+                 * setEnableSendAudioStream(boolean enable) -- 设置是否向云端实例发送音频流
+                 */
+                mAudioService.setEnableSendAudioStream(enable);
+            }
+        });
+
+        mBtnStartSendAudio.setOnClickListener(view -> {
+            if (mAudioService != null) {
+                requestPermissionAndStartSendAudio();
+            }
+        });
+
+        mBtnStopSendAudio.setOnClickListener(view -> {
+            if (mAudioService != null) {
+                /**
+                 * stopSendAudioStream() -- 关闭音频数据发送，并且不进行音频采集
+                 */
+                mAudioService.stopSendAudioStream();
+            }
+        });
+
+        mBtnGetSettings.setOnClickListener(view -> {
+            if (mAudioService != null) {
+                /**
+                 * getLocalAudioPlaybackVolume() -- 获取本地设备播放音量
+                 * getRemoteAudioPlaybackVolume() -- 获取远端实例播放音量
+                 * getLocalAudioCaptureVolume() -- 获取本地设备采集音量
+                 * isEnableSendAudioStream() -- 是否向云端实例发送音频流
+                 * isSendingAudioStream() -- 是否正在向云端实例发送音频流
+                 */
+                showToast("本地设备播放音量: " + mAudioService.getLocalAudioPlaybackVolume() + "\n" +
+                        "远端实例播放音量: " + mAudioService.getRemoteAudioPlaybackVolume() + "\n" +
+                        "本地设备采集音量: " + mAudioService.getLocalAudioCaptureVolume() + "\n" +
+                        "是否发送音频流: " + mAudioService.isSendingAudioStream() + "\n" +
+                        "是否正在发送音频流: " + mAudioService.isEnableSendAudioStream());
+            }
+        });
+
+        mBtnChangeAudioPlaybackDevice.setOnClickListener(view -> {
+            if (mAudioService != null) {
+                /**
+                 * setAudioPlaybackDevice(int device) -- 设置本地音频输出设备，
+                 * 包含不限于系统扬声器和外接扬声器和耳机(有线耳机、蓝牙耳机)
+                 * 注意：切换外放设备需确保音频上传处于开启的状态，否则切换无效
+                 *
+                 * @param device 音频输出设备ID
+                 */
+                mAudioService.setAudioPlaybackDevice(
+                        mAudioService.getAudioPlaybackDevice() == AudioPlaybackDevice.SPEAKERPHONE ?
+                        AudioPlaybackDevice.EARPIECE : AudioPlaybackDevice.SPEAKERPHONE);
+            }
         });
     }
 
@@ -225,6 +291,58 @@ public class OthersActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
+        mAudioService = VeGameEngine.getInstance().getAudioService();
+        if (mAudioService != null) {
+            /**
+             * setAudioControlListener(AudioControlListener listener) -- 设置音频控制监听器
+             */
+            mAudioService.setAudioControlListener(new AudioService.AudioControlListener() {
+                /**
+                 * 远端实例音量大小改变回调
+                 *
+                 * @param volume 返回的远端实例音量大小，[0,100]
+                 */
+                @Override
+                public void onRemoteAudioPlaybackVolumeChanged(int volume) {
+                    AcLog.d(TAG, "[onRemoteAudioPlaybackVolumeChanged] volume: " + volume);
+                }
+
+                /**
+                 * 远端实例请求开启本地音频推流回调
+                 */
+                @Override
+                public void onRemoteAudioStartRequest() {
+                    AcLog.d(TAG, "[onRemoteAudioStartRequest]");
+                    requestPermissionAndStartSendAudio();
+                }
+
+                /**
+                 * 远端实例请求关闭本地音频推流回调
+                 */
+                @Override
+                public void onRemoteAudioStopRequest() {
+                    AcLog.d(TAG, "[onRemoteAudioStopRequest]");
+                    mAudioService.stopSendAudioStream();
+                }
+
+                /**
+                 * 本地音频播放设备改变回调
+                 *
+                 * @param device 本地音频播放设备
+                 *              -1 -- 未知
+                 *               1 -- 有线耳机
+                 *               2 -- 听筒
+                 *               3 -- 扬声器
+                 *               4 -- 蓝牙耳机
+                 *               5 -- USB设备
+                 */
+                @Override
+                public void onAudioPlaybackDeviceChanged(int device) {
+                    AcLog.d(TAG, "[onAudioPlaybackDeviceChanged] device: " + device);
+                    showToast("[onAudioPlaybackDeviceChanged] device: " + device);
+                }
+            });
+        }
     }
 
     /**
@@ -364,5 +482,24 @@ public class OthersActivity extends BasePlayActivity
     @Override
     public void onNetworkQuality(int quality) {
         AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
+    }
+
+    private void requestPermissionAndStartSendAudio() {
+        PermissionUtils.permission(Manifest.permission.RECORD_AUDIO)
+                .callback(new PermissionUtils.SimpleCallback() {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onGranted() {
+                        /**
+                         * startSendAudioStream() -- 获取麦克风权限后，采集并发送音频数据
+                         */
+                        mAudioService.startSendAudioStream();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        showToast("无录音权限");
+                    }
+                }).request();
     }
 }

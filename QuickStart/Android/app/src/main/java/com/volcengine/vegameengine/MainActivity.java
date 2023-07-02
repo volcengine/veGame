@@ -19,6 +19,7 @@ import androidx.appcompat.app.AlertDialog;
 
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.vegameengine.base.BaseListActivity;
+import com.volcengine.vegameengine.feature.AudioServiceActivity;
 import com.volcengine.vegameengine.feature.CameraManagerActivity;
 import com.volcengine.vegameengine.feature.ClarityServiceActivity;
 import com.volcengine.vegameengine.feature.ClipBoardServiceManagerActivity;
@@ -44,7 +45,7 @@ public class MainActivity extends BaseListActivity {
 
     @Override
     protected void setupAdapter(ItemsHolder holder) {
-        holder.addItem(R.string.audio, R.string.audio_desc, FeatureActivity.class, Feature.FEATURE_AUDIO);
+        holder.addItem(R.string.audio, R.string.audio_desc, AudioServiceActivity.class, Feature.FEATURE_AUDIO);
         holder.addItem(R.string.camera, R.string.camera_desc, CameraManagerActivity.class, Feature.FEATURE_CAMERA);
         holder.addItem(R.string.clarity, R.string.clarity_desc, ClarityServiceActivity.class, Feature.FEATURE_CLARITY);
         holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class, Feature.FEATURE_CLIPBOARD);

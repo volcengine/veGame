@@ -25,10 +25,8 @@ package com.volcengine.vegameengine;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE;
 import static android.content.pm.ActivityInfo.SCREEN_ORIENTATION_SENSOR_PORTRAIT;
 
-import static com.volcengine.vegameengine.util.Feature.FEATURE_AUDIO;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL;
 import static com.volcengine.vegameengine.util.Feature.FEATURE_FILE_CHANNEL_EXT;
-import static com.volcengine.vegameengine.util.Feature.FEATURE_LOCATION;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -48,7 +46,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.volcengine.cloudcore.common.mode.Role;
-import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.FileChannelExtView;
 import com.volcengine.vegameengine.feature.FileChannelView;
 import com.volcengine.vegameengine.util.AssetsUtil;
@@ -282,18 +279,6 @@ public class GameActivity extends AppCompatActivity
         });
 
         switch (getIntent().getIntExtra(KEY_FEATURE_ID, -1)) {
-            case FEATURE_AUDIO: // 音频
-                btnAudio.setVisibility(View.VISIBLE);
-                btnAudio.setOnClickListener(view -> {
-                    if (veGameEngine.getAudioService() != null) {
-                        mDialogWrapper = DialogUtils.wrapper(
-                                new AudioServiceView(this, veGameEngine.getAudioService()));
-                        mDialogWrapper.show();
-                    } else {
-                        AcLog.d(TAG, "AudioService is null!");
-                    }
-                });
-                break;
             case FEATURE_FILE_CHANNEL: // 文件通道
                 btnFileChannel.setVisibility(View.VISIBLE);
                 btnFileChannel.setOnClickListener(view -> {
