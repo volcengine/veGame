@@ -68,8 +68,9 @@
     <string name="input_filepath">请输入文件路径</string>
     <string name="file_channel_ext_desc">在该演示中你可以体验与大文件通道相关的功能接口</string>
 
-    <!-- Ground相关 -->
-    <string name="ground">ground</string>
+    <!-- 前后台切换相关 -->
+    <string name="switch_ground">前后台切换</string>
+    <string name="switch_ground_desc">在该演示中你可以体验与前后台切换相关的功能接口</string>
 
     <!--定位服务相关-->
     <string name="location">定位服务</string>
