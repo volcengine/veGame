@@ -22,6 +22,7 @@ import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.LocalInputManager;
 import com.volcengine.cloudphone.apiservice.LocationService;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
@@ -35,6 +36,9 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+/**
+ * 该类用于展示与定位服务{@link LocationService}相关的功能接口
+ */
 public class LocationServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 

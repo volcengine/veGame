@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,7 +43,7 @@ public class ClipBoardServiceManagerActivity extends BasePlayActivity
 
     private final String TAG = "ClipBoardServiceManagerActivity";
 
-    private ViewGroup mContainer;
+    private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
     private IClipBoardServiceManager mClipBoardServiceManager;

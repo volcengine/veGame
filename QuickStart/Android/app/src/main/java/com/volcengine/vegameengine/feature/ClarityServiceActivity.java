@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -41,7 +42,7 @@ public class ClarityServiceActivity extends BasePlayActivity
 
     private final String TAG = "ClarityServiceActivity";
 
-    private ViewGroup mContainer;
+    private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
     private StreamProfileManager mClarityService;

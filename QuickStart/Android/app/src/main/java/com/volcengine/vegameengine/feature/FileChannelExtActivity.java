@@ -19,6 +19,7 @@ import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.IFileChannel;
 import com.volcengine.cloudphone.apiservice.IFileChannelExt;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
@@ -36,7 +37,8 @@ import java.util.Map;
 
 
 /**
- * 该类用于展示与大文件通道{@link IFileChannelExt}相关的功能接口
+ * 该类用于展示与大文件通道{@link IFileChannelExt}相关的功能接口，
+ * 注：文件通道{@link IFileChannel}即将下线，请使用大文件通道进行文件传输。
  */
 public class FileChannelExtActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {

@@ -23,6 +23,7 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.AudioService;
+import com.volcengine.cloudphone.apiservice.CameraManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -35,6 +36,9 @@ import org.json.JSONObject;
 
 import java.util.Map;
 
+/**
+ * 该类用于展示与音频{@link AudioService}相关的功能接口
+ */
 public class AudioServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 

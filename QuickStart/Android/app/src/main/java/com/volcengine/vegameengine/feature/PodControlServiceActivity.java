@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -35,14 +36,14 @@ import java.util.Map;
 
 
 /**
- * 该类用于展示与实例控制{@link com.volcengine.cloudphone.apiservice.PodControlService}相关的功能接口
+ * 该类用于展示与实例控制{@link PodControlService}相关的功能接口
  */
 public class PodControlServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
     private final String TAG = "PodControlServiceActivity";
 
-    private ViewGroup mContainer;
+    private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
     private PodControlService mPodControlService;
