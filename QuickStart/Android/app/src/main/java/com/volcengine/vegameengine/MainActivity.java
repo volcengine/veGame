@@ -17,7 +17,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 
-import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.vegameengine.base.BaseListActivity;
 import com.volcengine.vegameengine.feature.AudioServiceActivity;
 import com.volcengine.vegameengine.feature.CameraManagerActivity;
@@ -33,7 +32,6 @@ import com.volcengine.vegameengine.feature.OthersActivity;
 import com.volcengine.vegameengine.feature.PodControlServiceActivity;
 import com.volcengine.vegameengine.feature.ProbeNetworkActivity;
 import com.volcengine.vegameengine.feature.SensorActivity;
-import com.volcengine.vegameengine.util.Feature;
 
 public class MainActivity extends BaseListActivity {
 
@@ -46,21 +44,20 @@ public class MainActivity extends BaseListActivity {
 
     @Override
     protected void setupAdapter(ItemsHolder holder) {
-        holder.addItem(R.string.audio, R.string.audio_desc, AudioServiceActivity.class, Feature.FEATURE_AUDIO);
-        holder.addItem(R.string.camera, R.string.camera_desc, CameraManagerActivity.class, Feature.FEATURE_CAMERA);
-        holder.addItem(R.string.clarity, R.string.clarity_desc, ClarityServiceActivity.class, Feature.FEATURE_CLARITY);
-        holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class, Feature.FEATURE_CLIPBOARD);
-        holder.addItem(R.string.file_channel, R.string.file_channel_desc, FeatureActivity.class, Feature.FEATURE_FILE_CHANNEL);
-        holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FileChannelExtActivity.class, Feature.FEATURE_FILE_CHANNEL_EXT);
-        holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class, Feature.FEATURE_LOCAL_INPUT);
-        holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class, Feature.FEATURE_LOCATION);
-        holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class, Feature.FEATURE_MESSAGE_CHANNEL);
-        holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class, Feature.FEATURE_MULTI_USER);
-        holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class, Feature.FEATURE_GAME_PAD);
-        holder.addItem(R.string.pod_control, R.string.pod_control_desc, PodControlServiceActivity.class, Feature.FEATURE_POD_CONTROL);
-        holder.addItem(R.string.probe_network, R.string.probe_network_desc, ProbeNetworkActivity.class, Feature.FEATURE_PROBE_NETWORK);
-        holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class, Feature.FEATURE_SENSOR);
-        holder.addItem(R.string.unclassified, R.string.unclassified_desc, OthersActivity.class, Feature.FEATURE_UNCLASSIFIED);
+        holder.addItem(R.string.audio, R.string.audio_desc, AudioServiceActivity.class);
+        holder.addItem(R.string.camera, R.string.camera_desc, CameraManagerActivity.class);
+        holder.addItem(R.string.clarity, R.string.clarity_desc, ClarityServiceActivity.class);
+        holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class);
+        holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FileChannelExtActivity.class);
+        holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class);
+        holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class);
+        holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class);
+        holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class);
+        holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class);
+        holder.addItem(R.string.pod_control, R.string.pod_control_desc, PodControlServiceActivity.class);
+        holder.addItem(R.string.probe_network, R.string.probe_network_desc, ProbeNetworkActivity.class);
+        holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class);
+        holder.addItem(R.string.unclassified, R.string.unclassified_desc, OthersActivity.class);
     }
 
     @Override
