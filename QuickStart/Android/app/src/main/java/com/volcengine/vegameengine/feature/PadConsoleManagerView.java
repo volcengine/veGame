@@ -34,6 +34,17 @@ public class PadConsoleManagerView {
         button.setOnClickListener(v -> mDialogWrapper.show());
     }
 
+    /**
+     * 初始化VeGameConsole-SDK
+     * 说明：
+     * VeGameConsole.getInstance().init()必需；
+     * VeGameConsole.getInstance().loadVirtualConsole() 如使用虚拟手柄则必需；
+     * VeGameConsole.getInstance().setGamePadService() 可选
+     * VeGameConsole.getInstance().registerGameConsoleDevice()如使用物理、非默认虚拟手柄则必需
+     * VeGameConsole.getInstance().registerGameConsoleDevice()如使用物理、非默认虚拟手柄则必需
+     * VeGameConsole.getInstance().setGamePadStatusListener()可选
+     *
+     */
     private void initVeGameConsole() {
         // 初始化VeGameConsole SDK
         VeGameConsole.getInstance().init(mContainer.getContext());
