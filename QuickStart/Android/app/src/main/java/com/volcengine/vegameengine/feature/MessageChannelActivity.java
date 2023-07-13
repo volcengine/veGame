@@ -16,6 +16,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
+import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.IMessageChannel;
@@ -29,6 +30,7 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -346,6 +348,16 @@ public class MessageChannelActivity extends BasePlayActivity
                 }
             });
         }
+    }
+
+    @Override
+    public void onQueueUpdate(List<QueueInfo> list) {
+
+    }
+
+    @Override
+    public void onQueueSuccessAndStart(int i) {
+
     }
 
     /**

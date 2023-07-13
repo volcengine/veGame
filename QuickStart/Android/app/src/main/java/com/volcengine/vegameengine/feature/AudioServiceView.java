@@ -16,6 +16,8 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.blankj.utilcode.util.PermissionUtils;
 import com.volcengine.cloudcore.common.mode.AudioPlaybackDevice;
+import com.volcengine.cloudcore.common.mode.LocalAudioStreamError;
+import com.volcengine.cloudcore.common.mode.LocalAudioStreamState;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.AudioService;
 import com.volcengine.vegameengine.R;
@@ -255,5 +257,10 @@ public class AudioServiceView extends ScrollView implements AudioService.AudioCo
                 mRgAudioPlaybackDevice.setOnCheckedChangeListener(mOnCheckedChangeListener);
             }
         }
+    }
+
+    @Override
+    public void onLocalAudioStateChanged(LocalAudioStreamState localAudioStreamState, LocalAudioStreamError localAudioStreamError) {
+
     }
 }
