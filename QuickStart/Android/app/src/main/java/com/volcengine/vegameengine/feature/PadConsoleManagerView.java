@@ -118,6 +118,7 @@ public class PadConsoleManagerView {
              *          12 -- 失败，已经是显示状态
              */
             gamePadShow.setOnClickListener(v -> {
+                // 显示默认虚拟手柄，无需手动注册
                 VeGameConsole.getInstance().showVirtual();
                 VeGameEngine.getInstance().setInterceptTouchEvent(true);
             });
@@ -132,6 +133,7 @@ public class PadConsoleManagerView {
              *          13 -- 失败，已经是隐藏状态
              */
             gamePadHide.setOnClickListener(v -> {
+                // 隐藏默认虚拟手柄，无需手动解注册
                 VeGameConsole.getInstance().hideVirtual();
                 VeGameEngine.getInstance().setInterceptTouchEvent(false);
             });
