@@ -46,6 +46,8 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -60,11 +62,13 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.volcengine.cloudcore.common.mode.CameraId;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
+import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudcore.common.mode.Role;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
 import com.volcengine.cloudphone.apiservice.StreamProfileChangeCallBack;
 import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
+import com.volcengine.cloudplay.gamepad.api.VeGameConsole;
 import com.volcengine.vegameengine.feature.AudioServiceView;
 import com.volcengine.vegameengine.feature.CamaraManagerView;
 import com.volcengine.vegameengine.feature.ClarityServiceView;
@@ -93,6 +97,7 @@ import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 public class GameActivity extends AppCompatActivity
@@ -519,6 +524,30 @@ public class GameActivity extends AppCompatActivity
     @Override
     public void onServiceInit() {
         initFeatures();
+    }
+
+    @Override
+    public void onQueueUpdate(List<QueueInfo> list) {
+
+    }
+
+    @Override
+    public void onQueueSuccessAndStart(int i) {
+
+    }
+
+    @Override
+    public boolean dispatchKeyEvent(KeyEvent event) {
+        // 物理手柄VeGameConsole需要消费KeyEvent
+        return VeGameConsole.getInstance().dispatchKeyEvent(event)
+                || super.dispatchKeyEvent(event);
+    }
+
+    @Override
+    public boolean dispatchGenericMotionEvent(MotionEvent event) {
+        // 物理手柄VeGameConsole需要消费MotionEvent
+        return VeGameConsole.getInstance().dispatchGenericMotionEvent(event)
+                || super.dispatchGenericMotionEvent(event);
     }
 
     /**
