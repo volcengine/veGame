@@ -39,18 +39,19 @@ public class PadConsoleManagerView {
      * 说明：
      * VeGameConsole.getInstance().init()必需；
      * VeGameConsole.getInstance().loadVirtualConsole() 如使用虚拟手柄则必需；
-     * VeGameConsole.getInstance().setGamePadService() 可选
+     * VeGameConsole.getInstance().setGamePadService() 必需
      * VeGameConsole.getInstance().registerGameConsoleDevice()如使用物理、非默认虚拟手柄则必需
-     * VeGameConsole.getInstance().registerGameConsoleDevice()如使用物理、非默认虚拟手柄则必需
+     * VeGameConsole.getInstance().unregisterGameConsoleDevice()如使用物理、非默认虚拟手柄则必需
      * VeGameConsole.getInstance().setGamePadStatusListener()可选
+     * VeGameConsole.getInstance().setPhysicalDeviceListener() 可选
      *
      */
     private void initVeGameConsole() {
         // 初始化VeGameConsole SDK
         VeGameConsole.getInstance().init(mContainer.getContext());
         // 加载VeGameConsole SDK虚拟手柄支持
-        VeGameConsole.getInstance().loadVirtualConsole(mContainer.getContext(), (FrameLayout) mContainer);
-        // 设置云游戏手柄核心服务
+        VeGameConsole.getInstance().loadVirtualConsole(mContainer.getContext(), mContainer);
+        // 设置云游戏手柄核心转发服务
         VeGameConsole.getInstance().setGamePadService(VeGameEngine.getInstance().getGamePadService());
         // 添加物理手柄监听，通过onDeviceAdded和onDeviceRemoved回调决定是否注册/解注册手柄
         VeGameConsole.getInstance().setPhysicalDeviceListener(new OnPhysicalDeviceListener() {
