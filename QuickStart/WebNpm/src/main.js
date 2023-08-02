@@ -1,20 +1,12 @@
-/*
- * @Author: chenzhongsheng
- * @Date: 2023-01-05 18:31:22
- * @Description: Coding something
- */
+import veGameSDK from '@volcengine/vegame';
+import { initConfig, startConfig } from './config';
+import { initTosFileChannel } from './samples/file-channel';
+
 const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
-const playerEl = document.getElementById('player');
-
 
 function init() {
-  console.log('initConfig',window.initConfig)
-  console.log('startConfig',window.startConfig)
-  // 引入 lib 下的 火山引擎云游戏 SDK 之后，会在 window 上挂一个全局变量，veGameSDK
-  const veGameInstance = new window.veGameSDK({
-    ...(window.initConfig || {}),
-  });
+  const veGameInstance = new veGameSDK(initConfig);
   console.log('veGameSDK version', veGameInstance.getVersion());
 
   veGameInstance.on('message-channel-connected', (message) => {
@@ -63,9 +55,7 @@ function bindEventListener(veGameInstance) {
   startBtn.addEventListener('click', async () => {
     console.log('start btn click', veGameInstance);
     try {
-      await veGameInstance?.start({
-        ...(window.startConfig || {}),
-      });
+      await veGameInstance?.start(startConfig);
       toggleDom();
     } catch (err) {
       console.log(err);
