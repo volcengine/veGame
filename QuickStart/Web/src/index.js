@@ -95,7 +95,13 @@ function toggleHidden(el) {
   el.classList.toggle('hidden');
 }
 
-(() => {
+(async () => {
+  // 在启动云游戏之前，先检测用户的浏览器是否支持 rtc， 如果不支持，提示用户更换浏览器
+  const isSupportRtc = await window.veGameSDK.isRtcSupported();
+  if (!isSupportRtc) {
+    console.log('当前浏览器不支持 WebRTC，请更换浏览器');
+    return;
+  }
   const veGameInstance = init();
   bindEventListener(veGameInstance);
 })();
