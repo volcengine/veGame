@@ -42,8 +42,6 @@
     
     [self configProgressHud];
     
-    [self configVeGame];
-    
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
 
     return YES;
@@ -76,7 +74,7 @@
 
 - (void)configVeGame
 {
-    [VeGameManager setupConfigWithAccountId: @"2100052949"];
+    [[VeGameManager sharedInstance] initWithAccountId:@"-----AccountID-----"];
 }
 
 @end

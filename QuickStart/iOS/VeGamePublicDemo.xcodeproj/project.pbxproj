@@ -169,13 +169,11 @@
 			buildConfigurationList = C83BF0171E1234250016E53D /* Build configuration list for PBXNativeTarget "VeGamePublicDemo" */;
 			buildPhases = (
 				FEB2921AD8ED7988BC459C38 /* [CP] Check Pods Manifest.lock */,
-				FBC0837D07C2667539238D6B /* [CP-User] Hummer-before-hooks */,
 				C83BEFFC1E1234250016E53D /* Sources */,
 				C83BEFFD1E1234250016E53D /* Frameworks */,
 				C83BEFFE1E1234250016E53D /* Resources */,
 				39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */,
 				2B26FE4B28AB8BD300F39BF4 /* Embed Frameworks */,
-				33BAEA01C6709CF66568A700 /* [CP-User] Hummer-after-hooks */,
 			);
 			buildRules = (
 			);
@@ -235,16 +233,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		33BAEA01C6709CF66568A700 /* [CP-User] Hummer-after-hooks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			name = "[CP-User] Hummer-after-hooks";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -f \"${PODS_ROOT}/hummer_after_hooks.sh\" ];then\n  bash \"${PODS_ROOT}/hummer_after_hooks.sh\"\nfi\n";
-		};
 		39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -262,16 +250,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-VeGamePublicDemo/Pods-VeGamePublicDemo-resources.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		FBC0837D07C2667539238D6B /* [CP-User] Hummer-before-hooks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			name = "[CP-User] Hummer-before-hooks";
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "if [ -f \"${PODS_ROOT}/hummer_before_hooks.sh\" ];then\n  bash \"${PODS_ROOT}/hummer_before_hooks.sh\"\nfi\n";
 		};
 		FEB2921AD8ED7988BC459C38 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
