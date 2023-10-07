@@ -70,9 +70,10 @@ public class MainActivity extends BaseListActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (getPrefBoolean(String.valueOf(R.string.first_open_app), true)) {
-            showAlertDialog();
-        }
+//        // 首次打开应用时，弹出授权弹窗
+//        if (getPrefBoolean(String.valueOf(R.string.first_open_app), true)) {
+//            showAlertDialog();
+//        }
     }
 
     private void showAlertDialog() {

@@ -157,7 +157,6 @@ builder.userId(userId) // 用户userid
     .enableVibrator(true) // 打开本地振动开关
     .enableLocationService(true) // 打开本地定位功能开关
     .enableLocalKeyboard(true) // 打开本地键盘开关
-    .enableFileChannel(true) // 打开文件通道开关
     .streamListener(IStreamListener streamListener); // 获取音视频流信息回调监听
 
 GamePlayConfig gamePlayConfig = builder.build();
@@ -179,7 +178,7 @@ main
 │   └── com
 │       └── volcengine
 │           └── vegameengine
-│               ├── GsonConverter.java // 用于SDK 传入的JSON转换的实现 
+│               ├── GsonConverter.java // 用于SDK传入的JSON转换
 │               ├── InitApplication.java // 工程的Application 负责初始化SDK等
 │               ├── MainActivity.java // 用于展示SDK的特性列表，并进入对应特性的体验界面
 │               ├── WebViewActivity.kt // 用于展示火山引擎的官网
@@ -204,11 +203,10 @@ main
 │               │   ├── SensorActivity.java // 传感器
 │               │   └── OthersActivity.java // 其他
 │               └── util
-│                   ├── AssetsUtil.java // 用于读取并解析sts.json文件中的ak/sk/token
-│                   ├── DialogUtils.java // 用于在不同特性的体验界面显示对话框
+│                   ├── AssetsUtil.java // 用于读取并解析sts.json文件中的gameId/ak/sk/token
 │                   ├── FileUtil.java // 用于文件传输功能的工具类
-│                   ├── ScreenUtil.java // 屏幕工具类，用于适配挖孔屏
-│                   └── SizeUtils.java 
+│                   ├── PrefUtils.kt // 用于保存应用的设置选项
+│                   └── ScreenUtil.java // 屏幕工具类，用于适配挖孔屏
 ```
 
 
