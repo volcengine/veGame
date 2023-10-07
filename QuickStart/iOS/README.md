@@ -1,4 +1,4 @@
-﻿# veGame SDK Demo
+# veGame SDK Demo
 
 ## 说明
 
@@ -10,6 +10,8 @@
 3. VeGame.framework 为 Dynamic Library，且只支持真机运行，不支持模拟器
 
 说明：本文档中涉及编译器的指引及示例图参考 Xcode 13.4 版本。
+
+
 
 ## 快速开始
 
