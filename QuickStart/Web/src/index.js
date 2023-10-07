@@ -7,19 +7,13 @@ const startBtn = document.getElementById('start-btn');
 const stopBtn = document.getElementById('stop-btn');
 const playerEl = document.getElementById('player');
 
-const isPC =
-  !/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
 
 function init() {
-  console.log(window.initConfig)
+  console.log('initConfig',window.initConfig)
+  console.log('startConfig',window.startConfig)
   // 引入 lib 下的 火山引擎云游戏 SDK 之后，会在 window 上挂一个全局变量，veGameSDK
   const veGameInstance = new window.veGameSDK({
     ...(window.initConfig || {}),
-    domId: 'player',
-    isDebug: true,
-    isPC,
   });
   console.log('veGameSDK version', veGameInstance.getVersion());
 
@@ -44,6 +38,22 @@ function init() {
     }
   });
 
+  // 在页面 unmount 时检查云游戏是否处在运行状态，如果是正在运行，则调用 stop
+  // 这样做的好处是：1. 释放 webrtc 链接，减少浏览器内存占用 2. 释放云游戏并发
+  window.addEventListener('beforeunload', () => {
+    /**
+     * 这里采用 beforeunload 事件里调用 stop
+     * 如果业务在 beforeunload 有业务逻辑，会调用 event.preventDefault
+     * 则需要再 unload 事件里调用 stop
+     */
+    const connectionState = veGameInstance.getConnectionState();
+    // connectionState 是 CONNECTED 代表云游戏处在运行状态，此时需要 stop
+    if (connectionState === 'CONNECTED') {
+      veGameInstance?.stop();
+      veGameInstance.destroy();
+    }
+  });
+
   initTosFileChannel(veGameInstance);
 
   return veGameInstance;
@@ -55,8 +65,6 @@ function bindEventListener(veGameInstance) {
     try {
       await veGameInstance?.start({
         ...(window.startConfig || {}),
-        width: playerEl.clientWidth,
-        height: playerEl.clientHeight,
       });
       toggleDom();
     } catch (err) {
@@ -87,7 +95,13 @@ function toggleHidden(el) {
   el.classList.toggle('hidden');
 }
 
-(() => {
+(async () => {
+  // 在启动云游戏之前，先检测用户的浏览器是否支持 rtc， 如果不支持，提示用户更换浏览器
+  const isSupportRtc = await window.veGameSDK.isRtcSupported();
+  if (!isSupportRtc) {
+    console.log('当前浏览器不支持 WebRTC，请更换浏览器');
+    return;
+  }
   const veGameInstance = init();
   bindEventListener(veGameInstance);
 })();

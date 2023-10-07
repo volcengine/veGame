@@ -1,0 +1,84 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="res">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="src\input">
+      <UniqueIdentifier>{13cb3601-acf8-43be-ace6-acf719fc7e23}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\layer">
+      <UniqueIdentifier>{2f670b88-3a0c-43bc-957b-ffb559223282}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pch">
+      <UniqueIdentifier>{1de96e04-3cd6-49da-a253-51a5b0c89006}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="res\resource.h">
+      <Filter>res</Filter>
+    </ClInclude>
+    <ClInclude Include="input\demo_input.h">
+      <Filter>src\input</Filter>
+    </ClInclude>
+    <ClInclude Include="demo_core.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="demo_instance.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="layer\status_layer_wnd.h">
+      <Filter>src\layer</Filter>
+    </ClInclude>
+    <ClInclude Include="res\targetver.h">
+      <Filter>res</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>pch</Filter>
+    </ClInclude>
+    <ClInclude Include="demo_utils.h">
+      <Filter>src</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="res\small.ico">
+      <Filter>res</Filter>
+    </Image>
+    <Image Include="res\veGameEngineDemo.ico">
+      <Filter>res</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="demo_wnd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="input\demo_input.cpp">
+      <Filter>src\input</Filter>
+    </ClCompile>
+    <ClCompile Include="demo_instance.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="demo_core.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="layer\status_layer_wnd.cpp">
+      <Filter>src\layer</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>pch</Filter>
+    </ClCompile>
+    <ClCompile Include="demo_utils.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="res\resource.rc">
+      <Filter>res</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

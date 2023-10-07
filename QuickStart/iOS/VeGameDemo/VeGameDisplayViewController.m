@@ -37,6 +37,7 @@
 
 @property (nonatomic, assign) NSInteger rotation;
 @property (nonatomic, strong) UIView *containerView;
+@property (nonatomic, assign) BOOL alreadyStart;
 
 @end
 
@@ -54,17 +55,25 @@
     [self configUI];
     [SVProgressHUD showWithStatus: @"正在启动..."];
     // 初始化云游戏实例
-    [VeGameManager sharedManagerWithContainerView: self.containerView delegate: self];
-    // 配置信息
-    VeGameConfigObject *configObj = [VeGameConfigObject new];
-    configObj.ak = self.configObj.ak;
-    configObj.sk = self.configObj.sk;
-    configObj.token = self.configObj.token;
-    configObj.userId = self.configObj.userId;
-    configObj.gameId = self.configObj.gameId;
-    configObj.roundId = self.configObj.roundId;
-    // 启动
-    [[VeGameManager sharedInstance] startWithConfig: configObj];
+    [VeGameManager sharedInstance].delegate = self;
+    [VeGameManager sharedInstance].containerView = self.containerView;
+    
+    // 附加信息
+    [[VeGameManager sharedInstance] setExtraParameters: @{
+        
+    }];
+    
+    if (NO) { // 是否进行网络探测
+        [SVProgressHUD showWithStatus: @"正在进行网络探测..."];
+        VeGameConfigObject *configObj = [VeGameConfigObject new];
+        configObj.ak = self.configObj.ak;
+        configObj.sk = self.configObj.sk;
+        configObj.token = self.configObj.token;
+        configObj.userId = self.configObj.userId;
+        [[VeGameManager sharedInstance] probeStart: configObj];
+    } else {
+        [self startGame];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -165,11 +174,19 @@
                 position: CSToastPositionCenter];
 }
 
+- (void)gameManager:(VeGameManager *)manager onWarning:(VeGameWarningCode)warnCode
+{
+    [self.view makeToast: [NSString stringWithFormat: @"Warning Code: %ld", warnCode]
+                duration: 2.0f
+                position: CSToastPositionCenter];
+}
+
 #pragma mark - button action
 
 - (void)tappedExitButton:(UIButton *)btn
 {
     [SVProgressHUD dismiss];
+    self.alreadyStart = NO;
     [[VeGameManager sharedInstance] stop];
     [self.navigationController popViewControllerAnimated: YES];
 }
@@ -182,6 +199,34 @@
     imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
     imagePicker.modalPresentationStyle = UIModalPresentationFullScreen;
     [self presentViewController: imagePicker animated: YES completion: nil];
+}
+
+- (void)startGame
+{
+    if (!self.alreadyStart) {
+        self.alreadyStart = YES;
+        
+        // 配置信息
+        [SVProgressHUD showWithStatus: @"正在启动..."];
+        VeGameConfigObject *configObj = [VeGameConfigObject new];
+        configObj.ak = self.configObj.ak;
+        configObj.sk = self.configObj.sk;
+        configObj.token = self.configObj.token;
+        configObj.userId = self.configObj.userId;
+        configObj.gameId = self.configObj.gameId;
+        configObj.roundId = self.configObj.roundId;
+//        VeGameControlObject *control = [VeGameControlObject new];
+//        control.role = self.configObj.role;
+//        control.roomType = self.configObj.roomType;
+//        configObj.control = control;
+//        configObj.sessionMode = self.configObj.sessionMode;
+//        configObj.queuePriority = self.configObj.queuePriority;
+//        configObj.keyboardEnable = self.configObj.keyboardEnable;
+//        configObj.autoRecycleTime = self.configObj.autoRecycleTime;
+//        configObj.videoStreamProfileId = self.configObj.videoStreamProfileId;
+//        configObj.reservedId = self.configObj.reservedId.length ? self.configObj.reservedId : nil;
+        [[VeGameManager sharedInstance] startWithConfig: configObj];
+    }
 }
 
 #pragma mark - UIImagePickerControllerDelegate
@@ -203,21 +248,32 @@
     file.fileData = imageData;
     file.name = fileName;
     file.md5 = [self md5StringOfData: imageData];
-    [[VeGameManager sharedInstance] startSendFile: file onProgress:^(VeFile *file, NSInteger progress) {
+    [[VeGameManager sharedInstance] startSendFile:file options:@{@"options_key" : @"options_value"} onStart:^(VeFile *file, NSDictionary<NSString *,NSString *> *options) {
+        NSLog(@"上传开始--------%@\n", options);
+    } onProgress:^(VeFile *file, NSDictionary<NSString *,NSString *> *options, NSInteger progress) {
         NSLog(@"上传进度--------%ld\n", progress);
-    } onComplete:^(VeFile *file) {
+    } onComplete:^(VeFile *file, NSDictionary<NSString *,NSString *> *options) {
         NSLog(@"上传完成--------%@\n", file.name);
-    } onCancel:^(VeFile *file) {
+    } onCancel:^(VeFile *file, NSDictionary<NSString *,NSString *> *options) {
         NSLog(@"上传取消--------%@\n", file);
-    } onError:^(VeFile *file, int error) {
+    } onError:^(VeFile *file, NSDictionary<NSString *,NSString *> *options, VeGameErrorCode err) {
         NSLog(@"上传出错--------%@\n", file);
     }];
-    
 }
 
 - (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
 {
     NSLog(@"取消选择---------");
+}
+
+- (void)gameManager:(VeGameManager *)manager onQueueUpdate:(NSArray<NSDictionary *> *)queueInfoList
+{
+    NSLog(@"开始排队：%@", queueInfoList);
+}
+
+- (void)gameManager:(VeGameManager *)manager onQueueSuccessAndStart:(NSInteger)remainTime
+{
+    NSLog(@"排队完毕%ld", remainTime);
 }
 
 #pragma mark - 大文件下载
@@ -267,10 +323,12 @@
 - (void)setRotation:(NSInteger)rotation
 {
     if (_rotation != rotation) {
-        
         _rotation = rotation;
-        
-        [Utils rotateDeviceToOrientation: rotation];
+        if (@available(iOS 16, *)) {
+            [self setNeedsUpdateOfSupportedInterfaceOrientations];
+        } else {
+            [Utils rotateDeviceToOrientation: rotation];
+        }
     }
 }
 

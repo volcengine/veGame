@@ -48,7 +48,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 云游戏 SDK
-    implementation 'com.volcengine.vegame:vegame:1.19.0'
+    implementation 'com.volcengine.vegame:vegame:1.26.0'
     
     implementation 'androidx.annotation:annotation:1.1.0'
         
@@ -114,7 +114,7 @@ android {
 ```
 ### 快速开始
 
-#### 零、鉴权相关
+#### 鉴权相关
 
 1. 在接入云游戏 SDK 之前，需要获取火山引擎账号对应原始的 AccessKey（ak）和 SecretKey（sk），用于生成临时鉴权密钥（登录火山引擎控制台后，点击页面右上角用户信息，选择 账号 > API访问密钥）。
 
