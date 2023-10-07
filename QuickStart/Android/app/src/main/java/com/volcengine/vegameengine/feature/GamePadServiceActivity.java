@@ -2,6 +2,7 @@ package com.volcengine.vegameengine.feature;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.InputDevice;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -24,6 +25,8 @@ import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.cloudphone.gamepad.GamePadService;
+import com.volcengine.cloudplay.gamepad.api.OnGamePadStatusListener;
+import com.volcengine.cloudplay.gamepad.api.OnPhysicalDeviceListener;
 import com.volcengine.cloudplay.gamepad.api.VeGameConsole;
 import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.base.BasePlayActivity;
@@ -76,55 +79,35 @@ public class GamePadServiceActivity extends BasePlayActivity
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        /**
-         * loadConsole(int consoleId, Context context, FrameLayout attachFrame) -- 初始化虚拟手柄
-         *
-         * @param consoleId 默认为0
-         * @param context 虚拟手柄初始化所需上下文
-         * @param attachFrame 添加虚拟手柄的View层级，需为FrameLayout以及子类
-         *
-         * @return 虚拟手柄初始化的结果
-         *          0 -- 初始化成功
-         *          1 -- 初始化失败，context为空
-         *          2 -- 初始化失败，attachFrame为空
-         *
-         *
-         * setGamePadService(GamePadService service) -- 设置GamePadService
-         * 该service作为客户端与云端手柄事件传递桥梁，
-         * 如果没有设置GamePadService手柄事件将无法传递到云端
-         */
         mBtnInitGamePad.setOnClickListener(v -> {
-            VeGameConsole.getInstance().loadConsole(0, this, mContainer);
-            if (mGamePadService != null) {
-                VeGameConsole.getInstance().setGamePadService(mGamePadService);
-            }
+            initVeGameConsole();
         });
 
         /**
-         * show() -- 显示手柄
+         * showVirtual() -- 显示虚拟手柄
          *
-         * @apiNote 显示手柄后，云游戏主容器如需屏蔽Touch事件，请务必调用VeGameEngine.getInstance().setInterceptTouchEvent(true)
+         * @apiNote 显示虚拟手柄后，云游戏主容器如需屏蔽Touch事件，请务必调用VeGameEngine.getInstance().setInterceptTouchEvent(true)
          *
          * @return  10 -- 成功
          *          11 -- 失败，手柄未初始化
          *          12 -- 失败，已经是显示状态
          */
         mBtnShowGamePad.setOnClickListener(v -> {
-            VeGameConsole.getInstance().show();
+            VeGameConsole.getInstance().showVirtual();
             VeGameEngine.getInstance().setInterceptTouchEvent(true);
         });
 
         /**
-         * hide() -- 隐藏手柄
+         * hideVirtual() -- 隐藏虚拟手柄
          *
-         * @apiNote 隐藏手柄后，云游戏主容器如需重新获取Touch事件，请务必调用VeGameEngine.getInstance().setInterceptTouchEvent(false)
+         * @apiNote 隐藏虚拟手柄后，云游戏主容器如需重新获取Touch事件，请务必调用VeGameEngine.getInstance().setInterceptTouchEvent(false)
          *
          * @return  10 -- 成功
          *          11 -- 失败，手柄未初始化
          *          13 -- 失败，已经是隐藏状态
          */
         mBtnHideGamePad.setOnClickListener(v -> {
-            VeGameConsole.getInstance().hide();
+            VeGameConsole.getInstance().hideVirtual();
             VeGameEngine.getInstance().setInterceptTouchEvent(false);
         });
 
@@ -132,6 +115,78 @@ public class GamePadServiceActivity extends BasePlayActivity
          * release() -- 释放手柄资源
          */
         mBtnReleaseGamePad.setOnClickListener(v -> VeGameConsole.getInstance().release());
+    }
+
+    private void initVeGameConsole() {
+        /**
+         * init(Context context) -- 初始化VeGameConsole SDK
+         *
+         * @param context 手柄初始化所需上下文
+         */
+        VeGameConsole.getInstance().init(mContainer.getContext());
+
+        /**
+         * 加载VeGameConsole SDK虚拟手柄支持
+         *
+         * @param context 虚拟手柄初始化所需上下文
+         * @param attachFrame 添加虚拟手柄的View层级，需为FrameLayout以及子类
+         *
+         * @return 虚拟手柄初始化的结果
+         *           0 -- 初始化成功
+         *           1 -- 初始化失败，context为空
+         *           2 -- 初始化失败，attachFrame为空
+         */
+        VeGameConsole.getInstance().loadVirtualConsole(mContainer.getContext(), (FrameLayout) mContainer);
+
+        /**
+         * setGamePadService(GamePadService service) -- 设置GamePadService
+         * 该service作为客户端与云端手柄事件传递桥梁，
+         * 如果没有设置GamePadService手柄事件将无法传递到云端
+         */
+        VeGameConsole.getInstance().setGamePadService(VeGameEngine.getInstance().getGamePadService());
+
+        /**
+         * 设置物理设备监听器
+         */
+        VeGameConsole.getInstance().setPhysicalDeviceListener(new OnPhysicalDeviceListener() {
+            /**
+             * 物理设备接入的回调
+             *
+             * @param device 物理设备
+             */
+            @Override
+            public void onDeviceAdded(InputDevice device) {
+                // 注册一个物理手柄到云端
+                VeGameConsole.getInstance().registerGameConsoleDevice(device.getName(), device.getId());
+            }
+
+            /**
+             * 物理设备移除的回调
+             *
+             * @param device 物理设备
+             */
+            @Override
+            public void onDeviceRemoved(InputDevice device) {
+                // 解除一个云端已注册的物理手柄
+                VeGameConsole.getInstance().unregisterGameConsoleDevice(device.getName(), device.getId());
+            }
+        });
+
+        /**
+         * 设置云端设备状态变化监听器，一般注册/解注册后会收到此消息
+         */
+        VeGameConsole.getInstance().setGamePadStatusListener(new OnGamePadStatusListener() {
+            /**
+             * 云端手柄状态发生变化
+             *
+             * @param deviceId 设备ID，与注册手柄时传入一致
+             * @param enable 已启用/已禁用
+             */
+            @Override
+            public void onGamePadStatusChanged(int deviceId, boolean enable) {
+                AcLog.d(TAG, "[onGamePadStatusChanged] deviceId: " + deviceId + ", enable: " + enable);
+            }
+        });
     }
 
     private void initGamePlayConfig() {
