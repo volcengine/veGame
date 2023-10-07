@@ -155,7 +155,7 @@
 
 #pragma mark - VeGameManagerDelegate
 
-- (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId extra:(NSDictionary *)extra
+- (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId planId:(NSString *)planId extra:(NSDictionary *)extra
 {
     [SVProgressHUD dismiss];
 }
@@ -165,11 +165,11 @@
     [self setRotation: rotation];
 }
 
-- (void)gameManager:(VeGameManager *)manager onError:(VeGameErrorCode)errorCode
+- (void)gameManager:(VeGameManager *)manager onError:(VeGameErrorCode)errCode
 {
     [SVProgressHUD dismiss];
     
-    [self.view makeToast: [NSString stringWithFormat: @"Error Code: %ld", errorCode]
+    [self.view makeToast: [NSString stringWithFormat: @"Error Code: %ld", errCode]
                 duration: 2.0f
                 position: CSToastPositionCenter];
 }

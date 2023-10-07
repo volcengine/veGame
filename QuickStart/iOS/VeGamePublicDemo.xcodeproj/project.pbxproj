@@ -8,14 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */; };
-		2B40BCE428D9E934009B17C8 /* VolcEngineRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */; };
-		2B40BCE628D9E93C009B17C8 /* VeGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE328D9E934009B17C8 /* VeGame.framework */; };
-		2B40BCE728D9E93C009B17C8 /* VeGame.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE328D9E934009B17C8 /* VeGame.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		2B40BCE828D9EA51009B17C8 /* VolcEngineRTC.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		2B6D6C3426E63E080073011E /* VeNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3326E63E080073011E /* VeNavigationController.m */; };
 		2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3B26E642FA0073011E /* VeGameViewController.m */; };
 		2B6D6C3E26E642FA0073011E /* VeGameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */; };
 		2B6D6C4126E645C70073011E /* VeGameDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3F26E645C70073011E /* VeGameDisplayViewController.m */; };
+		2B8A7DCC2AD134F800765097 /* VeGame.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B8A7DCA2AD134F800765097 /* VeGame.framework */; };
+		2B8A7DCD2AD134F800765097 /* VolcEngineRTC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B8A7DCB2AD134F800765097 /* VolcEngineRTC.framework */; };
 		2B91841B2808252800687C31 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B9184192808252800687C31 /* Utils.m */; };
 		3B226FAEC41B5F36464D454E /* libPods-VeGamePublicDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */; };
 		C83BF0051E1234250016E53D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C83BF0041E1234250016E53D /* main.m */; };
@@ -31,8 +29,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				2B40BCE828D9EA51009B17C8 /* VolcEngineRTC.framework in Embed Frameworks */,
-				2B40BCE728D9E93C009B17C8 /* VeGame.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -43,8 +39,6 @@
 		17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VeGamePublicDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SVProgressHUD+Category.m"; sourceTree = "<group>"; };
 		2B148BF32953FCD4004F396F /* SVProgressHUD+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+Category.h"; sourceTree = "<group>"; };
-		2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VolcEngineRTC.framework; sourceTree = "<group>"; };
-		2B40BCE328D9E934009B17C8 /* VeGame.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VeGame.framework; sourceTree = "<group>"; };
 		2B6D6C3226E63E080073011E /* VeNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeNavigationController.h; sourceTree = "<group>"; };
 		2B6D6C3326E63E080073011E /* VeNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeNavigationController.m; sourceTree = "<group>"; };
 		2B6D6C3A26E642FA0073011E /* VeGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VeGameViewController.h; sourceTree = "<group>"; };
@@ -52,6 +46,8 @@
 		2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = VeGameViewController.xib; sourceTree = "<group>"; };
 		2B6D6C3F26E645C70073011E /* VeGameDisplayViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeGameDisplayViewController.m; sourceTree = "<group>"; };
 		2B6D6C4026E645C70073011E /* VeGameDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeGameDisplayViewController.h; sourceTree = "<group>"; };
+		2B8A7DCA2AD134F800765097 /* VeGame.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VeGame.framework; sourceTree = "<group>"; };
+		2B8A7DCB2AD134F800765097 /* VolcEngineRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = VolcEngineRTC.framework; sourceTree = "<group>"; };
 		2B9184192808252800687C31 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		2B91841A2808252800687C31 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		2BE9CA31289B83B9004B6C6F /* VolcEngineRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VolcEngineRTC.framework; path = VeGameDemo/VeGameSDK/VeGame.framework/Frameworks/VolcEngineRTC.framework; sourceTree = "<group>"; };
@@ -73,9 +69,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B40BCE428D9E934009B17C8 /* VolcEngineRTC.framework in Frameworks */,
-				2B40BCE628D9E93C009B17C8 /* VeGame.framework in Frameworks */,
+				2B8A7DCC2AD134F800765097 /* VeGame.framework in Frameworks */,
 				3B226FAEC41B5F36464D454E /* libPods-VeGamePublicDemo.a in Frameworks */,
+				2B8A7DCD2AD134F800765097 /* VolcEngineRTC.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -85,8 +81,8 @@
 		2B0C8D6D26E0B38400753D2A /* VeGameSDK */ = {
 			isa = PBXGroup;
 			children = (
-				2B40BCE328D9E934009B17C8 /* VeGame.framework */,
-				2B40BCE228D9E933009B17C8 /* VolcEngineRTC.framework */,
+				2B8A7DCA2AD134F800765097 /* VeGame.framework */,
+				2B8A7DCB2AD134F800765097 /* VolcEngineRTC.framework */,
 			);
 			path = VeGameSDK;
 			sourceTree = "<group>";
