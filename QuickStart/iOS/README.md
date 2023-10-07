@@ -1,4 +1,4 @@
-﻿# veGame SDK Demo
+# veGame SDK Demo
 
 ## 说明
 
@@ -11,6 +11,8 @@
 
 说明：本文档中涉及编译器的指引及示例图参考 Xcode 13.4 版本。
 
+
+
 ## 快速开始
 
 1. 克隆或下载 Demo 工程源文件到本地。
@@ -21,9 +23,9 @@
 ## 接入的流程
 
 1. 建议在 AppDelegate 的 didFinishLaunchingWithOptions 中初始化 VeGameSDK 配置信息，[VeGameManager setConfigInfo]。
-1. 在 VeGameViewController 中填写游戏的 ak、sk、token 等鉴权信息和 userId、gameId、roundId 等配置信息，并初始化 SDK 实例（`veGameEngine`）。
-2. 初始化成功后，调用 `startWithConfig` 接口启动游戏。
-3. 结束时，调用 `stop()` 接口结束游戏。
+1. 在 VeGameViewController 中填写游戏的 ak、sk、token 等鉴权信息和 userId、gameId、roundId 等配置信息，并初始化 SDK 实例（`VeGameManager`）。
+2. 初始化成功后，调用 `- (void)startWithConfig:(VeGameConfigObject *)configObj` 接口启动游戏。
+3. 结束时，调用 `- (void)stop` 接口结束游戏。
 
 ## 参考资料
 

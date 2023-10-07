@@ -174,6 +174,13 @@
                 position: CSToastPositionCenter];
 }
 
+- (void)gameManager:(VeGameManager *)manager onWarning:(VeGameWarningCode)warnCode
+{
+    [self.view makeToast: [NSString stringWithFormat: @"Warning Code: %ld", warnCode]
+                duration: 2.0f
+                position: CSToastPositionCenter];
+}
+
 #pragma mark - button action
 
 - (void)tappedExitButton:(UIButton *)btn
