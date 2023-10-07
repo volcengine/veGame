@@ -48,7 +48,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 云游戏 SDK
-    implementation 'com.volcengine.vegame:vegame:1.26.0'
+    implementation 'com.volcengine.vegame:vegame:1.28.0'
     
     implementation 'androidx.annotation:annotation:1.1.0'
         
@@ -133,8 +133,10 @@ android {
 #### 一、初始化 VeGameEngine
 
 ```java
-VeGameEngine.getInstance().init();
+VeGameEngine.getInstance().prepare();
 ```
+
+注：VeGameSDK版本在1.28.0之后，init()方法会废弃，请使用prepare()方法进行VeGameEngine的初始化。
 
 #### 二、配置 GamePlayConfig
 
@@ -220,7 +222,7 @@ main
 }
 ```
 
-注：FileChannel(文件通道)即将下线，请使用FileChannelExt(大文件通道)进行文件传输。
+注：FileChannel(文件通道)已经下线，请使用FileChannelExt(大文件通道)进行文件传输。
 
 ## 参考资料
 

@@ -30,6 +30,7 @@ import com.blankj.utilcode.util.CrashUtils;
 import com.blankj.utilcode.util.ProcessUtils;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.outinterface.ICloudCoreManagerStatusListener;
 
 public class InitApplication extends Application {
 
@@ -60,10 +61,24 @@ public class InitApplication extends Application {
 
     private void initVeGameEngine() {
         VeGameEngine gameEngine = VeGameEngine.getInstance();
-        gameEngine.init(this);
-        gameEngine.addCloudCoreManagerListener(() -> {
-            // SDK初始化是一个异步过程，在这个回调中监听初始化完成状态
-            AcLog.d(TAG, "onInitialed :" + gameEngine.getStatus());
+        /**
+         * 请使用prepare()方法来初始化VeGameEngine，init()方法已废弃。
+         */
+        gameEngine.prepare(this);
+        gameEngine.addCloudCoreManagerListener(new ICloudCoreManagerStatusListener() {
+            /**
+             * 请在onPrepared()回调中监听VeGameEngine的生命周期，onInitialed()回调已废弃
+             */
+            @Override
+            public void onInitialed() {
+
+            }
+
+            @Override
+            public void onPrepared() {
+                // SDK初始化是一个异步过程，在这个回调中监听初始化完成状态
+                AcLog.d(TAG, "onPrepared :" + gameEngine.getStatus());
+            }
         });
         VeGameEngine.setDebug(true);
         VeGameEngine.setLogger(new AcLog.ILogger() {
