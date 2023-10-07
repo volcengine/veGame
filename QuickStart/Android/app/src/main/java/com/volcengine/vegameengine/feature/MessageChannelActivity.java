@@ -352,16 +352,6 @@ public class MessageChannelActivity extends BasePlayActivity
         }
     }
 
-    @Override
-    public void onQueueUpdate(List<QueueInfo> list) {
-
-    }
-
-    @Override
-    public void onQueueSuccessAndStart(int i) {
-
-    }
-
     /**
      * 排队信息更新回调
      *
