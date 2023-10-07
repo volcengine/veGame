@@ -19,7 +19,10 @@ import com.blankj.utilcode.util.PermissionUtils;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.AudioPlaybackDevice;
+import com.volcengine.cloudcore.common.mode.LocalAudioStreamError;
+import com.volcengine.cloudcore.common.mode.LocalAudioStreamState;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
+import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.AudioService;
@@ -34,6 +37,7 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -345,8 +349,40 @@ public class AudioServiceActivity extends BasePlayActivity
                     AcLog.d(TAG, "[onAudioPlaybackDeviceChanged] device: " + device);
                     showToast("[onAudioPlaybackDeviceChanged] device: " + device);
                 }
+
+                /**
+                 * 本地音频流状态改变回调
+                 *
+                 * @param localAudioStreamState 本地音频流状态
+                 * @param localAudioStreamError 本地音频流错误码
+                 */
+                @Override
+                public void onLocalAudioStateChanged(LocalAudioStreamState localAudioStreamState, LocalAudioStreamError localAudioStreamError) {
+                    AcLog.d(TAG, "[onLocalAudioStateChanged] localAudioStreamState: " + localAudioStreamState +
+                            ", localAudioStreamError: " + localAudioStreamError);
+                }
             });
         }
+    }
+
+    /**
+     * 排队信息更新回调
+     *
+     * @param queueInfoList 当前的排队队列信息
+     */
+    @Override
+    public void onQueueUpdate(List<QueueInfo> queueInfoList) {
+        AcLog.d(TAG, "[onQueueUpdate] list: " + queueInfoList);
+    }
+
+    /**
+     * 排队结束，开始申请资源的回调
+     *
+     * @param remainTime 当用户排到第0位时申请服务的等待时间，超过时间未进入会被移出队列
+     */
+    @Override
+    public void onQueueSuccessAndStart(int remainTime) {
+        AcLog.d(TAG, "[onQueueSuccessAndStart] remainTime: " + remainTime);
     }
 
     /**

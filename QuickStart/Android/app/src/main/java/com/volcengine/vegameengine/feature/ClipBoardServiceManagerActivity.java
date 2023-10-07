@@ -18,6 +18,7 @@ import androidx.appcompat.widget.SwitchCompat;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
+import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.IClipBoardListener;
@@ -33,6 +34,7 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -241,6 +243,26 @@ public class ClipBoardServiceManagerActivity extends BasePlayActivity
                 }
             });
         }
+    }
+
+    /**
+     * 排队信息更新回调
+     *
+     * @param queueInfoList 当前的排队队列信息
+     */
+    @Override
+    public void onQueueUpdate(List<QueueInfo> queueInfoList) {
+        AcLog.d(TAG, "[onQueueUpdate] list: " + queueInfoList);
+    }
+
+    /**
+     * 排队结束，开始申请资源的回调
+     *
+     * @param remainTime 当用户排到第0位时申请服务的等待时间，超过时间未进入会被移出队列
+     */
+    @Override
+    public void onQueueSuccessAndStart(int remainTime) {
+        AcLog.d(TAG, "[onQueueSuccessAndStart] remainTime: " + remainTime);
     }
 
     /**

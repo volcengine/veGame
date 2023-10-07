@@ -24,6 +24,7 @@ import com.volcengine.cloudcore.common.mode.LocalVideoStreamDescription;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
 import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
 import com.volcengine.cloudcore.common.mode.MirrorMode;
+import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
 import com.volcengine.cloudphone.apiservice.CameraManager;
@@ -118,9 +119,9 @@ public class CameraManagerActivity extends BasePlayActivity
          */
         mBtnPushMultipleStream.setOnClickListener(v -> {
             List<LocalVideoStreamDescription> list = new ArrayList<>();
-            list.add(new LocalVideoStreamDescription(1920, 1080, 30, 5000));
-            list.add(new LocalVideoStreamDescription(1420, 720, 20, 3000));
-            list.add(new LocalVideoStreamDescription(1000, 500, 20, 2000));
+            list.add(new LocalVideoStreamDescription(1920, 1080, 30, 5000, 5000));
+            list.add(new LocalVideoStreamDescription(1420, 720, 20, 3000, 3000));
+            list.add(new LocalVideoStreamDescription(1000, 500, 20, 2000, 2000));
             if (mCameraManager != null) {
                 mCameraManager.setVideoEncoderConfig(list);
             }
@@ -348,6 +349,26 @@ public class CameraManagerActivity extends BasePlayActivity
                 }
             });
         }
+    }
+
+    /**
+     * 排队信息更新回调
+     *
+     * @param queueInfoList 当前的排队队列信息
+     */
+    @Override
+    public void onQueueUpdate(List<QueueInfo> queueInfoList) {
+        AcLog.d(TAG, "[onQueueUpdate] list: " + queueInfoList);
+    }
+
+    /**
+     * 排队结束，开始申请资源的回调
+     *
+     * @param remainTime 当用户排到第0位时申请服务的等待时间，超过时间未进入会被移出队列
+     */
+    @Override
+    public void onQueueSuccessAndStart(int remainTime) {
+        AcLog.d(TAG, "[onQueueSuccessAndStart] remainTime: " + remainTime);
     }
 
     /**
