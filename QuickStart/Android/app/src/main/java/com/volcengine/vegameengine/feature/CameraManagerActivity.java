@@ -2,6 +2,8 @@ package com.volcengine.vegameengine.feature;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.view.Gravity;
+import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -16,13 +18,20 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
+import com.volcengine.cloudcore.common.mode.CameraId;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
+import com.volcengine.cloudcore.common.mode.LocalVideoStreamDescription;
+import com.volcengine.cloudcore.common.mode.LocalVideoStreamError;
+import com.volcengine.cloudcore.common.mode.LocalVideoStreamState;
+import com.volcengine.cloudcore.common.mode.MirrorMode;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.CameraManager;
+import com.volcengine.cloudphone.apiservice.outinterface.CameraManagerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
+import com.volcengine.cloudphone.apiservice.outinterface.RemoteCameraRequestListener;
 import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.base.BasePlayActivity;
 import com.volcengine.vegameengine.util.AssetsUtil;
@@ -31,31 +40,32 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与相机{@link CameraManager}相关的功能接口
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class CameraManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "CameraManagerActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
-    private SwitchCompat mSwShowOrHide;
+    CameraManager mCameraManager;
+    private SwitchCompat mSwShowOrHide, mSwEnableMirror;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
+    private Button mBtnAddLocalCanvas, mBtnPushMultipleStream, mBtnSwitchFrontCamera, mBtnSwitchRearCamera;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_camera);
         initView();
         initGamePlayConfig();
     }
@@ -64,76 +74,76 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mSwEnableMirror = findViewById(R.id.sw_enable_mirror);
+        mBtnAddLocalCanvas = findViewById(R.id.btn_add_local_canvas);
+        mBtnPushMultipleStream = findViewById(R.id.btn_push_multiple_streams);
+        mBtnSwitchFrontCamera = findViewById(R.id.btn_switch_front_camera);
+        mBtnSwitchRearCamera = findViewById(R.id.btn_switch_rear_camera);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
+        mBtnAddLocalCanvas.setOnClickListener(v -> {
+            FrameLayout view = findViewById(R.id.fl_local_canvas);
+            SurfaceView surfaceView = new SurfaceView(this);
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            params.gravity = Gravity.CENTER;
+            surfaceView.setZOrderOnTop(true);
+            view.addView(surfaceView, params);
+            if (mCameraManager != null) {
+                mCameraManager.setLocalVideoCanvas(surfaceView);
             }
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
+
+        /**
+         * setLocalVideoMirrorMode(MirrorMode mode) -- 设置是否镜像翻转本地摄像头画面
+         *
+         * @param mode 镜像翻转模式
+         *             MIRROR_MODE_OFF(0) -- 不开启镜像翻转
+         *             MIRROR_MODE_ON(1) -- 开启镜像翻转
+         */
+        mSwEnableMirror.setOnCheckedChangeListener((compoundButton, b) -> {
+            if (mCameraManager != null) {
+                mCameraManager.setLocalVideoMirrorMode(
+                        b ? MirrorMode.MIRROR_MODE_ON : MirrorMode.MIRROR_MODE_OFF);
             }
         });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
+
+        /**
+         * setVideoEncoderConfig(List<VideoStreamDescription> videoStreamDescriptions) -- 设置本地视频编码质量策略
+         *
+         * @param videoStreamDescriptions 视频编码质量参数列表
+         *                                参数包括width(宽度), height(高度), frameRate(帧率), maxBitrate(最大码率)
+         */
+        mBtnPushMultipleStream.setOnClickListener(v -> {
+            List<LocalVideoStreamDescription> list = new ArrayList<>();
+            list.add(new LocalVideoStreamDescription(1920, 1080, 30, 5000, 5000));
+            list.add(new LocalVideoStreamDescription(1420, 720, 20, 3000, 3000));
+            list.add(new LocalVideoStreamDescription(1000, 500, 20, 2000, 2000));
+            if (mCameraManager != null) {
+                mCameraManager.setVideoEncoderConfig(list);
             }
         });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
+
+        /**
+         * switchCamera(CameraId cameraId) -- 切换前后摄像头
+         *
+         * @param cameraId 摄像头ID
+         *                 FRONT(0) -- 前置
+         *                 BACK(1) -- 后置
+         * @return 0 -- 调用成功
+         *        -1 -- 调用失败
+         */
+        mBtnSwitchRearCamera.setOnClickListener(v -> {
+            if (mCameraManager != null) {
+                mCameraManager.switchCamera(CameraId.BACK);
+            }
+        });
+        mBtnSwitchFrontCamera.setOnClickListener(v -> {
+            if (mCameraManager != null) {
+                mCameraManager.switchCamera(CameraId.FRONT);
             }
         });
     }
@@ -225,8 +235,8 @@ public class MessageChannelActivity extends BasePlayActivity
      */
     @Override
     public void onPlaySuccess(String roundId, int clarityId, Map<String, String> extraMap, String gameId, String reservedId) {
-        AcLog.d(TAG, "[onPlaySuccess] roundId " + roundId + " clarityId " + clarityId + "extra:" + extraMap +
-                "gameId : " + gameId + " reservedId" + reservedId);
+        AcLog.d(TAG, "[onPlaySuccess] roundId: " + roundId + ", clarityId: " + clarityId + ", extra: " + extraMap +
+                ", gameId: " + gameId + ", reservedId: " + reservedId);
     }
 
     /**
@@ -276,77 +286,66 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
+        mCameraManager = VeGameEngine.getInstance().getCameraManager();
+        if (mCameraManager != null) {
             /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
+             * setCameraManagerListener(CameraManagerListener listener) -- 设置本地摄像头推流状态监听器
              */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+            mCameraManager.setCameraManagerListener(new CameraManagerListener() {
                 /**
-                 * 消息接收回调
+                 * 本地摄像头推流状态改变回调
                  *
-                 * @param iChannelMessage 接收的消息实体
+                 * @param localVideoStreamState 当前推流状态
+                 * @param localVideoStreamError 推流状态错误码
                  */
                 @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
+                public void onLocalVideoStateChanged(LocalVideoStreamState localVideoStreamState, LocalVideoStreamError localVideoStreamError) {
+                    AcLog.d(TAG, "[onLocalVideoStateChanged] localVideoStreamState: " +
+                            localVideoStreamState + ", localVideoStreamError: " + localVideoStreamError);
                 }
 
                 /**
-                 * 发送消息结果回调
-                 *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
+                 * 本地首帧被采集回调
                  */
                 @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
+                public void onFirstCapture() {
+                    AcLog.d(TAG, "[onFirstCapture]");
+                }
+            });
+
+            /**
+             * setRemoteRequestListener(RemoteCameraRequestListener listener) -- 设置云端请求打开或者关闭本地摄像头的监听器
+             */
+            mCameraManager.setRemoteRequestListener(new RemoteCameraRequestListener() {
+                /**
+                 * 云端请求打开本地摄像头回调
+                 *
+                 * @param cameraId 摄像头ID
+                 *                 FRONT(0) -- 前置
+                 *                 BACK(1) -- 后置
+                 */
+                @Override
+                public void onVideoStreamStartRequested(CameraId cameraId) {
+                    AcLog.d(TAG, "[onVideoStreamStartRequested] cameraId: " + cameraId);
+                    /**
+                     * startVideoStream -- 开始指定摄像头采集兵推流，建议在onVideoStreamStartRequested中调用
+                     *
+                     * @return 0 -- 调用成功
+                     *        -1 -- 调用失败
+                     */
+                    mCameraManager.startVideoStream(cameraId);
                 }
 
                 /**
-                 * 已弃用，可忽略
+                 * 云端请求关闭本地摄像头回调
                  */
                 @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
-                }
-
-                /**
-                 * 错误信息回调
-                 *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
-                 */
-                @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onVideoStreamStopRequested() {
+                    AcLog.d(TAG, "[onVideoStreamStopRequested]");
+                    /**
+                     * stopVideoStream -- 停止推流，建议在onVideoStreamStopRequested中调用
+                     */
+                    mCameraManager.stopVideoStream();
                 }
             });
         }
@@ -469,7 +468,7 @@ public class MessageChannelActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link MessageChannelActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link ClarityServiceActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向
@@ -510,4 +509,5 @@ public class MessageChannelActivity extends BasePlayActivity
     public void onNetworkQuality(int quality) {
         AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
     }
+
 }

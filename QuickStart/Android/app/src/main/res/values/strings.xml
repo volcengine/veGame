@@ -15,6 +15,13 @@
     <string name="reserved_id">reservedId</string>
     <string name="hide_or_show">点击隐藏/显示</string>
     <string name="back_again_to_exit">连按两次退出</string>
+    <string name="privacy_and_service">隐私政策与服务条款</string>
+    <string name="cancel_tip">不同意并退出应用</string>
+    <string name="confirm_tip">同意并继续</string>
+    <string name="content">\t\t\t\t\t欢迎使用火山引擎云游戏! 我们非常重视您的个人信息和隐私保护。
+                为了更好地保障您的个人权益，在您使用我们的产品前，请务必审慎阅读《隐私政策》和《服务条款》内的所有条款。
+                您点击【同意并继续】的行为即表示您已阅读完毕并同意以上协议的全部内容。\n\n
+                \t\t\t\t\t如您同意以上协议内容，请点击【同意并继续】开始使用我们的产品和服务!\n</string>
 
     <!--  音频相关  -->
     <string name="audio">音频</string>
@@ -45,6 +52,7 @@
 
     <!--  清晰度相关  -->
     <string name="clarity">清晰度</string>
+    <string name="clarity_desc">在该演示中你可以体验与清晰度相关的功能接口</string>
 
     <!--  剪切板相关  -->
     <string name="clipboard">剪切板</string>
@@ -60,8 +68,9 @@
     <string name="input_filepath">请输入文件路径</string>
     <string name="file_channel_ext_desc">在该演示中你可以体验与大文件通道相关的功能接口</string>
 
-    <!-- Ground相关 -->
-    <string name="ground">ground</string>
+    <!-- 前后台切换相关 -->
+    <string name="switch_ground">前后台切换</string>
+    <string name="switch_ground_desc">在该演示中你可以体验与前后台切换相关的功能接口</string>
 
     <!--定位服务相关-->
     <string name="location">定位服务</string>
@@ -98,34 +107,37 @@
     <string name="uid_timeout_msg">超时消息\n(指定用户)</string>
     <string name="message_channel_desc">在该演示中你可以体验与消息通道相关的功能接口</string>
 
-    <!--PadConsole相关-->
-    <string name="pad_console">游戏手柄</string>
+    <!--游戏手柄相关-->
+    <string name="game_pad">游戏手柄</string>
     <string name="init_game_pad">初始化手柄</string>
     <string name="show_game_pad">显示手柄</string>
     <string name="hide_game_pad">隐藏手柄</string>
     <string name="release_game_pad">销毁手柄</string>
-    <string name="pad_console_desc">在该演示中你可以体验与游戏手柄相关的功能接口</string>
+    <string name="game_pad_desc">在该演示中你可以体验与游戏手柄相关的功能接口</string>
 
-    <!--Pod控制相关-->
-    <string name="pod_control">Pod控制</string>
+    <!--实例控制相关-->
+    <string name="pod_control">实例控制</string>
     <string name="hint_idle_time">保活时长/秒</string>
     <string name="set_idle_time">设置保活时长</string>
     <string name="hint_auto_recycle_time">无操作回收时长/秒</string>
     <string name="set_auto_recycle_time">设置无操作回收时长</string>
     <string name="get_auto_recycle_time">查询无操作回收时长</string>
-    <string name="set_keep_alive_time">设置Pod保活时间3min</string>
-    <string name="switch_background">开启前后台切换</string>
-    <string name="pod_control_desc">在该演示中你可以体验与Pod控制相关的功能接口</string>
+    <string name="set_keep_alive_time">设置实例保活时间3min</string>
+    <string name="switch_background">切后台</string>
+    <string name="switch_foreground">切前台</string>
+    <string name="get_user_profile">查询配置文件路径</string>
+    <string name="set_user_profile">设置配置文件路径</string>
+    <string name="pod_control_desc">在该演示中你可以体验与实例控制相关的功能接口</string>
 
     <!--  旋转相关  -->
     <string name="roll_orientation">旋转</string>
 
     <!--  传感器相关  -->
     <string name="sensor">传感器</string>
-    <string name="magnetic">磁力传感器</string>
-    <string name="accelerator">加速度传感器</string>
-    <string name="gravity">重力传感器</string>
-    <string name="orientation">方向传感器</string>
+    <string name="magnetic">磁力</string>
+    <string name="accelerator">加速度</string>
+    <string name="gravity">重力</string>
+    <string name="orientation">方向</string>
     <string name="gyroscope">陀螺仪</string>
     <string name="vibrator">振动</string>
     <string name="sensor_desc">在该演示中你可以体验与传感器相关的功能接口</string>
@@ -153,11 +165,12 @@
     <string name="player">player</string>
     <string name="viewer">viewer</string>
     <string name="player_user_id">需要改变的用户id</string>
-    <string name="send">发送</string>
+    <string name="update_role">更新当前角色</string>
     <string name="get_current_role">获取当前角色</string>
     <string name="multi_user_desc">在该演示中你可以体验与多用户相关的功能接口</string>
 
     <string name="official_website">火山官网</string>
     <string name="official_website_url">https://www.volcengine.com/docs/6512/75577</string>
+    <string name="first_open_app">firstOpenApp</string>
 
 </resources>

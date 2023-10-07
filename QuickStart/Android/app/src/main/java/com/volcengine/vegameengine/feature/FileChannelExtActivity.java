@@ -2,8 +2,8 @@ package com.volcengine.vegameengine.feature;
 
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,7 +20,7 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.IFileChannelExt;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -31,31 +31,36 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与大文件通道{@link IFileChannelExt}相关的功能接口，
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class FileChannelExtActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "FileChannelExtActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
+    private IFileChannelExt mFileChannelExt;
     private SwitchCompat mSwShowOrHide;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
+    private Button mBtnStartSendFile, mBtnStopSendFile, mBtnStopReceiveFile;
+    private File mSendFile, mReceiveFile;
+    private Map<String, String> mOptions = new HashMap<>(); // 发送文件时附带的参数
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_file_channel_ext);
         initView();
         initGamePlayConfig();
     }
@@ -64,76 +69,131 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mBtnStartSendFile = findViewById(R.id.btn_start_send_file);
+        mBtnStopSendFile = findViewById(R.id.btn_stop_send_file);
+        mBtnStopReceiveFile = findViewById(R.id.btn_stop_receive_file);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
+        mBtnStartSendFile.setOnClickListener(view -> {
+            if (mFileChannelExt != null) {
+                mSendFile = new File(Environment.getExternalStorageDirectory(), "Download/test.jpg");
+                if (mSendFile.exists()) {
+                    /**
+                     * startSendFile(File file, map<String, String> options, ISendFileListener listener) -- 开始发送本地文件到远端实例
+                     *
+                     * @param file 发送的本地文件，远端实例的接收目录为/sdcard/download/
+                     * @param listener 发送文件的进度及结果监听器
+                     *
+                     */
+                    mFileChannelExt.startSendFile(mSendFile, mOptions, new IFileChannelExt.ISendFileListener() {
+                        /**
+                         * 发送文件开始回调
+                         *
+                         * @param file 发送的本地文件
+                         * @param options 附带的options参数
+                         */
+                        @Override
+                        public void onStart(File file, Map<String, String> options) {
+                            AcLog.d(TAG, "[ISendFileListener#onStart] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options);
+                            showToast("[ISendFileListener#onStart] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options);
+                        }
+
+                        /**
+                         * 发送文件进度更新回调
+                         *
+                         * @param file 发送的本地文件
+                         * @param options 附带的options参数
+                         * @param progress 发送文件的进度，取值范围[0, 100]
+                         */
+                        @Override
+                        public void onProgress(File file, Map<String, String> options, int progress) {
+                            AcLog.d(TAG, "[ISendFileListener#onProgress] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options +
+                                    ", progress: " + progress);
+                            showToast("[ISendFileListener#onProgress] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options +
+                                    ", progress: " + progress);
+                        }
+
+                        /**
+                         * 发送文件完成回调
+                         *
+                         * @param file 发送的本地文件
+                         * @param options 附带的options参数
+                         */
+                        @Override
+                        public void onComplete(File file, Map<String, String> options) {
+                            AcLog.d(TAG, "[ISendFileListener#onComplete] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options);
+                            showToast("[ISendFileListener#onComplete] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options);
+                        }
+
+                        /**
+                         * 发送文件取消回调
+                         *
+                         * @param file 发送的本地文件
+                         * @param options 附带的options参数
+                         */
+                        @Override
+                        public void onCancel(File file, Map<String, String> options) {
+                            AcLog.d(TAG, "[ISendFileListener#onCancel] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options);
+                            showToast("[ISendFileListener#onCancel] file: "
+                                    + file.getAbsolutePath() + ", options: "  + options);
+                        }
+
+                        /**
+                         * 发送文件失败回调
+                         *
+                         * @param file 发送的本地文件
+                         * @param options 附带的options参数
+                         * @param errorCode 发送文件失败的错误码
+                         */
+                        @Override
+                        public void onError(File file, Map<String, String> options, int errorCode) {
+                            AcLog.d(TAG, "[ISendFileListener#onError] file: " + file.getAbsolutePath() +
+                                    ", options: "  + options + ", errorCode: " + errorCode);
+                            showToast("[ISendFileListener#onError] file: " + file.getAbsolutePath() +
+                                    ", options: "  + options + ", errorCode: " + errorCode);
+                        }
+                    });
+                }
+                else {
+                    showToast("文件不存在");
+                }
             }
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
+
+        mBtnStopSendFile.setOnClickListener(view -> {
+            if (mFileChannelExt != null) {
+                if (mSendFile.exists()) {
+                    /**
+                     * stopSendFile(File file) -- 停止发送本地文件到远端实例
+                     *
+                     * @param file 发送的本地文件
+                     */
+                    mFileChannelExt.stopSendFile(mSendFile);
+                }
+                else {
+                    showToast("文件不存在");
+                }
             }
         });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
+
+        mBtnStopReceiveFile.setOnClickListener(view -> {
+            if (mFileChannelExt != null) {
                 /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
+                 * stopReceiveFile(File file) -- 停止接收远端实例发送到本地的文件
                  *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
+                 * @param file 远端实例发送的文件
                  */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
-            }
-        });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
+                mFileChannelExt.stopReceiveFile(mReceiveFile);
             }
         });
     }
@@ -276,77 +336,89 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
-            /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
-             */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+        mFileChannelExt = VeGameEngine.getInstance().getFileChannelExt();
+        /**
+         * setReceiveFileListener(IReceiveFileListener listener) -- 设置接收文件回调监听器
+         */
+        if (mFileChannelExt != null) {
+            mFileChannelExt.setReceiveFileListener(new IFileChannelExt.IReceiveFileListener() {
                 /**
-                 * 消息接收回调
+                 * 接收文件开始回调
                  *
-                 * @param iChannelMessage 接收的消息实体
+                 * @param file 云端实例发送的文件
+                 * @param options 附带的options参数
                  */
                 @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
+                public void onStart(File file, Map<String, String> options) {
+                    mReceiveFile = file;
+                    AcLog.d(TAG, "[IReceiveFileListener#onStart] file: " +
+                            file.getAbsolutePath() + ", options: " + options);
+                    showToast("[IReceiveFileListener#onStart] file: " +
+                            file.getAbsolutePath() + ", options: " + options);
                 }
 
                 /**
-                 * 发送消息结果回调
+                 * 接收文件进度更新回调
                  *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
+                 * @param file 云端实例发送的文件
+                 * @param options 附带的options参数
+                 * @param progress 接收文件的进度，取值范围[0, 100]
                  */
                 @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
+                public void onProgress(File file, Map<String, String> options, int progress) {
+                    mReceiveFile = file;
+                    AcLog.d(TAG, "[IReceiveFileListener#onProgress] file: " +
+                            file.getAbsolutePath() + ", options: " + options + ", progress: " + progress);
+                    showToast("[IReceiveFileListener#onProgress] file: " +
+                            file.getAbsolutePath() + ", options: " + options + ", progress: " + progress);
                 }
 
                 /**
-                 * 已弃用，可忽略
+                 * 接收文件完成回调
+                 *
+                 * @param file 云端实例发送的文件
+                 * @param options 附带的options参数
                  */
                 @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
+                public void onComplete(File file, Map<String, String> options) {
+                    mReceiveFile = file;
+                    AcLog.d(TAG, "[IReceiveFileListener#onComplete] file: " +
+                            file.getAbsolutePath() + ", options: " + options);
+                    showToast("[IReceiveFileListener#onComplete] file: " +
+                            file.getAbsolutePath() + ", options: " + options);
                 }
 
                 /**
-                 * 错误信息回调
+                 * 接收文件取消回调
                  *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
+                 * @param file 云端实例发送的文件
+                 * @param options 附带的options参数
                  */
                 @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
+                public void onCancel(File file, Map<String, String> options) {
+                    mReceiveFile = file;
+                    AcLog.d(TAG, "[IReceiveFileListener#onCancel] file: " +
+                            file.getAbsolutePath() + ", options: " + options);
+                    showToast("[IReceiveFileListener#onCancel] file: " +
+                            file.getAbsolutePath() + ", options: " + options);
                 }
 
                 /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
+                 * 接收文件失败回调
                  *
-                 * @param channelUid 云端游戏的用户ID
+                 * @param file 云端实例发送的文件
+                 * @param options 附带的options参数
+                 * @param errorCode 接收文件失败的错误码
                  */
                 @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onError(File file, Map<String, String> options, int errorCode) {
+                    mReceiveFile = file;
+                    AcLog.d(TAG, "[IReceiveFileListener#onError] file: " +
+                            file.getAbsolutePath() + ", options: " + options +
+                            ", errorCode: " + errorCode);
+                    showToast("[IReceiveFileListener#onError] file: " +
+                            file.getAbsolutePath() + ", options: " + options +
+                            ", errorCode: " + errorCode);
                 }
             });
         }
@@ -469,7 +541,7 @@ public class MessageChannelActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link MessageChannelActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link ClarityServiceActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向

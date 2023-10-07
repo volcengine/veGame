@@ -3,7 +3,6 @@ package com.volcengine.vegameengine.feature;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -20,7 +19,7 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.GameGroundSwitchManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -34,28 +33,29 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与前后台切换{@link GameGroundSwitchManager}相关的功能接口
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class GroundManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "GroundManagerActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
+    private GameGroundSwitchManager mGameGroundSwitchManager;
     private SwitchCompat mSwShowOrHide;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
+    private Button mBtnSwitchForeground;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_ground);
         initView();
         initGamePlayConfig();
     }
@@ -64,76 +64,18 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mBtnSwitchForeground = findViewById(R.id.btn_switch_foreground);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
+        mBtnSwitchForeground.setOnClickListener(view -> {
+            if (mGameGroundSwitchManager != null) {
                 /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
+                 * setRemoteGameForeground() -- 切换远端实例的APP到前台
                  */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
-            }
-        });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
-            }
-        });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
-            }
-        });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
+                mGameGroundSwitchManager.setRemoteGameForeground();
             }
         });
     }
@@ -276,77 +218,44 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
-            /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
-             */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+        mGameGroundSwitchManager = VeGameEngine.getInstance().getGameGroundSwitchManager();
+        if (mGameGroundSwitchManager != null) {
+            mGameGroundSwitchManager.setGroundChangeListener(new GameGroundSwitchManager.GameGroundSwitchedListener() {
                 /**
-                 * 消息接收回调
+                 * 云游戏App切换到后台的回调
                  *
-                 * @param iChannelMessage 接收的消息实体
+                 * @param switchType 切换类型
+                 *                   0 -- 客户端手动切换
+                 *                   1 -- 远端实例自动切换
                  */
                 @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
+                public void onRemoteGameSwitchedBackground(int switchType) {
+                    AcLog.d(TAG, "[onRemoteGameSwitchedBackground] switchType: " + (switchType == 0 ? "手动" : "自动"));
+                    showToast("[onRemoteGameSwitchedBackground] switchType: " + (switchType == 0 ? "手动" : "自动"));
                 }
 
                 /**
-                 * 发送消息结果回调
+                 * 云游戏App切换到前台的回调
                  *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
+                 * @param switchType 切换类型
+                 *                   0 -- 客户端手动切换
+                 *                   1 -- 远端实例自动切换
                  */
                 @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
+                public void onRemoteGameSwitchedForeground(int switchType) {
+                    AcLog.d(TAG, "[onRemoteGameSwitchedForeground] switchType: " + (switchType == 0 ? "手动" : "自动"));
+                    showToast("[onRemoteGameSwitchedForeground] switchType: " + (switchType == 0 ? "手动" : "自动"));
                 }
-
                 /**
-                 * 已弃用，可忽略
-                 */
-                @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
-                }
-
-                /**
-                 * 错误信息回调
+                 * 云游戏App切换前后台失败回调
                  *
                  * @param errorCode 错误码
-                 * @param errorMessage 错误信息
+                 * @param errorMessage 具体的错误信息
                  */
                 @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onRemoteGameSwitchedFailed(int errorCode, String errorMessage) {
+                    AcLog.d(TAG, "[onRemoteGameSwitchedForeground] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
+                    showToast("[onRemoteGameSwitchedForeground] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
                 }
             });
         }
@@ -469,7 +378,7 @@ public class MessageChannelActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link MessageChannelActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link ClarityServiceActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向

@@ -20,7 +20,8 @@ import java.util.List;
 
 public abstract class BaseListActivity extends BaseSampleActivity {
 
-    @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         final RecyclerView recyclerView = (RecyclerView) LayoutInflater.from(this).inflate(R.layout.vertical_recycler_view, null);
@@ -34,8 +35,8 @@ public abstract class BaseListActivity extends BaseSampleActivity {
         setupAdapter(new ItemsHolder() {
             @Override
             public void addItem(@StringRes int nameRes, @StringRes int descRes,
-                                          Class<?> activityClass, int featureId) {
-                adapter.itemModelList.add(new ItemModel(nameRes, descRes, activityClass, featureId));
+                                          Class<?> activityClass) {
+                adapter.itemModelList.add(new ItemModel(nameRes, descRes, activityClass));
             }
         });
 
@@ -79,7 +80,6 @@ public abstract class BaseListActivity extends BaseSampleActivity {
                     public void onClick(View v) {
                         final ItemModel model = itemModelList.get(getAdapterPosition());
                         Intent intent = new Intent(BaseListActivity.this, model.activityClass);
-                        intent.putExtra("featureId", model.featureId);
                         startActivity(intent);
                     }
                 });
@@ -88,7 +88,7 @@ public abstract class BaseListActivity extends BaseSampleActivity {
     }
 
     public interface ItemsHolder {
-        void addItem(@StringRes int nameRes, @StringRes int descRes, Class<?> activityClass, int featureId);
+        void addItem(@StringRes int nameRes, @StringRes int descRes, Class<?> activityClass);
     }
 
     private static class ItemModel {
@@ -96,13 +96,11 @@ public abstract class BaseListActivity extends BaseSampleActivity {
         @StringRes private final int descRes;
 
         private final Class<?> activityClass;
-        private final int featureId;
 
-        ItemModel(@StringRes int nameRes, @StringRes int descRes, Class<?> activityClass, int featureId) {
+        ItemModel(@StringRes int nameRes, @StringRes int descRes, Class<?> activityClass) {
             this.nameRes = nameRes;
             this.descRes = descRes;
             this.activityClass = activityClass;
-            this.featureId = featureId;
         }
     }
 }

@@ -20,7 +20,7 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.PodControlService;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -31,31 +31,33 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与实例控制{@link PodControlService}相关的功能接口
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class PodControlServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "PodControlServiceActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
+    private PodControlService mPodControlService;
     private SwitchCompat mSwShowOrHide;
+    private Button mBtnSwitchBackground, mBtnSwitchForeground, mBtnSetIdleTime,
+            mBtnGetAutoRecycleTime, mBtnSetAutoRecycleTime, mBtnGetUserProfilePath, mBtnSetUserProfilePath;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_pod_control);
         initView();
         initGamePlayConfig();
     }
@@ -64,77 +66,108 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mBtnSwitchBackground = findViewById(R.id.btn_switch_background);
+        mBtnSwitchForeground = findViewById(R.id.btn_switch_foreground);
+        mBtnSetIdleTime = findViewById(R.id.btn_set_idle_time);
+        mBtnGetAutoRecycleTime = findViewById(R.id.btn_get_auto_recycle_time);
+        mBtnSetAutoRecycleTime = findViewById(R.id.btn_set_auto_recycle_time);
+        mBtnGetUserProfilePath = findViewById(R.id.btn_get_user_profile);
+        mBtnSetUserProfilePath = findViewById(R.id.btn_set_user_profile);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
+        /**
+         * switchBackground(boolean on) -- 设置客户端应用或游戏切换前后台的状态
+         *
+         * @param on true -- 切后台
+         *           false -- 切前台
+         */
+        mBtnSwitchBackground.setOnClickListener(view -> {
+            if (mPodControlService != null) {
+                mPodControlService.switchBackground(true);
             }
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
+        mBtnSwitchForeground.setOnClickListener(view -> {
+            if (mPodControlService != null) {
+                mPodControlService.switchBackground(false);
             }
         });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
+
+        /**
+         * setIdleTime(long time) -- 设置客户端切后台之后，云端游戏的保活时间
+         *
+         * @param time 保活时长，单位秒
+         */
+        mBtnSetIdleTime.setOnClickListener(v -> {
+            if (mPodControlService != null) {
+                int idleTime = 10;
+                mPodControlService.setIdleTime(idleTime);
             }
         });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
+
+        /**
+         * setAutoRecycleTime(int time, SetAutoRecycleTimeCallback callback) -- 设置无操作回收服务时长
+         *
+         * @param time 无操作回收服务时长，单位秒
+         * @param callback 设置无操作回收服务时长的回调
+         * @return 0 -- 正常返回
+         *        -1 -- 内部错误
+         *        -2 -- time参数小于0
+         */
+        mBtnSetAutoRecycleTime.setOnClickListener(v -> {
+            if (mPodControlService != null) {
+                int autoRecycleTime = 20;
+                mPodControlService.setAutoRecycleTime(autoRecycleTime, new PodControlService.SetAutoRecycleTimeCallback() {
+                    @Override
+                    public void onResult(int result, long time) {
+                        showToast("[setAutoRecycleTimeResult] result: " + result + ", time: " + time);
+                    }
+                });
             }
+        });
+
+        /**
+         * getAutoRecycleTime(GetAutoRecycleTimeCallback callback) -- 查询无操作回收服务时长
+         *
+         * @param callback 查询无操作回收服务时长的回调
+         * @return 0 -- 正常返回
+         *        -1 -- 内部错误
+         */
+        mBtnGetAutoRecycleTime.setOnClickListener(v -> {
+            if (mPodControlService != null) {
+                mPodControlService.getAutoRecycleTime(new PodControlService.GetAutoRecycleTimeCallback() {
+                    @Override
+                    public void onResult(int result, long time) {
+                        showToast("[getAutoRecycleTimeResult] result: " + result + ", time: " + time);
+                    }
+                });
+            }
+        });
+
+        /**
+         * getUserProfilePath(GetUserProfilePathListener userProfilePathListener) -- 获取保存游戏云端配置文件的路径
+         *
+         * @param userProfilePathListener 获取保存游戏云端配置文件的路径的监听器
+         * @return 0 -- 成功返回
+         *         else -- 发生错误
+         */
+        mBtnGetUserProfilePath.setOnClickListener(v -> {
+            mPodControlService.getUserProfilePath(list -> {
+                showToast(list.toString());
+            });
+        });
+
+        /**
+         * setUserProfilePath(String[] userProfilePath) -- 设置保存游戏云端配置文件的路径
+         *
+         * @param userProfilePath 保存配置文件的路径列表
+         */
+        mBtnSetUserProfilePath.setOnClickListener(v -> {
+            List<String> list = new ArrayList<>();
+            list.add("/");
+            mPodControlService.setUserProfilePath(list);
         });
     }
 
@@ -276,77 +309,22 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
+        mPodControlService = VeGameEngine.getInstance().getPodControlService();
+        if (mPodControlService != null) {
             /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
+             * setBackgroundSwitchListener(BackgroundSwitchListener listener) -- 设置云端应用切换前后台监听器
              */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+            mPodControlService.setBackgroundSwitchListener(new PodControlService.BackgroundSwitchListener() {
                 /**
-                 * 消息接收回调
+                 * 云端应用切换前后台的回调
                  *
-                 * @param iChannelMessage 接收的消息实体
+                 * @param on true -- 切换到后台
+                 *          false -- 切换到前台
                  */
                 @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 发送消息结果回调
-                 *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
-                 */
-                @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 已弃用，可忽略
-                 */
-                @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
-                }
-
-                /**
-                 * 错误信息回调
-                 *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
-                 */
-                @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onBackgroundSwitched(boolean on) {
+                    AcLog.d(TAG, "[onBackgroundSwitched] isBackground: " + on);
+                    showToast("[onBackgroundSwitched] isBackground: " + on);
                 }
             });
         }
