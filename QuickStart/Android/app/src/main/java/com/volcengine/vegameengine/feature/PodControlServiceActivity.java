@@ -18,8 +18,10 @@ import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
+import com.volcengine.cloudcore.common.mode.SessionMode;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
+import com.volcengine.cloudphone.apiservice.GamePodControlService;
 import com.volcengine.cloudphone.apiservice.PodControlService;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
@@ -37,7 +39,7 @@ import java.util.Map;
 
 
 /**
- * 该类用于展示与实例控制{@link PodControlService}相关的功能接口
+ * 该类用于展示与实例控制{@link PodControlService}和{@link GamePodControlService}相关的功能接口
  */
 public class PodControlServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
@@ -48,9 +50,11 @@ public class PodControlServiceActivity extends BasePlayActivity
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
     private PodControlService mPodControlService;
+    private GamePodControlService mGamePodControlService;
     private SwitchCompat mSwShowOrHide;
     private Button mBtnSwitchBackground, mBtnSwitchForeground, mBtnSetIdleTime,
-            mBtnGetAutoRecycleTime, mBtnSetAutoRecycleTime, mBtnGetUserProfilePath, mBtnSetUserProfilePath;
+            mBtnGetAutoRecycleTime, mBtnSetAutoRecycleTime, mBtnGetUserProfilePath, mBtnSetUserProfilePath,
+            mBtnSwitchAFKMode, mBtnSwitchNormalMode;
     private LinearLayoutCompat mLlButtons;
 
     @Override
@@ -73,6 +77,8 @@ public class PodControlServiceActivity extends BasePlayActivity
         mBtnSetAutoRecycleTime = findViewById(R.id.btn_set_auto_recycle_time);
         mBtnGetUserProfilePath = findViewById(R.id.btn_get_user_profile);
         mBtnSetUserProfilePath = findViewById(R.id.btn_set_user_profile);
+        mBtnSwitchAFKMode = findViewById(R.id.btn_switch_afk_mode);
+        mBtnSwitchNormalMode = findViewById(R.id.btn_switch_normal_mode);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -154,9 +160,11 @@ public class PodControlServiceActivity extends BasePlayActivity
          *         else -- 发生错误
          */
         mBtnGetUserProfilePath.setOnClickListener(v -> {
-            mPodControlService.getUserProfilePath(list -> {
-                showToast(list.toString());
-            });
+            if (mPodControlService != null) {
+                mPodControlService.getUserProfilePath(list -> {
+                    showToast(list.toString());
+                });
+            }
         });
 
         /**
@@ -165,9 +173,29 @@ public class PodControlServiceActivity extends BasePlayActivity
          * @param userProfilePath 保存配置文件的路径列表
          */
         mBtnSetUserProfilePath.setOnClickListener(v -> {
-            List<String> list = new ArrayList<>();
-            list.add("/");
-            mPodControlService.setUserProfilePath(list);
+            if (mPodControlService != null) {
+                List<String> list = new ArrayList<>();
+                list.add("/");
+                mPodControlService.setUserProfilePath(list);
+            }
+        });
+
+        /**
+         * setSessionMode(int sessionMode) -- 设置挂机模式
+         *
+         * @param sessionMode 挂机模式，参见{@link SessionMode}
+         *                    0 -- 正常模式(非挂机)
+         *                    1 -- 挂机模式
+         */
+        mBtnSwitchAFKMode.setOnClickListener(v -> {
+            if (mGamePodControlService != null) {
+                mGamePodControlService.setSessionMode(SessionMode.SESSION_MODE_AFK);
+            }
+        });
+        mBtnSwitchNormalMode.setOnClickListener(v -> {
+            if (mGamePodControlService != null) {
+                mGamePodControlService.setSessionMode(SessionMode.SESSION_MODE_NORMAL);
+            }
         });
     }
 
@@ -325,6 +353,27 @@ public class PodControlServiceActivity extends BasePlayActivity
                 public void onBackgroundSwitched(boolean on) {
                     AcLog.d(TAG, "[onBackgroundSwitched] isBackground: " + on);
                     showToast("[onBackgroundSwitched] isBackground: " + on);
+                }
+            });
+        }
+
+        mGamePodControlService = VeGameEngine.getInstance().getGamePodControlService();
+        if (mGamePodControlService != null) {
+            /**
+             * setListener(SessionModeListener listener) -- 设置切换挂机模式的监听器
+             */
+            mGamePodControlService.setListener(new GamePodControlService.SessionModeListener() {
+                /**
+                 * 切换挂机模式结果的回调
+                 *
+                 * @param mode 挂机模式，参见{@link SessionMode}
+                 * @param result 切换结果
+                 *               true -- 成功
+                 *               false -- 失败
+                 */
+                @Override
+                public void onResult(int mode, boolean result) {
+                    AcLog.d(TAG, "[onResult] mode: " + mode + ", result: " + result);
                 }
             });
         }
