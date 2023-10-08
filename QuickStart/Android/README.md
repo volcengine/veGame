@@ -48,7 +48,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 云游戏 SDK
-    implementation 'com.volcengine.vegame:vegame:1.28.0'
+    implementation 'com.volcengine.vegame:vegame:1.28.2'
     
     implementation 'androidx.annotation:annotation:1.1.0'
         
