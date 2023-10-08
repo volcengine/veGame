@@ -195,6 +195,7 @@ main
 │               │   ├── ClipBoardServiceManagerActivity.java // 剪切板
 │               │   ├── FileChannelExtActivity.java // 大文件通道
 │               │   ├── GroundManagerActivity.java // 前后台切换
+│               │   ├── IODeviceManagerActivity.java // IO设备(仅支持端游)
 │               │   ├── LocalInputManagerActivity.java // 本地输入
 │               │   ├── LocationServiceActivity.java // 定位服务
 │               │   ├── MessageChannelActivity.java // 消息通道

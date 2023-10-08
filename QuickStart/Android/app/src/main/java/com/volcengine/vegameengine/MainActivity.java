@@ -25,6 +25,7 @@ import com.volcengine.vegameengine.feature.ClipBoardServiceManagerActivity;
 import com.volcengine.vegameengine.feature.FileChannelExtActivity;
 import com.volcengine.vegameengine.feature.GamePadServiceActivity;
 import com.volcengine.vegameengine.feature.GroundManagerActivity;
+import com.volcengine.vegameengine.feature.IODeviceManagerActivity;
 import com.volcengine.vegameengine.feature.LocalInputManagerActivity;
 import com.volcengine.vegameengine.feature.LocationServiceActivity;
 import com.volcengine.vegameengine.feature.MessageChannelActivity;
@@ -51,6 +52,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class);
         holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FileChannelExtActivity.class);
         holder.addItem(R.string.switch_ground, R.string.switch_ground_desc, GroundManagerActivity.class);
+        holder.addItem(R.string.io_device, R.string.io_device_desc, IODeviceManagerActivity.class);
         holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class);
         holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class);
         holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class);
