@@ -272,29 +272,62 @@ public class LocalInputManagerActivity extends BasePlayActivity
         mLocalInputManager = VeGameEngine.getInstance().getLocalInputManager();
         if (mLocalInputManager != null) {
             mLocalInputManager.setRemoteInputCallBack(new LocalInputManager.RemoteInputCallBack() {
+                /**
+                 * 云端输入法准备阶段的一些状态回调
+                 *
+                 * @param hintText 提示文本
+                 * @param inputType 输入格式
+                 */
                 @Override
                 public void onPrepare(String hintText, int inputType) {
                     AcLog.d(TAG, "[onPrepare] hintText: " + hintText + ", inputType: " + inputType);
                 }
 
+                /**
+                 * 云端输入法软键盘请求弹出的回调，该回调会触发多次
+                 */
                 @Override
                 public void onCommandShow() {
                     AcLog.d(TAG, "[onCommandShow]");
                 }
 
+                /**
+                 * 云端输入法软键盘请求收起的回调
+                 */
                 @Override
                 public void onCommandHide() {
                     AcLog.d(TAG, "[onCommandHide]");
                 }
 
+                /**
+                 * 云端输入框内容变化的回调
+                 *
+                 * @param text 输入框内容发生变化后的文本信息
+                 */
                 @Override
                 public void onTextChange(String text) {
                     AcLog.d(TAG, "[onTextChange] text: " + text);
                 }
 
+                /**
+                 * 云端输入法状态更新的回调
+                 *
+                 * @param enable  true -- 云端输入法已开启
+                 *               false -- 云端输入法已关闭
+                 */
                 @Override
                 public void onRemoteKeyBoardEnabled(boolean enable) {
                     AcLog.d(TAG, "[keyBoardEnable] enable: " + enable);
+                }
+
+                /**
+                 * 不适用于云游戏场景，可忽略
+                 *
+                 * @param enable
+                 */
+                @Override
+                public void onTextInputEnableStateChanged(boolean enable) {
+                    AcLog.d(TAG, "[onTextInputEnableStateChanged] enable: " + enable);
                 }
             });
         }
