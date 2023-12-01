@@ -16,16 +16,58 @@
 ## 快速开始
 
 1. 克隆或下载 Demo 工程源文件到本地。
-2. 前往火山引擎云游戏产品文档中心下载云游戏 iOS 客户端 SDK 文件。解压后将 veGameSDK 文件夹拷贝到Demo 工程的 VeGameDemo 目录下。 
+2. 前往[火山引擎云游戏产品文档中心](https://www.volcengine.com/docs/6512/75594)下载云游戏 iOS 客户端 SDK 文件。解压后将 veGameSDK 文件夹拷贝到Demo 工程的 VeGameDemo 目录下。 
 3. 执行 pod install 指令，成功之后，打开 VeGamePublicDemo.xcworkspace。
 4. 相关的运行信息，在打印的 log 中查看。
 
 ## 接入的流程
 
-1. 建议在 AppDelegate 的 didFinishLaunchingWithOptions 中初始化 VeGameSDK 配置信息，[VeGameManager setConfigInfo]。
-1. 在 VeGameViewController 中填写游戏的 ak、sk、token 等鉴权信息和 userId、gameId、roundId 等配置信息，并初始化 SDK 实例（`VeGameManager`）。
-2. 初始化成功后，调用 `- (void)startWithConfig:(VeGameConfigObject *)configObj` 接口启动游戏。
-3. 结束时，调用 `- (void)stop` 接口结束游戏。
+1. 建议在 AppDelegate 的 didFinishLaunchingWithOptions 中初始化 VeGameSDK 配置信息。
+
+   ```objective-c
+   [[VeGameManager sharedInstance] initWithAccountId:@"------AccountID------"];。
+   ```
+
+2. 在 VeGameViewController 中填写游戏的 ak、sk、token 等鉴权信息和 userId、gameId、roundId 等配置信息。
+
+   ```objective-c
+   self.akTextField.text = @"------ak------";
+   self.skTextField.text = @"------sk------";
+   self.tokenTextField.text = @"------token------";
+   self.userIdTextField.text = @"------userId------";
+   self.gameIdTextField.text = @"------gameId------";
+   self.roundIdTextField.text = @"------roundId------";
+   self.rotationTextField.text = @"270"; //竖屏0，横屏270
+   ```
+
+3. 初始化成功后，调用 `- (void)startWithConfig:(VeGameConfigObject *)configObj` 接口启动游戏。
+
+   ```objective-c
+   VeGameConfigObject *configObj = [VeGameConfigObject new];
+   configObj.ak = self.configObj.ak;
+   configObj.sk = self.configObj.sk;
+   configObj.token = self.configObj.token;
+   configObj.userId = self.configObj.userId;
+   configObj.gameId = self.configObj.gameId;
+   configObj.roundId = self.configObj.roundId;
+   VeGameControlObject *control = [VeGameControlObject new];
+   control.role = self.configObj.role;
+   control.roomType = self.configObj.roomType;
+   configObj.control = control;
+   configObj.sessionMode = self.configObj.sessionMode;
+   configObj.queuePriority = self.configObj.queuePriority;
+   configObj.keyboardEnable = self.configObj.keyboardEnable;
+   configObj.autoRecycleTime = self.configObj.autoRecycleTime;
+   configObj.videoStreamProfileId = self.configObj.videoStreamProfileId;
+   configObj.reservedId = self.configObj.reservedId.length ? self.configObj.reservedId : nil;
+   [[VeGameManager sharedInstance] startWithConfig: configObj];
+   ```
+
+4. 结束时，调用 `- (void)stop` 接口结束游戏。
+
+   ```objective-c
+   [[VeGameManager sharedInstance] stop];
+   ```
 
 ## 参考资料
 
