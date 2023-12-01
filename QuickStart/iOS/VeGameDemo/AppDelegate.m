@@ -76,7 +76,7 @@
 
 - (void)configVeGame
 {
-    [[VeGameManager sharedInstance] initWithAccountId:@"2100246447"];
+    [[VeGameManager sharedInstance] initWithAccountId:@"-----AccountID-----"];
 }
 
 @end
