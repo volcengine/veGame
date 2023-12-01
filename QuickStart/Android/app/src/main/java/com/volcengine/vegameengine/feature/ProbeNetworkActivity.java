@@ -3,16 +3,15 @@ package com.volcengine.vegameengine.feature;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.appcompat.widget.SwitchCompat;
 
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
@@ -20,7 +19,8 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.IProbeNetworkListener;
+import com.volcengine.cloudphone.apiservice.ProbeStats;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -35,107 +35,51 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与网络探测相关的功能接口
+ * 网络探测功能会对客户端网络质量进行探测，提示用户当前的网络状态，建议在游戏开始之前进行。
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class ProbeNetworkActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "ProbeNetworkActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
-    private SwitchCompat mSwShowOrHide;
-    private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
+    private LinearLayoutCompat mLlNetworkMsg;
+    private Button mBtnCancel;
+    private TextView mTvRttMs, mTvDownBwKbit, mTvDownJitterMs,
+            mTvDownLossPct, mTvUpBwKbit, mTvUpJitterMs, mTvUpLossPct;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_probe_network);
         initView();
         initGamePlayConfig();
     }
 
     private void initView() {
         mContainer = findViewById(R.id.container);
-        mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
-        mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mLlNetworkMsg = findViewById(R.id.ll_network_msg);
+        mBtnCancel = findViewById(R.id.btn_cancel);
+        mTvRttMs = findViewById(R.id.tv_rtt_ms);
+        mTvDownBwKbit = findViewById(R.id.tv_down_bt_kbit);
+        mTvDownJitterMs = findViewById(R.id.tv_down_jitter_ms);
+        mTvDownLossPct = findViewById(R.id.tv_down_loss_pct);
+        mTvUpBwKbit = findViewById(R.id.tv_up_bt_kbit);
+        mTvUpJitterMs = findViewById(R.id.tv_up_jitter_ms);
+        mTvUpLossPct = findViewById(R.id.tv_up_loss_pct);
 
-        mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-        });
-
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
+        mBtnCancel.setOnClickListener(view -> {
+            if (view.getId() == R.id.btn_cancel) {
+                mBtnCancel.setEnabled(false);
+                VeGameEngine.getInstance().probeInterrupt();
             }
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
-            }
-        });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
-            }
-        });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
-            }
-        });
+        mBtnCancel.setEnabled(true);
     }
 
     private void initGamePlayConfig() {
@@ -179,7 +123,7 @@ public class MessageChannelActivity extends BasePlayActivity
                 .streamListener(this);
 
         mGamePlayConfig = mBuilder.build();
-        VeGameEngine.getInstance().start(mGamePlayConfig, this);
+        showProbeNetworkDialog(mGamePlayConfig);
     }
 
     @Override
@@ -276,80 +220,6 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
-            /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
-             */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
-                /**
-                 * 消息接收回调
-                 *
-                 * @param iChannelMessage 接收的消息实体
-                 */
-                @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 发送消息结果回调
-                 *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
-                 */
-                @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 已弃用，可忽略
-                 */
-                @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
-                }
-
-                /**
-                 * 错误信息回调
-                 *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
-                 */
-                @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 
     /**
@@ -510,4 +380,106 @@ public class MessageChannelActivity extends BasePlayActivity
     public void onNetworkQuality(int quality) {
         AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
     }
+
+    public void update(int rttMs, int downBwKbit, int downJitterMs, double downLossPct, int upBwKbit, int upJitterMs, double upLossPct) {
+        runOnUiThread(() -> {
+            try {
+                mTvRttMs.setText("rttMs:" + rttMs);
+                mTvDownBwKbit.setText("downBwKbit:" + downBwKbit);
+                mTvDownJitterMs.setText("downJitterMs:" + downJitterMs);
+                mTvDownLossPct.setText("downLossPct:" + downLossPct);
+                mTvUpBwKbit.setText("upBwKbit:" + upBwKbit);
+                mTvUpJitterMs.setText("upJitterMs:" + upJitterMs);
+                mTvUpLossPct.setText("upLossPct:" + upLossPct);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    public void showProbeNetworkDialog(GamePlayConfig config) {
+        VeGameEngine.getInstance().probeStart(config, new IProbeNetworkListener() {
+            /**
+             * 网络探测启动回调
+             */
+            @Override
+            public void onProbeStarted() {
+                runOnUiThread(() -> {
+                    mLlNetworkMsg.setVisibility(View.VISIBLE);
+                } );
+            }
+
+            /**
+             * 网络探测过程中，网络状态更新的回调，此时网络状态为中间测试状态，仅供参考。
+             *
+             * @param stats 探测过程中的节点网络状态
+             */
+            @Override
+            public void onProbeProgress(ProbeStats stats) {
+                runOnUiThread(() -> update(stats.getRtt(),
+                        stats.getDownBandwidth(),
+                        stats.getDownloadJitter(),
+                        stats.getDownloadLossPercent(),
+                        stats.getUploadBandwidth(),
+                        stats.getUploadJitter(),
+                        stats.getUploadLossPercent()));
+            }
+
+            /**
+             * 网络探测完成回调，此时网络状态为最终的测试结果
+             *
+             * @param stats 最终的节点网络状态
+             *              rtt -- 往返时延，单位：毫秒
+             *              downloadBandwidth -- 下行带宽，单位：Kbit/s
+             *              downloadJitter -- 下行网络抖动时长，单位：毫秒，若为无效数据，数值为-1
+             *              downloadLossPercent -- 下行丢包率，百分比
+             *              uploadBandwidth -- 上行带宽，单位：Kbit/s
+             *              uploadJitter -- 上行网络抖动时长，单位：毫秒，若为无效数据，数值为-1
+             *              uploadLossPercent --- 上行丢包率，百分比
+             * @param quality 当前的网络质量
+             *                1 -- 网络极好，可以很流畅地玩游戏
+             *                2 -- 网络较好，可以玩游戏
+             *                3 -- 网络较差，不推荐玩游戏
+             */
+            @Override
+            public void onProbeCompleted(ProbeStats stats, int quality) {
+                if (stats != null) {
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("rttMs: ").append(stats.getRtt());
+                    sb.append(", downBw: ").append(stats.getDownBandwidth());
+                    sb.append(", downJitter: ").append(stats.getDownloadJitter());
+                    sb.append(", downLossPct: ").append(stats.getDownloadLossPercent());
+                    sb.append(", upBw: ").append(stats.getUploadBandwidth());
+                    sb.append(", upJitter: ").append(stats.getUploadJitter());
+                    sb.append(", upLossPct: ").append(stats.getUploadLossPercent());
+                    sb.append(" ,quality: ").append(quality);
+                    runOnUiThread(() -> showToast(sb.toString()));
+                }
+
+                runOnUiThread(() -> {
+                    mLlNetworkMsg.setVisibility(View.GONE);
+                    VeGameEngine.getInstance().start(config, ProbeNetworkActivity.this);
+                });
+            }
+
+            /**
+             * 网络测速异常结束回调
+             *
+             * @param err 错误码
+             * @param message 错误信息
+             *                1 -- 探测过程网络环境出错，无法完成探测
+             *                2 -- 探测过程被中止取消
+             *                3 -- 探测过程结束，但没有任何探测结果，通常情况下不会发生
+             */
+            @Override
+            public void onProbeError(int err, String message) {
+                runOnUiThread(() -> {
+                    showToast(message);
+                    mLlNetworkMsg.setVisibility(View.GONE);
+                    VeGameEngine.getInstance().start(config, ProbeNetworkActivity.this);
+                });
+            }
+        });
+    }
+
 }

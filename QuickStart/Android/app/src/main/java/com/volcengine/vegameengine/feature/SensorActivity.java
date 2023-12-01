@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -20,7 +18,6 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -35,27 +32,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与本地传感器相关的功能接口
+ *
+ * 是否开启传感器有两种方式，
+ * 一种是通过{@link com.volcengine.cloudgame.GamePlayConfig.Builder}来设置，
+ * 具体示例代码见{@link SensorActivity#initGamePlayConfig()}；
+ * 另一种是通过{@link VeGameEngine#enableAccelSensor(boolean)}等接口来设置，
+ * 具体示例代码见{@link SensorActivity#initView()}。
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class SensorActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
     private final String TAG = getClass().getSimpleName();
 
-    private FrameLayout mContainer;
+    private ViewGroup mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
-    private SwitchCompat mSwShowOrHide;
+    private SwitchCompat mSwShowOrHide, mSwEnableMagnetic, mSwEnableAccelerator,
+            mSwEnableGravity, mSwEnableOrientation, mSwEnableGyroscope, mSwEnableVibrator;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
-
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_sensor);
         initView();
         initGamePlayConfig();
     }
@@ -64,77 +65,63 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mSwEnableMagnetic = findViewById(R.id.sw_enable_magnetic);
+        mSwEnableAccelerator = findViewById(R.id.sw_enable_accelerator);
+        mSwEnableGravity = findViewById(R.id.sw_enable_gravity);
+        mSwEnableOrientation = findViewById(R.id.sw_enable_orientation);
+        mSwEnableGyroscope = findViewById(R.id.sw_enable_gyroscope);
+        mSwEnableVibrator = findViewById(R.id.sw_enable_vibrator);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
-            }
+        mSwEnableMagnetic.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            /**
+             * enableMagneticSensor(boolean enable) -- 本地磁力传感器开关
+             */
+            VeGameEngine.getInstance().enableMagneticSensor(isChecked);
+            Toast.makeText(SensorActivity.this, "本地磁力传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
-            }
+
+        mSwEnableAccelerator.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            /**
+             * enableAccelSensor(boolean enable) -- 本地加速度传感器开关
+             */
+            VeGameEngine.getInstance().enableAccelSensor(isChecked);
+            Toast.makeText(SensorActivity.this, "本地加速度传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
         });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
-            }
+
+        mSwEnableGravity.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            /**
+             * enableGravitySensor(boolean enable) -- 本地重力传感器开关
+             */
+            VeGameEngine.getInstance().enableGravitySensor(isChecked);
+            Toast.makeText(SensorActivity.this, "本地重力传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
         });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
-            }
+
+        mSwEnableOrientation.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            /**
+             * enableOrientationSensor(boolean enable) -- 本地方向传感器开关
+             */
+            VeGameEngine.getInstance().enableOrientationSensor(isChecked);
+            Toast.makeText(SensorActivity.this, "本地方向传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
+        });
+
+        mSwEnableGyroscope.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            /**
+             * enableGyroscopeSensor(boolean enable) -- 本地陀螺仪传感器开关
+             */
+            VeGameEngine.getInstance().enableGyroscopeSensor(isChecked);
+            Toast.makeText(SensorActivity.this, "本地陀螺仪传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
+        });
+
+        mSwEnableVibrator.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            /**
+             * enableVibrator(boolean enable) -- 本地振动传感器开关
+             */
+            VeGameEngine.getInstance().enableVibrator(isChecked);
+            Toast.makeText(SensorActivity.this, "本地振动传感器" + (isChecked ? "已开启" : "已关闭"), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -176,6 +163,12 @@ public class MessageChannelActivity extends BasePlayActivity
                 .container(mContainer)
                 .roundId(roundId)
                 .gameId(gameId)
+                .enableAcceleratorSensor(false)
+                .enableGravitySensor(false)
+                .enableGyroscopeSensor(false)
+                .enableMagneticSensor(false)
+                .enableOrientationSensor(false)
+                .enableVibrator(false)
                 .streamListener(this);
 
         mGamePlayConfig = mBuilder.build();
@@ -276,80 +269,6 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
-            /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
-             */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
-                /**
-                 * 消息接收回调
-                 *
-                 * @param iChannelMessage 接收的消息实体
-                 */
-                @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 发送消息结果回调
-                 *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
-                 */
-                @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 已弃用，可忽略
-                 */
-                @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
-                }
-
-                /**
-                 * 错误信息回调
-                 *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
-                 */
-                @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
     }
 
     /**

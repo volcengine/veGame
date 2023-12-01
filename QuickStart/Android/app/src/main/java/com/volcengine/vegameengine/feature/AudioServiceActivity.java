@@ -1,9 +1,10 @@
 package com.volcengine.vegameengine.feature;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -14,13 +15,18 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SwitchCompat;
 
+import com.blankj.utilcode.util.PermissionUtils;
 import com.volcengine.androidcloud.common.log.AcLog;
 import com.volcengine.androidcloud.common.model.StreamStats;
+import com.volcengine.cloudcore.common.mode.AudioPlaybackDevice;
+import com.volcengine.cloudcore.common.mode.LocalAudioStreamError;
+import com.volcengine.cloudcore.common.mode.LocalAudioStreamState;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.AudioService;
+import com.volcengine.cloudphone.apiservice.CameraManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -35,27 +41,28 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与音频{@link AudioService}相关的功能接口
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class AudioServiceActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "AudioServiceActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
-    private SwitchCompat mSwShowOrHide;
+    private AudioService mAudioService;
+    private SwitchCompat mSwShowOrHide, mSwSendAudio;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
+    private Button mBtnMute, mBtnVolumeUp, mBtnVolumeDown, mBtnGetSettings,
+            mBtnStartSendAudio, mBtnStopSendAudio, mBtnChangeAudioPlaybackDevice;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_audio);
         initView();
         initGamePlayConfig();
     }
@@ -64,76 +71,92 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mBtnMute = findViewById(R.id.btn_mute);
+        mBtnVolumeUp = findViewById(R.id.btn_volume_up);
+        mBtnVolumeDown = findViewById(R.id.btn_volume_down);
+        mSwSendAudio = findViewById(R.id.sw_send_audio);
+        mBtnStartSendAudio = findViewById(R.id.btn_start_send_audio);
+        mBtnStopSendAudio = findViewById(R.id.btn_stop_send_audio);
+        mBtnGetSettings = findViewById(R.id.btn_get_settings);
+        mBtnChangeAudioPlaybackDevice = findViewById(R.id.btn_change_audio_playback_device);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
+        mBtnMute.setOnClickListener(view -> {
+            /**
+             * isAudioMuted() -- 查询云端实例是否静音
+             * muteAudio(boolean mute) -- 云端实例静音开关
+             */
+            VeGameEngine.getInstance().muteAudio(!VeGameEngine.getInstance().isAudioMuted());
+        });
+        mBtnVolumeUp.setOnClickListener(view -> {
+            /**
+             * volumeUp() -- 升高云端实例音量大小
+             */
+            VeGameEngine.getInstance().volumeUp();
+        });
+        mBtnVolumeDown.setOnClickListener(view -> {
+            /**
+             * volumeDown() -- 降低云端实例音量大小
+             */
+            VeGameEngine.getInstance().volumeDown();
+        });
+
+        mSwSendAudio.setOnCheckedChangeListener((compoundButton, enable) -> {
+            if (mAudioService != null) {
                 /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
+                 * setEnableSendAudioStream(boolean enable) -- 设置是否向云端实例发送音频流
                  */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
+                mAudioService.setEnableSendAudioStream(enable);
             }
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
+
+        mBtnStartSendAudio.setOnClickListener(view -> {
+            if (mAudioService != null) {
+                requestPermissionAndStartSendAudio();
             }
         });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
+
+        mBtnStopSendAudio.setOnClickListener(view -> {
+            if (mAudioService != null) {
                 /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
+                 * stopSendAudioStream() -- 关闭音频数据发送，并且不进行音频采集
                  */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
+                mAudioService.stopSendAudioStream();
             }
         });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
+
+        mBtnGetSettings.setOnClickListener(view -> {
+            if (mAudioService != null) {
                 /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
+                 * getLocalAudioPlaybackVolume() -- 获取本地设备播放音量
+                 * getRemoteAudioPlaybackVolume() -- 获取远端实例播放音量
+                 * getLocalAudioCaptureVolume() -- 获取本地设备采集音量
+                 * isEnableSendAudioStream() -- 是否向云端实例发送音频流
+                 * isSendingAudioStream() -- 是否正在向云端实例发送音频流
                  */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
+                showToast("本地设备播放音量: " + mAudioService.getLocalAudioPlaybackVolume() + "\n" +
+                        "远端实例播放音量: " + mAudioService.getRemoteAudioPlaybackVolume() + "\n" +
+                        "本地设备采集音量: " + mAudioService.getLocalAudioCaptureVolume() + "\n" +
+                        "是否发送音频流: " + mAudioService.isSendingAudioStream() + "\n" +
+                        "是否正在发送音频流: " + mAudioService.isEnableSendAudioStream());
+            }
+        });
+
+        mBtnChangeAudioPlaybackDevice.setOnClickListener(view -> {
+            if (mAudioService != null) {
+                /**
+                 * setAudioPlaybackDevice(int device) -- 设置本地音频输出设备，
+                 * 包含不限于系统扬声器和外接扬声器和耳机(有线耳机、蓝牙耳机)
+                 * 注意：切换外放设备需确保音频上传处于开启的状态，否则切换无效
+                 *
+                 * @param device 音频输出设备ID
+                 */
+                mAudioService.setAudioPlaybackDevice(
+                        mAudioService.getAudioPlaybackDevice() == AudioPlaybackDevice.SPEAKERPHONE ?
+                        AudioPlaybackDevice.EARPIECE : AudioPlaybackDevice.SPEAKERPHONE);
             }
         });
     }
@@ -276,77 +299,67 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
+        mAudioService = VeGameEngine.getInstance().getAudioService();
+        if (mAudioService != null) {
             /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
+             * setAudioControlListener(AudioControlListener listener) -- 设置音频控制监听器
              */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+            mAudioService.setAudioControlListener(new AudioService.AudioControlListener() {
                 /**
-                 * 消息接收回调
+                 * 远端实例音量大小改变回调
                  *
-                 * @param iChannelMessage 接收的消息实体
+                 * @param volume 返回的远端实例音量大小，[0,100]
                  */
                 @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
+                public void onRemoteAudioPlaybackVolumeChanged(int volume) {
+                    AcLog.d(TAG, "[onRemoteAudioPlaybackVolumeChanged] volume: " + volume);
                 }
 
                 /**
-                 * 发送消息结果回调
-                 *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
+                 * 远端实例请求开启本地音频推流回调
                  */
                 @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
+                public void onRemoteAudioStartRequest() {
+                    AcLog.d(TAG, "[onRemoteAudioStartRequest]");
+                    requestPermissionAndStartSendAudio();
                 }
 
                 /**
-                 * 已弃用，可忽略
+                 * 远端实例请求关闭本地音频推流回调
                  */
                 @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
+                public void onRemoteAudioStopRequest() {
+                    AcLog.d(TAG, "[onRemoteAudioStopRequest]");
+                    mAudioService.stopSendAudioStream();
                 }
 
                 /**
-                 * 错误信息回调
+                 * 本地音频播放设备改变回调
                  *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
+                 * @param device 本地音频播放设备
+                 *              -1 -- 未知
+                 *               1 -- 有线耳机
+                 *               2 -- 听筒
+                 *               3 -- 扬声器
+                 *               4 -- 蓝牙耳机
+                 *               5 -- USB设备
                  */
                 @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
+                public void onAudioPlaybackDeviceChanged(int device) {
+                    AcLog.d(TAG, "[onAudioPlaybackDeviceChanged] device: " + device);
+                    showToast("[onAudioPlaybackDeviceChanged] device: " + device);
                 }
 
                 /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
+                 * 本地音频流状态改变回调
                  *
-                 * @param channelUid 云端游戏的用户ID
+                 * @param localAudioStreamState 本地音频流状态
+                 * @param localAudioStreamError 本地音频流错误码
                  */
                 @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
-                }
-
-                /**
-                 * 云端游戏离线回调
-                 *
-                 * @param channelUid 云端游戏的用户ID
-                 */
-                @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onLocalAudioStateChanged(LocalAudioStreamState localAudioStreamState, LocalAudioStreamError localAudioStreamError) {
+                    AcLog.d(TAG, "[onLocalAudioStateChanged] localAudioStreamState: " + localAudioStreamState +
+                            ", localAudioStreamError: " + localAudioStreamError);
                 }
             });
         }
@@ -469,7 +482,7 @@ public class MessageChannelActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link MessageChannelActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link ClarityServiceActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向
@@ -509,5 +522,24 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onNetworkQuality(int quality) {
         AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
+    }
+
+    private void requestPermissionAndStartSendAudio() {
+        PermissionUtils.permission(Manifest.permission.RECORD_AUDIO)
+                .callback(new PermissionUtils.SimpleCallback() {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public void onGranted() {
+                        /**
+                         * startSendAudioStream() -- 获取麦克风权限后，采集并发送音频数据
+                         */
+                        mAudioService.startSendAudioStream();
+                    }
+
+                    @Override
+                    public void onDenied() {
+                        showToast("无录音权限");
+                    }
+                }).request();
     }
 }

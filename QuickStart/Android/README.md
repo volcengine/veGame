@@ -48,7 +48,7 @@ allprojects {
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     // 云游戏 SDK
-    implementation 'com.volcengine.vegame:vegame:1.26.0'
+    implementation 'com.volcengine.vegame:vegame:1.28.0'
     
     implementation 'androidx.annotation:annotation:1.1.0'
         
@@ -133,8 +133,10 @@ android {
 #### 一、初始化 VeGameEngine
 
 ```java
-VeGameEngine.getInstance().init();
+VeGameEngine.getInstance().prepare();
 ```
+
+注：VeGameSDK版本在1.28.0之后，init()方法会废弃，请使用prepare()方法进行VeGameEngine的初始化。
 
 #### 二、配置 GamePlayConfig
 
@@ -157,7 +159,6 @@ builder.userId(userId) // 用户userid
     .enableVibrator(true) // 打开本地振动开关
     .enableLocationService(true) // 打开本地定位功能开关
     .enableLocalKeyboard(true) // 打开本地键盘开关
-    .enableFileChannel(true) // 打开文件通道开关
     .streamListener(IStreamListener streamListener); // 获取音视频流信息回调监听
 
 GamePlayConfig gamePlayConfig = builder.build();
@@ -174,54 +175,54 @@ veGameEngine.start(gamePlayConfig, IGamePlayerListener playerListener);
 main
 ├── AndroidManifest.xml
 ├── assets // 该目录及文件需要自行创建
-│   └── sts.json // 保存鉴权相关的 ak/sk/token
+│   └── sts.json // 保存鉴权相关的 gameId/ak/sk/token
 ├── java
 │   └── com
 │       └── volcengine
 │           └── vegameengine
-│               ├── FeatureActivity.kt // 用于指定gameId以体验SDK的不同特性
-│               ├── GameActivity.java // 显示游戏的Activity
-│               ├── GsonConverter.java // 用于SDK 传入的JSON转换的实现 
+│               ├── GsonConverter.java // 用于SDK传入的JSON转换
 │               ├── InitApplication.java // 工程的Application 负责初始化SDK等
 │               ├── MainActivity.java // 用于展示SDK的特性列表，并进入对应特性的体验界面
-│               ├── TestBean.kt // 用于填写云游戏启动的参数
 │               ├── WebViewActivity.kt // 用于展示火山引擎的官网
 │               ├── base
 │               │   ├── BaseListActivity.java
+│               │   ├── BasePlayActivity.java
 │               │   └── BaseSampleActivity.kt
 │               ├── feature // 用于体验SDK不同的特性
-│               │   ├── AudioServiceView.java // 音频
-│               │   ├── CamaraManagerView.java // 相机
-│               │   ├── ClarityServiceView.java // 清晰度
-│               │   ├── ClipBoardServiceManagerView.java // 剪切板
-│               │   ├── FileChannelExtView.java // 大文件通道
-│               │   ├── FileChannelView.java // 文件通道
-│               │   ├── LocalInputManagerView.java // 本地输入
-│               │   ├── LocationServiceView.java // 定位服务
+│               │   ├── AudioServiceActivity.java // 音频
+│               │   ├── CamaraManagerActivity.java // 相机
+│               │   ├── ClarityServiceActivity.java // 清晰度
+│               │   ├── ClipBoardServiceManagerActivity.java // 剪切板
+│               │   ├── FileChannelExtActivity.java // 大文件通道
+│               │   ├── GroundManagerActivity.java // 前后台切换
+│               │   ├── LocalInputManagerActivity.java // 本地输入
+│               │   ├── LocationServiceActivity.java // 定位服务
 │               │   ├── MessageChannelActivity.java // 消息通道
-│               │   ├── MultiUserManagerView.java // 多用户
-│               │   ├── PadConsoleManagerView.java // 游戏手柄
-│               │   ├── PodControlServiceView.java //实例控制
-│               │   ├── SensorView.java // 传感器
-│               │   └── UnclassifiedView.java // 其他
+│               │   ├── MultiUserManagerActivity.java // 多用户
+│               │   ├── PadConsoleManagerActivity.java // 游戏手柄
+│               │   ├── PodControlServiceActivity.java // 实例控制
+│               │   ├── ProbeNetworkActivity.java // 网络探测
+│               │   ├── SensorActivity.java // 传感器
+│               │   └── OthersActivity.java // 其他
 │               └── util
-│                   ├── AssetsUtil.java // 用于读取并解析sts.json文件中的ak/sk/token
-│                   ├── DialogUtils.java // 用于在不同特性的体验界面显示对话框
-│                   ├── Feature.java // 声明不同的特性id
+│                   ├── AssetsUtil.java // 用于读取并解析sts.json文件中的gameId/ak/sk/token
 │                   ├── FileUtil.java // 用于文件传输功能的工具类
-│                   ├── ScreenUtil.java // 屏幕工具类，用于适配挖孔屏
-│                   └── SizeUtils.java 
+│                   ├── PrefUtils.kt // 用于保存应用的设置选项
+│                   └── ScreenUtil.java // 屏幕工具类，用于适配挖孔屏
 ```
 
 
 其中, **sts.json** 的格式如下：
 ```java
 {
+    "gameId": "your_game_id",
     "ak": "your_ak",
     "sk": "your_sk",
     "token": "your_token"
 }
 ```
+
+注：FileChannel(文件通道)已经下线，请使用FileChannelExt(大文件通道)进行文件传输。
 
 ## 参考资料
 

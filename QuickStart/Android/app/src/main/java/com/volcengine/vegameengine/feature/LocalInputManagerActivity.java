@@ -1,11 +1,14 @@
 package com.volcengine.vegameengine.feature;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -20,7 +23,7 @@ import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.IMessageChannel;
+import com.volcengine.cloudphone.apiservice.LocalInputManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -35,27 +38,28 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 该类用于展示与消息通道{@link IMessageChannel}相关的功能接口
+ * 该类用于展示与本地输入{@link LocalInputManager}相关的功能接口
  */
-public class MessageChannelActivity extends BasePlayActivity
+public class LocalInputManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = getClass().getSimpleName();
+    private final String TAG = "LocalInputManagerActivity";
 
     private FrameLayout mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private IMessageChannel mMessageChannel;
-    private SwitchCompat mSwShowOrHide;
+    private LocalInputManager mLocalInputManager;
+    private SwitchCompat mSwShowOrHide, mSwShowLocalData, mSwCloseLocalManager, mSwCloseLocalKeyboard;
     private LinearLayoutCompat mLlButtons;
-    private Button mBtnAckMsg, mBtnUidAckMsg, mBtnTimeoutMsg, mBtnUidTimeoutMsg;
+    private Button mBtnSendInputData, mBtnGetKeyboardStatus;
+    EditText mEtTextInput;
 
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_message_channel);
+        setContentView(R.layout.activity_local_input);
         initView();
         initGamePlayConfig();
     }
@@ -64,77 +68,65 @@ public class MessageChannelActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnAckMsg = findViewById(R.id.btn_ack_msg);
-        mBtnUidAckMsg = findViewById(R.id.btn_uid_ack_msg);
-        mBtnTimeoutMsg = findViewById(R.id.btn_timeout_msg);
-        mBtnUidTimeoutMsg = findViewById(R.id.btn_uid_timeout_msg);
+        mEtTextInput = findViewById(R.id.et_text_input);
+        mBtnSendInputData = findViewById(R.id.btn_send_input_data);
+        mBtnGetKeyboardStatus = findViewById(R.id.btn_get_keyboard_status);
+        mSwShowLocalData = findViewById(R.id.sw_show_local_data);
+        mSwCloseLocalManager = findViewById(R.id.sw_close_input_manager);
+        mSwCloseLocalKeyboard = findViewById(R.id.sw_close_input_keyboard);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        String channelUid = "com.bytedance.vemessagechannelprj.prj1";
-        mBtnAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param needAck 是否需要云端Ack回执
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage ackMsg =
-                        mMessageChannel.sendMessage("ackMsg", true);
-                AcLog.d(TAG, "ackMsg: " + ackMsg);
+        /**
+         * coverCurrentEditTextMessage(String text) -- 设置当前输入框的内容
+         */
+        mBtnSendInputData.setOnClickListener(v -> {
+            if (mLocalInputManager != null) {
+                mLocalInputManager.coverCurrentEditTextMessage(mEtTextInput.getText().toString());
             }
         });
-        mBtnUidAckMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送回执消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param needAck        是否需要云端Ack回执
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidAckMsg =
-                        mMessageChannel.sendMessage("uidAckMsg", true, channelUid);
-                AcLog.d(TAG, "uidAckMsg: " + uidAckMsg);
+
+        /**
+         * enableShowCurrentInputText(boolean enable) -- 显示当前输入框内容
+         */
+        mSwShowLocalData.setChecked(false);
+        mSwShowLocalData.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (mLocalInputManager != null) {
+                mLocalInputManager.enableShowCurrentInputText(isChecked);
             }
         });
-        mBtnTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端只有一个游戏注册消息通道时使用)
-                 *
-                 * @param payload 发送内容，size：60KB
-                 * @param timeout 消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                  {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                  返回错误信息
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage timeoutMsg =
-                        mMessageChannel.sendMessage("timeoutMsg", 3000);
-                AcLog.d(TAG, "timeoutMsg: " + timeoutMsg);
+
+        /**
+         * closeAutoKeyBoard(boolean isIntercept) -- 是否拦截SDK调起本地键盘
+         *
+         * @param isIntercept false -- 不拦截
+         *                    true -- 拦截，由用户自行处理本地键盘的调起和内容的发送
+         */
+        mSwCloseLocalManager.setChecked(false);
+        mSwCloseLocalManager.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (mLocalInputManager != null) {
+                mLocalInputManager.closeAutoKeyBoard(isChecked);
             }
         });
-        mBtnUidTimeoutMsg.setOnClickListener(v -> {
-            if (mMessageChannel != null) {
-                /**
-                 * 发送超时消息到云端游戏(当云端有多个游戏注册消息通道时使用，需要指定目标用户ID，即应用包名)
-                 *
-                 * @param payload        发送内容，size：60KB
-                 * @param timeout        消息超时时长，单位：ms，需要大于0；当小于等于0时，通过
-                 *                         {@link com.volcengine.cloudphone.apiservice.IMessageChannel.IMessageReceiver#onError(int, String)}
-                 *                         返回错误信息
-                 * @param destChannelUid 目标用户消息通道ID
-                 * @return 消息实体
-                 */
-                IMessageChannel.IChannelMessage uidTimeoutMsg =
-                        mMessageChannel.sendMessage("uidTimeoutMsg", 3000, channelUid);
-                AcLog.d(TAG, "uidTimeoutMsg: " + uidTimeoutMsg);
+
+        /**
+         * getKeyboardEnable() -- 获取远端实例输入法开关状态
+         * setKeyBoardEnable(boolean enable) -- 设置远端实例输入法开关状态
+         */
+        mSwCloseLocalKeyboard.setChecked(true);
+        mSwCloseLocalKeyboard.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (!isChecked) {
+                InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             }
+            if (mLocalInputManager != null) {
+                mLocalInputManager.setKeyBoardEnable(isChecked);
+            }
+        });
+        mBtnGetKeyboardStatus.setOnClickListener(v -> {
+            Toast.makeText(this, "" + mLocalInputManager.getKeyboardEnable(), Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -174,6 +166,7 @@ public class MessageChannelActivity extends BasePlayActivity
                 .sk(sk)
                 .token(token)
                 .container(mContainer)
+                .enableLocalKeyboard(true)
                 .roundId(roundId)
                 .gameId(gameId)
                 .streamListener(this);
@@ -276,77 +269,65 @@ public class MessageChannelActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mMessageChannel = VeGameEngine.getInstance().getMessageChannel();
-        if (mMessageChannel != null) {
-            /**
-             * 设置消息接收回调监听
-             *
-             * @param listener 消息接收回调监听器
-             */
-            mMessageChannel.setMessageListener(new IMessageChannel.IMessageReceiver() {
+        mLocalInputManager = VeGameEngine.getInstance().getLocalInputManager();
+        if (mLocalInputManager != null) {
+            mLocalInputManager.setRemoteInputCallBack(new LocalInputManager.RemoteInputCallBack() {
                 /**
-                 * 消息接收回调
+                 * 云端输入法准备阶段的一些状态回调
                  *
-                 * @param iChannelMessage 接收的消息实体
+                 * @param hintText 提示文本
+                 * @param inputType 输入格式
                  */
                 @Override
-                public void onReceiveMessage(IMessageChannel.IChannelMessage iChannelMessage) {
-                    AcLog.d(TAG, "[onReceiveMessage] message: " + iChannelMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
+                public void onPrepare(String hintText, int inputType) {
+                    AcLog.d(TAG, "[onPrepare] hintText: " + hintText + ", inputType: " + inputType);
                 }
 
                 /**
-                 * 发送消息结果回调
-                 *
-                 * @param success 是否发送成功
-                 * @param messageId 消息ID
+                 * 云端输入法软键盘请求弹出的回调，该回调会触发多次
                  */
                 @Override
-                public void onSentResult(boolean success, String messageId) {
-                    AcLog.d(TAG, "[onSentResult] success: " + success + ", messageId: " + messageId);
-                    Toast.makeText(MessageChannelActivity.this, "[onSentResult] success: " + success + ", messageId: " + messageId, Toast.LENGTH_SHORT).show();
+                public void onCommandShow() {
+                    AcLog.d(TAG, "[onCommandShow]");
                 }
 
                 /**
-                 * 已弃用，可忽略
+                 * 云端输入法软键盘请求收起的回调
                  */
                 @Override
-                public void ready() {
-                    AcLog.d(TAG, "[ready]");
+                public void onCommandHide() {
+                    AcLog.d(TAG, "[onCommandHide]");
                 }
 
                 /**
-                 * 错误信息回调
+                 * 云端输入框内容变化的回调
                  *
-                 * @param errorCode 错误码
-                 * @param errorMessage 错误信息
+                 * @param text 输入框内容发生变化后的文本信息
                  */
                 @Override
-                public void onError(int errorCode, String errorMessage) {
-                    AcLog.d(TAG, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage);
-                    Toast.makeText(MessageChannelActivity.this, "[onError] errorCode: " + errorCode + ", errorMessage: " + errorMessage, Toast.LENGTH_SHORT).show();
+                public void onTextChange(String text) {
+                    AcLog.d(TAG, "[onTextChange] text: " + text);
                 }
 
                 /**
-                 * 云端游戏在线回调，建议在发送消息前监听该回调检查通道是否已连接
+                 * 云端输入法状态更新的回调
                  *
-                 * @param channelUid 云端游戏的用户ID
+                 * @param enable  true -- 云端输入法已开启
+                 *               false -- 云端输入法已关闭
                  */
                 @Override
-                public void onRemoteOnline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOnline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOnline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onRemoteKeyBoardEnabled(boolean enable) {
+                    AcLog.d(TAG, "[keyBoardEnable] enable: " + enable);
                 }
 
                 /**
-                 * 云端游戏离线回调
+                 * 不适用于云游戏场景，可忽略
                  *
-                 * @param channelUid 云端游戏的用户ID
+                 * @param enable
                  */
                 @Override
-                public void onRemoteOffline(String channelUid) {
-                    AcLog.d(TAG, "[onRemoteOffline] channelUid: " + channelUid);
-                    Toast.makeText(MessageChannelActivity.this, "[onRemoteOffline] channelUid: " + channelUid, Toast.LENGTH_SHORT).show();
+                public void onTextInputEnableStateChanged(boolean enable) {
+                    AcLog.d(TAG, "[onTextInputEnableStateChanged] enable: " + enable);
                 }
             });
         }
@@ -469,7 +450,7 @@ public class MessageChannelActivity extends BasePlayActivity
      * 远端实例通过该回调向客户端发送视频流的方向(横屏或竖屏)，为保证视频流方向与Activity方向一致，
      * 需要在该回调中根据rotation参数，调用 {@link BasePlayActivity#setRotation(int)} 来调整Activity的方向，
      * 0/180需将Activity调整为竖屏，90/270则将Activity调整为横屏；
-     * 同时，需要在 {@link MessageChannelActivity#onConfigurationChanged(Configuration)} 回调中，
+     * 同时，需要在 {@link LocalInputManagerActivity#onConfigurationChanged(Configuration)} 回调中，
      * 根据当前Activity的方向，调用 {@link VeGameEngine#rotate(int)} 来调整视频流的方向。
      *
      * @param rotation 旋转方向
@@ -511,3 +492,4 @@ public class MessageChannelActivity extends BasePlayActivity
         AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
     }
 }
+
