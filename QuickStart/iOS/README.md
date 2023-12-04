@@ -66,7 +66,7 @@
 
    ```objective-c
    #pragma mark - VeGameManagerDelegate
-   - (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId planId:         (NSString *)planId extra:(NSDictionary *)extra
+   - (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId planId:(NSString *)planId extra:(NSDictionary *)extra
    {
        // 启动成功，收到首帧画面回调
    }
