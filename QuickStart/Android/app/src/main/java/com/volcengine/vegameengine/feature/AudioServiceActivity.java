@@ -140,8 +140,8 @@ public class AudioServiceActivity extends BasePlayActivity
                 showToast("本地设备播放音量: " + mAudioService.getLocalAudioPlaybackVolume() + "\n" +
                         "远端实例播放音量: " + mAudioService.getRemoteAudioPlaybackVolume() + "\n" +
                         "本地设备采集音量: " + mAudioService.getLocalAudioCaptureVolume() + "\n" +
-                        "是否发送音频流: " + mAudioService.isSendingAudioStream() + "\n" +
-                        "是否正在发送音频流: " + mAudioService.isEnableSendAudioStream());
+                        "是否发送音频流: " + mAudioService.isEnableSendAudioStream() + "\n" +
+                        "是否正在发送音频流: " + mAudioService.isSendingAudioStream());
             }
         });
 
