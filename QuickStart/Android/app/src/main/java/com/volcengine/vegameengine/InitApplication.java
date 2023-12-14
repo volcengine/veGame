@@ -34,7 +34,7 @@ import com.volcengine.cloudphone.apiservice.outinterface.ICloudCoreManagerStatus
 
 public class InitApplication extends Application {
 
-    private static final String TAG = "TAG_INIT";
+    private static final String TAG = "InitApplication";
 
     private static InitApplication instance = null;
 
@@ -81,39 +81,5 @@ public class InitApplication extends Application {
             }
         });
         VeGameEngine.setDebug(true);
-        VeGameEngine.setLogger(new AcLog.ILogger() {
-            @Override
-            public void onVerbose(String TAG, String message) {
-                Log.v(TAG, message);
-            }
-
-            @Override
-            public void onDebug(String TAG, String message) {
-                Log.d(TAG, message);
-            }
-
-            @Override
-            public void onInfo(String TAG, String message) {
-                Log.i(TAG, message);
-            }
-
-            @Override
-            public void onWarn(String TAG, String message) {
-                Log.w(TAG, message);
-            }
-
-            @Override
-            public void onError(String TAG, String message) {
-                Log.e(TAG, message);
-            }
-
-            @Override
-            public void onError(String TAG, String message, Throwable throwable) {
-                Log.e(TAG, message);
-                if (throwable != null) {
-                    throwable.printStackTrace();
-                }
-            }
-        });
     }
 }
