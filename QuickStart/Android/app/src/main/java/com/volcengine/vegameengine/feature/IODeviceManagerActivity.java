@@ -1,12 +1,19 @@
 package com.volcengine.vegameengine.feature;
 
+import static com.volcengine.cloudcore.common.mode.KeySateType.DOWN;
+import static com.volcengine.cloudcore.common.mode.KeySateType.UP;
+import static com.volcengine.cloudcore.common.mode.MouseKey.MouseKeyLBUTTON_VALUE;
+import static com.volcengine.cloudcore.common.mode.MouseKey.MouseKeyRBUTTON_VALUE;
+
 import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.InputDevice;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -15,14 +22,14 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.appcompat.widget.SwitchCompat;
 
 import com.volcengine.androidcloud.common.log.AcLog;
+import com.volcengine.androidcloud.common.model.BriefTouchEvent;
 import com.volcengine.androidcloud.common.model.StreamStats;
+import com.volcengine.cloudcore.common.mode.KeyBoardKey;
 import com.volcengine.cloudcore.common.mode.LocalStreamStats;
 import com.volcengine.cloudcore.common.mode.QueueInfo;
-import com.volcengine.cloudcore.common.mode.SessionMode;
 import com.volcengine.cloudgame.GamePlayConfig;
 import com.volcengine.cloudgame.VeGameEngine;
-import com.volcengine.cloudphone.apiservice.GamePodControlService;
-import com.volcengine.cloudphone.apiservice.PodControlService;
+import com.volcengine.cloudphone.apiservice.IODeviceManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.cloudphone.apiservice.outinterface.IStreamListener;
 import com.volcengine.vegameengine.R;
@@ -33,35 +40,38 @@ import com.volcengine.vegameengine.util.ScreenUtil;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 
 /**
- * 该类用于展示与实例控制{@link PodControlService}和{@link GamePodControlService}相关的功能接口
+ * 该类用于展示与IO设备{@link IODeviceManager}相关的功能接口。
+ *
+ * IO设备支持键盘、鼠标，可以通过IODeviceManager提供的相关接口向云端发送键盘、鼠标事件；
+ * IODeviceManager还可以拦截触控事件、进而将触控事件转换成云端可以识别的鼠标事件。
+ *
+ * 注：IODeviceManager仅支持端游。
  */
-public class PodControlServiceActivity extends BasePlayActivity
+public class IODeviceManagerActivity extends BasePlayActivity
         implements IGamePlayerListener, IStreamListener {
 
-    private final String TAG = "PodControlServiceActivity";
+    private final String TAG = "IODeviceManagerActivity";
 
-    private FrameLayout mContainer;
+    IODeviceManager mIODeviceManager;
+    boolean mIsMouseVisible;
+    private float mOldX = -1, mOldY = -1;
+    private ViewGroup mContainer;
     private GamePlayConfig mGamePlayConfig;
     private GamePlayConfig.Builder mBuilder;
-    private PodControlService mPodControlService;
-    private GamePodControlService mGamePodControlService;
     private SwitchCompat mSwShowOrHide;
-    private Button mBtnSwitchBackground, mBtnSwitchForeground, mBtnSetIdleTime,
-            mBtnGetAutoRecycleTime, mBtnSetAutoRecycleTime, mBtnGetUserProfilePath, mBtnSetUserProfilePath,
-            mBtnSwitchAFKMode, mBtnSwitchNormalMode;
     private LinearLayoutCompat mLlButtons;
+    private Button mBtnSendKeyboardEvent;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_pod_control);
+        setContentView(R.layout.activity_iodevice);
         initView();
         initGamePlayConfig();
     }
@@ -70,133 +80,101 @@ public class PodControlServiceActivity extends BasePlayActivity
         mContainer = findViewById(R.id.container);
         mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mLlButtons = findViewById(R.id.ll_buttons);
-        mBtnSwitchBackground = findViewById(R.id.btn_switch_background);
-        mBtnSwitchForeground = findViewById(R.id.btn_switch_foreground);
-        mBtnSetIdleTime = findViewById(R.id.btn_set_idle_time);
-        mBtnGetAutoRecycleTime = findViewById(R.id.btn_get_auto_recycle_time);
-        mBtnSetAutoRecycleTime = findViewById(R.id.btn_set_auto_recycle_time);
-        mBtnGetUserProfilePath = findViewById(R.id.btn_get_user_profile);
-        mBtnSetUserProfilePath = findViewById(R.id.btn_set_user_profile);
-        mBtnSwitchAFKMode = findViewById(R.id.btn_switch_afk_mode);
-        mBtnSwitchNormalMode = findViewById(R.id.btn_switch_normal_mode);
+        mBtnSendKeyboardEvent = findViewById(R.id.btn_send_keyboard_event);
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mLlButtons.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
-        /**
-         * switchBackground(boolean on) -- 设置客户端应用或游戏切换前后台的状态
-         *
-         * @param on true -- 切后台
-         *           false -- 切前台
-         */
-        mBtnSwitchBackground.setOnClickListener(view -> {
-            if (mPodControlService != null) {
-                mPodControlService.switchBackground(true);
-            }
-        });
-        mBtnSwitchForeground.setOnClickListener(view -> {
-            if (mPodControlService != null) {
-                mPodControlService.switchBackground(false);
+        mBtnSendKeyboardEvent.setOnClickListener(view -> {
+            if (mIODeviceManager != null) {
+                /**
+                 * sendKeyboardKey(int keyboardKey, int status) -- 发送键盘按键消息
+                 *
+                 * @param keyboardKey 键盘按键，参见 {@link KeyBoardKey}
+                 * @param status 按键状态，参见 {@link com.volcengine.cloudcore.common.mode.KeySateType}
+                 */
+                mIODeviceManager.sendKeyboardKey(KeyBoardKey.KeyboardKeyEscape, DOWN);
+                mIODeviceManager.sendKeyboardKey(KeyBoardKey.KeyboardKeyEscape, UP);
             }
         });
 
-        /**
-         * setIdleTime(long time) -- 设置客户端切后台之后，云端游戏的保活时间
-         *
-         * @param time 保活时长，单位秒
-         */
-        mBtnSetIdleTime.setOnClickListener(v -> {
-            if (mPodControlService != null) {
-                int idleTime = 10;
-                mPodControlService.setIdleTime(idleTime);
-            }
-        });
-
-        /**
-         * setAutoRecycleTime(int time, SetAutoRecycleTimeCallback callback) -- 设置无操作回收服务时长
-         *
-         * @param time 无操作回收服务时长，单位秒
-         * @param callback 设置无操作回收服务时长的回调
-         * @return 0 -- 正常返回
-         *        -1 -- 内部错误
-         *        -2 -- time参数小于0
-         */
-        mBtnSetAutoRecycleTime.setOnClickListener(v -> {
-            if (mPodControlService != null) {
-                int autoRecycleTime = 20;
-                mPodControlService.setAutoRecycleTime(autoRecycleTime, new PodControlService.SetAutoRecycleTimeCallback() {
-                    @Override
-                    public void onResult(int result, long time) {
-                        showToast("[setAutoRecycleTimeResult] result: " + result + ", time: " + time);
+        mContainer.setOnGenericMotionListener(new View.OnGenericMotionListener() {
+            @Override
+            public boolean onGenericMotion(View view, MotionEvent motionEvent) {
+                if (mIODeviceManager != null &&
+                        motionEvent.isFromSource(InputDevice.SOURCE_CLASS_POINTER)) {
+                    switch (motionEvent.getAction()) {
+                        case MotionEvent.ACTION_HOVER_MOVE:
+                            if (mIsMouseVisible) {
+                                /**
+                                 * sendInputCursorPos(float x, float y) -- 发送鼠标光标绝对位置
+                                 *
+                                 * @param x 光标横坐标与云游戏画面容器宽度的比值 取值范围: [0, 1]
+                                 * @param y 光标纵坐标与云游戏画面容器高度的比值 取值范围: [0, 1]
+                                 */
+                                mIODeviceManager.sendInputCursorPos(
+                                        motionEvent.getX() / mContainer.getWidth(),
+                                        motionEvent.getY() / mContainer.getHeight());
+                            }
+                            else {
+                                if (mOldX != -1 && mOldY != -1) {
+                                    /**
+                                     * sendInputMouseMove(int deltaX, int deltaY) -- 发送鼠标光标移动偏移量
+                                     *
+                                     * @param deltaX 相较于上一次光标位置的横向偏移量
+                                     * @param deltaY 相较于上一次光标位置的纵向偏移量
+                                     */
+                                    mIODeviceManager.sendInputMouseMove(
+                                            (int) (motionEvent.getX() - mOldX),
+                                            (int) (motionEvent.getY() - mOldY));
+                                }
+                                mOldX = motionEvent.getX();
+                                mOldY = motionEvent.getY();
+                            }
+                            break;
+                        case MotionEvent.ACTION_BUTTON_PRESS:
+                            MouseButton button = MouseButton.fromMotionEvent(motionEvent);
+                            if (button == MouseButton.LEFT) {
+                                /**
+                                 * sendInputMouseKey(int mouseKey, int status) -- 发送鼠标按键消息
+                                 *
+                                 * @param mouseKey 鼠标按键，参见 {@link com.volcengine.cloudcore.common.mode.MouseKey}
+                                 * @param status 鼠标状态，参见 {@link com.volcengine.cloudcore.common.mode.KeySateType}
+                                 */
+                                mIODeviceManager.sendInputMouseKey(MouseKeyLBUTTON_VALUE, DOWN);
+                            }
+                            else if (button == MouseButton.RIGHT) {
+                                mIODeviceManager.sendInputMouseKey(MouseKeyRBUTTON_VALUE, DOWN);
+                            }
+                            break;
+                        case MotionEvent.ACTION_BUTTON_RELEASE:
+                            MouseButton button2 = MouseButton.fromMotionEvent(motionEvent);
+                            if (button2 == MouseButton.LEFT) {
+                                mIODeviceManager.sendInputMouseKey(MouseKeyLBUTTON_VALUE, UP);
+                            }
+                            else if (button2 == MouseButton.RIGHT) {
+                                mIODeviceManager.sendInputMouseKey(MouseKeyRBUTTON_VALUE, UP);
+                            }
+                            break;
+                        case MotionEvent.ACTION_SCROLL:
+                            /**
+                             * sendInputMouseWheel(int vWheel, int hWheel) -- 发送鼠标滚轮消息
+                             *
+                             * @param vWheel 纵向的滚动距离
+                             * @param hWheel 横向的滚动距离
+                             */
+                            mIODeviceManager.sendInputMouseWheel(
+                                    (int) motionEvent.getAxisValue(MotionEvent.AXIS_VSCROLL),
+                                    (int) motionEvent.getAxisValue(MotionEvent.AXIS_HSCROLL));
+                            break;
                     }
-                });
+                    return true;
+                }
+                return false;
             }
         });
 
-        /**
-         * getAutoRecycleTime(GetAutoRecycleTimeCallback callback) -- 查询无操作回收服务时长
-         *
-         * @param callback 查询无操作回收服务时长的回调
-         * @return 0 -- 正常返回
-         *        -1 -- 内部错误
-         */
-        mBtnGetAutoRecycleTime.setOnClickListener(v -> {
-            if (mPodControlService != null) {
-                mPodControlService.getAutoRecycleTime(new PodControlService.GetAutoRecycleTimeCallback() {
-                    @Override
-                    public void onResult(int result, long time) {
-                        showToast("[getAutoRecycleTimeResult] result: " + result + ", time: " + time);
-                    }
-                });
-            }
-        });
-
-        /**
-         * getUserProfilePath(GetUserProfilePathListener userProfilePathListener) -- 获取保存游戏云端配置文件的路径
-         *
-         * @param userProfilePathListener 获取保存游戏云端配置文件的路径的监听器
-         * @return 0 -- 成功返回
-         *         else -- 发生错误
-         */
-        mBtnGetUserProfilePath.setOnClickListener(v -> {
-            if (mPodControlService != null) {
-                mPodControlService.getUserProfilePath(list -> {
-                    showToast(list.toString());
-                });
-            }
-        });
-
-        /**
-         * setUserProfilePath(String[] userProfilePath) -- 设置保存游戏云端配置文件的路径
-         *
-         * @param userProfilePath 保存配置文件的路径列表
-         */
-        mBtnSetUserProfilePath.setOnClickListener(v -> {
-            if (mPodControlService != null) {
-                List<String> list = new ArrayList<>();
-                list.add("/");
-                mPodControlService.setUserProfilePath(list);
-            }
-        });
-
-        /**
-         * setSessionMode(int sessionMode) -- 设置挂机模式
-         *
-         * @param sessionMode 挂机模式，参见{@link SessionMode}
-         *                    0 -- 正常模式(非挂机)
-         *                    1 -- 挂机模式
-         */
-        mBtnSwitchAFKMode.setOnClickListener(v -> {
-            if (mGamePodControlService != null) {
-                mGamePodControlService.setSessionMode(SessionMode.SESSION_MODE_AFK);
-            }
-        });
-        mBtnSwitchNormalMode.setOnClickListener(v -> {
-            if (mGamePodControlService != null) {
-                mGamePodControlService.setSessionMode(SessionMode.SESSION_MODE_NORMAL);
-            }
-        });
     }
 
     private void initGamePlayConfig() {
@@ -237,6 +215,12 @@ public class PodControlServiceActivity extends BasePlayActivity
                 .container(mContainer)
                 .roundId(roundId)
                 .gameId(gameId)
+                .enableAcceleratorSensor(false)
+                .enableGravitySensor(false)
+                .enableGyroscopeSensor(false)
+                .enableMagneticSensor(false)
+                .enableOrientationSensor(false)
+                .enableVibrator(false)
                 .streamListener(this);
 
         mGamePlayConfig = mBuilder.build();
@@ -337,43 +321,55 @@ public class PodControlServiceActivity extends BasePlayActivity
     @Override
     public void onServiceInit() {
         AcLog.d(TAG, "[onServiceInit]");
-        mPodControlService = VeGameEngine.getInstance().getPodControlService();
-        if (mPodControlService != null) {
+
+        mIODeviceManager = VeGameEngine.getInstance().getIODeviceManager();
+        if (mIODeviceManager != null) {
             /**
-             * setBackgroundSwitchListener(BackgroundSwitchListener listener) -- 设置云端应用切换前后台监听器
+             * 设置触控事件监听器，用于触控事件转鼠标事件；
+             * 在触控转鼠标事件之前，需要对触控事件进行拦截。
              */
-            mPodControlService.setBackgroundSwitchListener(new PodControlService.BackgroundSwitchListener() {
+            mIODeviceManager.setInterceptTouchSend(true);
+            mIODeviceManager.setTouchListener(new IODeviceManager.BriefTouchListener() {
                 /**
-                 * 云端应用切换前后台的回调
+                 * 触控事件回调
                  *
-                 * @param on true -- 切换到后台
-                 *          false -- 切换到前台
+                 * @param briefEvents 触控事件列表
                  */
                 @Override
-                public void onBackgroundSwitched(boolean on) {
-                    AcLog.d(TAG, "[onBackgroundSwitched] isBackground: " + on);
-                    showToast("[onBackgroundSwitched] isBackground: " + on);
+                public void onBriefTouchEvent(List<BriefTouchEvent> briefEvents) {
+                    if (briefEvents.size() == 1) {
+                        BriefTouchEvent briefTouchEvent = briefEvents.get(0);
+                        switch (briefTouchEvent.action) {
+                            case MotionEvent.ACTION_DOWN:
+                                mIODeviceManager.sendInputMouseKey(MouseKeyLBUTTON_VALUE, DOWN);
+                                mIODeviceManager.sendInputCursorPos(briefTouchEvent.x, briefTouchEvent.y);
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                mIODeviceManager.sendInputCursorPos(briefTouchEvent.x, briefTouchEvent.y);
+                                break;
+                            case MotionEvent.ACTION_UP:
+                                mIODeviceManager.sendInputMouseKey(MouseKeyLBUTTON_VALUE, UP);
+                                mIODeviceManager.sendInputCursorPos(briefTouchEvent.x, briefTouchEvent.y);
+                                break;
+                        }
+                    }
                 }
             });
-        }
 
-        mGamePodControlService = VeGameEngine.getInstance().getGamePodControlService();
-        if (mGamePodControlService != null) {
             /**
-             * setListener(SessionModeListener listener) -- 设置切换挂机模式的监听器
+             * 设置鼠标状态监听器，用于监听云端鼠标是否可见
              */
-            mGamePodControlService.setListener(new GamePodControlService.SessionModeListener() {
+            mIODeviceManager.setMouseStateListener(new IODeviceManager.RemoteMouseListener() {
                 /**
-                 * 切换挂机模式结果的回调
+                 * 云端鼠标可见状态改变时的回调
                  *
-                 * @param mode 挂机模式，参见{@link SessionMode}
-                 * @param result 切换结果
-                 *               true -- 成功
-                 *               false -- 失败
+                 * @param isMouseVisible 云端鼠标是否可见
+                 *                       true -- 可见
+                 *                       false -- 不可见
                  */
                 @Override
-                public void onResult(int mode, boolean result) {
-                    AcLog.d(TAG, "[onResult] mode: " + mode + ", result: " + result);
+                public void onRemoteStateChange(boolean isMouseVisible) {
+                    mIsMouseVisible = isMouseVisible;
                 }
             });
         }
@@ -536,5 +532,26 @@ public class PodControlServiceActivity extends BasePlayActivity
     @Override
     public void onNetworkQuality(int quality) {
         AcLog.d(TAG, "[onNetworkQuality] quality: " + quality);
+    }
+
+    enum MouseButton {
+        LEFT,
+        RIGHT,
+        MIDDLE,
+        UNKNOWN;
+
+        static MouseButton fromMotionEvent(MotionEvent motionEvent) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                switch (motionEvent.getActionButton()) {
+                    case MotionEvent.BUTTON_PRIMARY:
+                        return LEFT;
+                    case MotionEvent.BUTTON_SECONDARY:
+                        return MouseButton.RIGHT;
+                    default:
+                        return MouseButton.UNKNOWN;
+                }
+            }
+            return MouseButton.UNKNOWN;
+        }
     }
 }

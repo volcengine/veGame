@@ -115,6 +115,11 @@
     <string name="release_game_pad">销毁手柄</string>
     <string name="game_pad_desc">在该演示中你可以体验与游戏手柄相关的功能接口</string>
 
+    <!--IO设备相关-->
+    <string name="io_device">IO设备</string>
+    <string name="send_keyboard_event">发送键盘事件</string>
+    <string name="io_device_desc">在该演示中你可以体验与IO设备相关的功能接口</string>
+
     <!--实例控制相关-->
     <string name="pod_control">实例控制</string>
     <string name="hint_idle_time">保活时长/秒</string>
@@ -127,6 +132,8 @@
     <string name="switch_foreground">切前台</string>
     <string name="get_user_profile">查询配置文件路径</string>
     <string name="set_user_profile">设置配置文件路径</string>
+    <string name="switch_afk_mode">挂机模式</string>
+    <string name="switch_normal_mode">正常模式</string>
     <string name="pod_control_desc">在该演示中你可以体验与实例控制相关的功能接口</string>
 
     <!--  旋转相关  -->
