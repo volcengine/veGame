@@ -25,7 +25,6 @@ function init() {
     console.log('message-received', msg);
     const { command } = msg;
     if (command === 8) {
-      veGameInstance?.destory();
       alert('游戏超时退出');
     }
   });
@@ -67,7 +66,9 @@ function bindEventListener(veGameInstance) {
     console.log('stop btn click', veGameInstance);
     try {
       await veGameInstance?.stop();
-      veGameInstance.destroy();
+      // veGameInstance.destroy() 会销毁运行期间创建的 dom 以及绑定的事件
+      // 如果需要多次 start/stop 的话，请**不要**调用 destroy，否则建议在 stop 之后调用 destroy
+      // veGameInstance.destroy();
       toggleDom();
     } catch (err) {
       console.log(err);
