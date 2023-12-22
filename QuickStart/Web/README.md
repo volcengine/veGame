@@ -30,8 +30,6 @@ const initConfig = {
 const startConfig = {
   gameId: '', //必填参数，游戏ID，可通过火山引擎云游戏控制台『游戏管理』页面获取，例如：1428112352161312345
   token: {
-      CurrentTime: '',    // Token创建时间
-      ExpiredTime: '',    // Token过期时间
       SessionToken: '',   // 用于鉴权的临时Token
       AccessKeyID: '',    // 用于鉴权的临时AccessKey
       SecretAccessKey: '' // 用于鉴权的临时SecretKey
