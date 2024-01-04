@@ -10,8 +10,12 @@ public class ListGameDemo {
     public static void main(String[] args) {
         IVeGameService veGameService = VeGameServiceImpl.getInstance();
 
-        veGameService.setAccessKey("ak");
-        veGameService.setSecretKey("sk");
+        String accessKey = System.getenv("VEGAME_ACCESS_KEY");
+        String secrteKey = System.getenv("VEGAME_SECRET_KEY");
+
+
+        veGameService.setAccessKey(accessKey);
+        veGameService.setSecretKey(secrteKey);
 
         try {
             ListGameReq req = new ListGameReq();
