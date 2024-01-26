@@ -17,7 +17,7 @@
 
 ## 使用 CocoaPods 安装
 
-1. 在工程的 `Podfile` 中添加 CocoaPods 的 source 源，并依赖`VeGameSDK`
+1. 在工程的 `Podfile` 中添加 CocoaPods 的 source 源，并依赖 `VeGameSDK`
 
    ```ruby
    source 'https://github.com/volcengine/volcengine-specs.git'
