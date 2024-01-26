@@ -13,12 +13,22 @@
 
 
 
-## 快速开始
+# 快速开始
 
-1. 克隆或下载 Demo 工程源文件到本地。
-2. 前往[火山引擎云游戏产品文档中心](https://www.volcengine.com/docs/6512/75594)下载云游戏 iOS 客户端 SDK 文件。解压后将 veGameSDK 文件夹拷贝到Demo 工程的 VeGameDemo 目录下。 
-3. 执行 pod install 指令，成功之后，打开 VeGamePublicDemo.xcworkspace。
-4. 相关的运行信息，在打印的 log 中查看。
+## 使用 CocoaPods 安装
+
+1. 在工程的 `Podfile` 中添加 CocoaPods 的 source 源，并依赖`VeGameSDK
+
+   ```ruby
+   source 'https://github.com/volcengine/volcengine-specs.git'
+   
+   platform :ios, '11.0'
+   inhibit_all_warnings!
+   
+   target 'TargetName' do
+     pod 'VeGameSDK', '1.35.0'
+   end
+   ```
 
 ## 接入的流程
 
