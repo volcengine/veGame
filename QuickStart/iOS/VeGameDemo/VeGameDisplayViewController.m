@@ -916,7 +916,18 @@
 
 - (void)gameManager:(VeGameManager *)manager onTouchEvent:(NSArray<VeBaseTouchEventItem *> *)touchArray
 {
-    NSLog(@"touchArray = %@", touchArray);
+    VeBaseTouchEventItem *item = [touchArray lastObject];
+    if (item.action == VeBaseTouchActionTypeEnded) {
+        VeGameMouseMessage *leftBtn = [VeGameMouseMessage new];
+        leftBtn.button = VeGameMouseButtonTypeLeft;
+        leftBtn.action = VeGameMouseActionTypeDown;
+        [manager sendMouseData: leftBtn];
+        
+        leftBtn = [VeGameMouseMessage new];
+        leftBtn.button = VeGameMouseButtonTypeLeft;
+        leftBtn.action = VeGameMouseActionTypeUp;
+        [manager sendMouseData: leftBtn];
+    }
 }
 
 - (void)gameManager:(VeGameManager *)manager networkTypeChangedToType:(VeBaseNetworkType)networkType
