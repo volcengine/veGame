@@ -13,6 +13,7 @@
 		2B6D6C3E26E642FA0073011E /* VeGameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */; };
 		2B6D6C4126E645C70073011E /* VeGameDisplayViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3F26E645C70073011E /* VeGameDisplayViewController.m */; };
 		2B91841B2808252800687C31 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B9184192808252800687C31 /* Utils.m */; };
+		2BA157852B6B9959006386DE /* VeGamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BA157842B6B9959006386DE /* VeGamePadView.m */; };
 		2BC4910D2B19BD1800CC3516 /* UIView+Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4910B2B19BD1800CC3516 /* UIView+Draggable.m */; };
 		2BC491102B19BD8300CC3516 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4910F2B19BD8300CC3516 /* CustomViewController.m */; };
 		3B226FAEC41B5F36464D454E /* libPods-VeGamePublicDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */; };
@@ -21,19 +22,6 @@
 		C83BF0131E1234250016E53D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C83BF0111E1234250016E53D /* LaunchScreen.storyboard */; };
 		C8B7E3F11E27698700EAD131 /* image.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C8B7E3F01E27698700EAD131 /* image.xcassets */; };
 /* End PBXBuildFile section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		2B26FE4B28AB8BD300F39BF4 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VeGamePublicDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -48,11 +36,12 @@
 		2B6D6C4026E645C70073011E /* VeGameDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeGameDisplayViewController.h; sourceTree = "<group>"; };
 		2B9184192808252800687C31 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		2B91841A2808252800687C31 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		2BA157832B6B9959006386DE /* VeGamePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeGamePadView.h; sourceTree = "<group>"; };
+		2BA157842B6B9959006386DE /* VeGamePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeGamePadView.m; sourceTree = "<group>"; };
 		2BC4910B2B19BD1800CC3516 /* UIView+Draggable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Draggable.m"; sourceTree = "<group>"; };
 		2BC4910C2B19BD1800CC3516 /* UIView+Draggable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Draggable.h"; sourceTree = "<group>"; };
 		2BC4910E2B19BD8300CC3516 /* CustomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomViewController.h; sourceTree = "<group>"; };
 		2BC4910F2B19BD8300CC3516 /* CustomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomViewController.m; sourceTree = "<group>"; };
-		2BE9CA31289B83B9004B6C6F /* VolcEngineRTC.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = VolcEngineRTC.framework; path = VeGameDemo/VeGameSDK/VeGame.framework/Frameworks/VolcEngineRTC.framework; sourceTree = "<group>"; };
 		5AC2CB67B6DAD858109A17C3 /* Pods-VeGamePublicDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VeGamePublicDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-VeGamePublicDemo/Pods-VeGamePublicDemo.release.xcconfig"; sourceTree = "<group>"; };
 		C831249221C8DE66004F2EE0 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		C83BF0001E1234250016E53D /* VeGamePublicDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeGamePublicDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -78,10 +67,18 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2BA157822B6B9959006386DE /* GamePad */ = {
+			isa = PBXGroup;
+			children = (
+				2BA157832B6B9959006386DE /* VeGamePadView.h */,
+				2BA157842B6B9959006386DE /* VeGamePadView.m */,
+			);
+			path = GamePad;
+			sourceTree = "<group>";
+		};
 		764F4351218F646FDEC60CD6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				2BE9CA31289B83B9004B6C6F /* VolcEngineRTC.framework */,
 				17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */,
 			);
 			name = Frameworks;
@@ -108,6 +105,7 @@
 		C83BF0021E1234250016E53D /* VeGameDemo */ = {
 			isa = PBXGroup;
 			children = (
+				2BA157822B6B9959006386DE /* GamePad */,
 				2B91841A2808252800687C31 /* Utils.h */,
 				2B9184192808252800687C31 /* Utils.m */,
 				2BC4910C2B19BD1800CC3516 /* UIView+Draggable.h */,
@@ -163,7 +161,6 @@
 				C83BEFFD1E1234250016E53D /* Frameworks */,
 				C83BEFFE1E1234250016E53D /* Resources */,
 				39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */,
-				2B26FE4B28AB8BD300F39BF4 /* Embed Frameworks */,
 				BC6E9EE0F140C6A680B94BB4 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
@@ -288,6 +285,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */,
+				2BA157852B6B9959006386DE /* VeGamePadView.m in Sources */,
 				2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */,
 				2BC4910D2B19BD1800CC3516 /* UIView+Draggable.m in Sources */,
 				C83BF0081E1234250016E53D /* AppDelegate.m in Sources */,

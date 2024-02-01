@@ -30,6 +30,7 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "UIView+Draggable.h"
 #import "CustomViewController.h"
+#import "VeGamePadView.h"
 
 @implementation VeCloudGameConfigObject
 
@@ -159,6 +160,10 @@
         }];
         label;
     });
+    
+//    VeGamePadJoystickView *joystickView = [[VeGamePadJoystickView alloc] init];
+//    joystickView.frame = CGRectMake(112, 164, 136, 136);
+//    [self.view addSubview:joystickView];
     
     // 网络探测按钮
     UIButton *netProbeOkBtn = [self createButton: @""];
