@@ -26,7 +26,7 @@
    inhibit_all_warnings!
    
    target 'TargetName' do
-     pod 'VeGameSDK', '1.35.0'
+     pod 'VeGameSDK', '1.36.0'
    end
    ```
 
