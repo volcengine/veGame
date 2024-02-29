@@ -212,9 +212,9 @@
             self.fingertipImageView_bg.transform = CGAffineTransformMakeRotation(bg_radian);
             if (bg_radian >= 0 && bg_radian < 0.52) {
 //                NSLog(@"W");
-                if (_S) {
+                if (_D) {
                     [[VeGameManager sharedInstance] sendKeyboardData:VeGameKeyboardKeyS state:NO];
-                    _S = NO;
+                    _D = NO;
                 }
                 if (_A) {
                     [[VeGameManager sharedInstance] sendKeyboardData:VeGameKeyboardKeyA state:NO];
