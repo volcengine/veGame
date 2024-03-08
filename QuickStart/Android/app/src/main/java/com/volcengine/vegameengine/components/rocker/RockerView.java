@@ -153,17 +153,24 @@ public class RockerView extends View {
         float relativeX = x - mCenterPoint.x;
         float relativeY = y - mCenterPoint.y;
         float distance = (float) Math.sqrt(Math.pow(relativeX, 2) + Math.pow(relativeY, 2));
-        float limit = mDiskRadius * (1 - mProportionOfRocker);
+        // 手指必须移动多少距离才会触发rock回调，
+        // 默认是中间圆形摇杆的半径，
+        // 业务侧可根据自身实际情况，scale局部变量limit，来调整此组件的灵敏度
+        float limit = mDiskRadius * mProportionOfRocker;
         float aCos = (float) (Math.acos(relativeY / distance) * 180 / Math.PI);
         if (distance <= limit) {
             mRockerPoint.set(x, y);
             mAngle = -1;
         } else {
-            //触摸区域超出范围，绘制成Rocker和Disk相切
-            float scale = limit / distance;
-            float newAnchorX = relativeX * scale + mCenterPoint.x;
-            float newAnchorY = relativeY * scale + mCenterPoint.y;
-            mRockerPoint.set(newAnchorX, newAnchorY);
+            if(distance <= mDiskRadius){
+                mRockerPoint.set(x, y);
+            } else {
+                //触摸区域超出范围，绘制成Rocker和Disk相切
+                float scale = mDiskRadius * (1.0f - mProportionOfRocker) / distance;
+                float newAnchorX = relativeX * scale + mCenterPoint.x;
+                float newAnchorY = relativeY * scale + mCenterPoint.y;
+                mRockerPoint.set(newAnchorX, newAnchorY);
+            }
             //根据View的左、右半边进行计算
             mAngle = relativeX > 0 ? 180 - aCos : 180 + aCos;
         }

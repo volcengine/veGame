@@ -97,6 +97,7 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
 
     @Override
     public void onPlaySuccess(String s, int i, Map<String, String> map, String s1, String s2) {
+        Log.e(TAG, "onPlaySuccess is invoked...");
         IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
         if (ioDeviceManager != null) {
             mRockView.setOnRockerChangeListener(new KeyboardEventSender(ioDeviceManager));

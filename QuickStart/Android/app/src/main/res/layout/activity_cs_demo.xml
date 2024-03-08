@@ -40,8 +40,8 @@
 
     <com.volcengine.vegameengine.components.rocker.RockerView
         android:id="@+id/w_a_s_d_rocker"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_marginStart="20dp"
         android:layout_marginBottom="95dp"
         app:layout_constraintLeft_toLeftOf="parent"
