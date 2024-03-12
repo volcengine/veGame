@@ -3,19 +3,72 @@ body {
     padding: 0;
 }
 
-.hidden {
-    display: none;
+.action-container {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    justify-content: flex-start;
+    align-items: flex-start;
+    position: absolute;
+    left: 0;
+    top: 12px;
+    z-index: 10;
+}
+
+.operation-button {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+
+.form {
+    display: flex;
+    align-items: center;
+}
+
+.player-container {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    height: calc(100vh - 100px);
 }
 
 #player {
-    width: 100vw;
-    height: 100vh;
     overflow: hidden;
+    width: 100%;
+    height: 100vh;
 }
 
-.fixed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10000;
+#show-action-btn {
+    /* 默认隐藏「展示操作按钮」 */
+    display: none;
+    position: absolute;
+    z-index: 12;
+    top: 12px;
+}
+
+#stop-btn {
+    /* 默认隐藏「关闭云手机按钮」 */
+    display: none;
+}
+
+.pc-player {
+    border: 1px solid #DDE2E9;
+    box-shadow: 0px 50px 80px rgba(0, 0, 0, 0.12);
+    border-radius: 12px;
+}
+
+#player.pc-portrait {
+    height: calc(100vh - 100px);
+    width: calc(calc(100vh - 100px) / 1920 * 1080);
+}
+
+#player.pc-landscape {
+    width: calc(100vh - 100px);
+    height: calc(calc(100vh - 100px) / 1920 * 1080);
+}
+
+#customLocalKeyboardInputId {
+    color: red;
 }
