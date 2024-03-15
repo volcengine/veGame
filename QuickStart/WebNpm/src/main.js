@@ -35,34 +35,6 @@ const initApp = () => {
     $('.action-container').show();
     $('#show-action-btn').hide();
   });
-  // 表单提交
-  $('#form-submit-btn').on('click', () => {
-    $('form').submit(function(event) {
-      event.preventDefault(); // 阻止表单默认提交行为
-      // 序列化表单数据为数组
-      var formDataArray = $(this).serializeArray();
-      // 创建一个空对象来存储表单数据
-      var formData = {};
-      // 将表单数据放入对象中
-      $.each(formDataArray, function(index, field) {
-        formData[field.name] = field.value;
-      });
-      // 打印表单数据对象
-      console.log('表单数据:', formData);
-
-      veGameSdkInstance.rotate(Number(formData.rotation))
-      // 执行其他操作
-      // ...
-    });
-  });
-  // 切换清晰度
-  $('#switch_clarity').on('click', '.dropdown-item', function() {
-    var value = $(this).text();
-    console.log('选中的值:', value);
-    
-    // 执行其他操作
-    // ...
-  });
 
   $(document).ready(function() {
     $('.dropdown-toggle').dropdown();
@@ -74,7 +46,7 @@ function initSdk() {
     ...initConfig,
     isDebug: import.meta.env.DEV, // 本地调试开启 debug 模式，线上关闭
     enableLocalKeyboard: false,
-    enableSyncClipboard: true, //是否开启剪切板同步，相关 API 参考 features/clipboard.js。详细参考剪贴板同步最佳实践（https://www.volcengine.com/docs/6394/1182634）
+    enableSyncClipboard: true, //是否开启剪切板同步
     enableLocalMouseScroll: true, //是否开启本地鼠标滑轮滚动映射
   });
   window.veGameSdkInstance =veGameSdkInstance;
@@ -169,13 +141,13 @@ function bindEventListener(veGameSdkInstance, callback) {
     console.log('starting');
     try {
       isStart = true;
-      // 接口文档：https://www.volcengine.com/docs/6394/75744#%E5%90%AF%E5%8A%A8
+      // 接口文档：https://www.volcengine.com/docs/6512/75597
       const startRes = await veGameSdkInstance?.start({
         ...startConfig,
-        rotation: 'portrait', // 以竖屏状态启动，具体详见：https://www.volcengine.com/docs/6394/1182635
-        isScreenLock: !isPC, // 移动端是开启锁定屏幕横竖屏显示（即默认开启自动旋转功能，移动端时监听 orientation 进行画面旋转）具体详见：https://www.volcengine.com/docs/6394/1182635
+        rotation: 'portrait', // 以竖屏状态启动
+        isScreenLock: !isPC, // 移动端是开启锁定屏幕横竖屏显示（即默认开启自动旋转功能，移动端时监听 orientation 进行画面旋转）
         mute: true,
-        audioAutoPlay: true, // mute & audioAutoPlay 都配置 true 是处理自动播放的策略，这里配置为 **初始化静音，用户首次点击时开启声音**，详细配置及原因详见自动播放最佳实践（https://www.volcengine.com/docs/6394/154997）
+        audioAutoPlay: true, // mute & audioAutoPlay 都配置 true 是处理自动播放的策略，这里配置为 **初始化静音，用户首次点击时开启声音**
       });
       console.log('start success', startRes);
 
@@ -201,7 +173,7 @@ function bindEventListener(veGameSdkInstance, callback) {
     console.log('stopping');
     try {
       isStart = false;
-      // 接口文档：https://www.volcengine.com/docs/6394/75744#%E5%81%9C%E6%AD%A2
+      // 接口文档：https://www.volcengine.com/docs/6512/75597
       const stopRes = await veGameSdkInstance?.stop();
       console.log('stop success', stopRes);
 

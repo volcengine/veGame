@@ -1,14 +1,28 @@
 import { veGameModeList } from '../constant.js'
+import { MODE } from '@volcengine/vegame';
 
 const sessionMode = (veGameSdkInstance) => {
   let syncBtn = null;
   let sessionModeDataDropDown = null;
 
-  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云手机和成功停止云游戏时调用
+  const setSessionModeFn = async function() {
+    var value = $(this).text();
+    if(value){
+      try {
+        await veGameSdkInstance.sessionMode(veGameModeList.find(item=>item.label === value).value)
+        alert(`切换模式成功，当前为${value}`)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
+  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云游戏和成功停止云游戏时调用
   return {
     startSuccess() {
-      // 剪贴板数据展示的 dom 节点
-      sessionModeDataDropDown = document.createElement('div');
+      // 手游才能设置挂机模式
+      if(veGameSdkInstance.mode === MODE.CLOUD_PHONE_GAME){
+        sessionModeDataDropDown = document.createElement('div');
       $(sessionModeDataDropDown)
         .addClass('dropdown')
         .html(
@@ -21,19 +35,8 @@ const sessionMode = (veGameSdkInstance) => {
           </ul>`,
         )
         .appendTo('.action-container')
-        .on('click', '.dropdown-item', async function() {
-          var value = $(this).text();
-          if(value){
-            try {
-              console.log('传入的参数', veGameModeList.find(item=>item.label === value).value)
-              const res = await veGameSdkInstance.sessionMode(veGameModeList.find(item=>item.label === value).value)
-              console.log('res', res)
-              alert(`切换模式成功，当前为${value}`)
-            } catch (error) {
-              console.error(error)
-            }
-          }
-        });
+        .on('click', '.dropdown-item', setSessionModeFn)
+      }
     },
     stopSuccess() {
       $(syncBtn).remove();

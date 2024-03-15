@@ -2,7 +2,21 @@ const idleTime = (veGameSdkInstance) => {
   let syncBtn = null;
   let idleDataDropdown = null;
 
-  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云手机和成功停止云游戏时调用
+  const setIdleTime = async function() {
+    var value = $(this).text();
+    console.log('选中的值:', value);
+    if(value){
+      try {
+        const res = await veGameSdkInstance.setIdleTime(Number(value.replace('s','')))
+        console.log('res', res)
+        alert(`设置保活时间为${value}`)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
+  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云游戏和成功停止云游戏时调用
   return {
     startSuccess() {
       idleDataDropdown = document.createElement('div');
@@ -20,19 +34,7 @@ const idleTime = (veGameSdkInstance) => {
           </ul>`,
         )
         .appendTo('.action-container')
-        .on('click', '.dropdown-item', async function() {
-          var value = $(this).text();
-          console.log('选中的值:', value);
-          if(value){
-            try {
-              const res = await veGameSdkInstance.setIdleTime(Number(value.replace('s','')))
-              console.log('res', res)
-              alert('设置保活时间成功')
-            } catch (error) {
-              console.error(error)
-            }
-          }
-        });
+        .on('click', '.dropdown-item', setIdleTime);
     },
     stopSuccess() {
       $(syncBtn).remove();

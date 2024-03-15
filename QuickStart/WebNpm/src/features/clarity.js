@@ -4,7 +4,21 @@ const clarity = (veGameSdkInstance) => {
   let syncBtn = null;
   let clarityDataDropdown = null;
 
-  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云手机和成功停止云游戏时调用
+  const clarityData = async function() {
+    var value = $(this).text();
+    if(value){
+      const currentClarityValue = clarityList.find(item=>item.label === value)
+      try {
+        const res = await veGameSdkInstance.switchVideoStreamProfile(currentClarityValue.value)
+        console.log('res', res)
+        alert(`清晰度已切换为${value}`)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
+  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云游戏和成功停止云游戏时调用
   return {
     startSuccess() {
       clarityDataDropdown = document.createElement('div');
@@ -22,21 +36,7 @@ const clarity = (veGameSdkInstance) => {
           </ul>`,
         )
         .appendTo('.action-container')
-        .on('click', '.dropdown-item', async function() {
-          var value = $(this).text();
-          console.log('选中的值:', value);
-          if(value){
-            const currentClarityValue = clarityList.find(item=>item.label === value)
-            console.log('currentClarityValue', currentClarityValue)
-            try {
-              const res = await veGameSdkInstance.switchVideoStreamProfile(currentClarityValue.value)
-              console.log('res', res)
-              alert('清晰度切换成功')
-            } catch (error) {
-              console.error(error)
-            }
-          }
-        });
+        .on('click', '.dropdown-item', clarityData);
     },
     stopSuccess() {
       $(syncBtn).remove();

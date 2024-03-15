@@ -2,10 +2,22 @@ const reconnectTime = (veGameSdkInstance) => {
   let syncBtn = null;
   let reconnectTimeDataDropDown = null;
 
-  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云手机和成功停止云游戏时调用
+  const setReconnectTime = async function() {
+    var value = $(this).text();
+    console.log('选中的值:', value);
+    if(value){
+      try {
+        await veGameSdkInstance.setReconnectTime(Number(value.replace('s','')))
+        alert(`已设置重连时间为${value}`)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+  }
+
+  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云游戏和成功停止云游戏时调用
   return {
     startSuccess() {
-      // 剪贴板数据展示的 dom 节点
       reconnectTimeDataDropDown = document.createElement('div');
       $(reconnectTimeDataDropDown)
         .addClass('dropdown')
@@ -21,18 +33,7 @@ const reconnectTime = (veGameSdkInstance) => {
           </ul>`,
         )
         .appendTo('.action-container')
-        .on('click', '.dropdown-item', async function() {
-          var value = $(this).text();
-          console.log('选中的值:', value);
-          if(value){
-            try {
-              await veGameSdkInstance.setReconnectTime(Number(value.replace('s','')))
-              alert('设置重连时间成功')
-            } catch (error) {
-              console.error(error)
-            }
-          }
-        });
+        .on('click', '.dropdown-item', setReconnectTime);
     },
     stopSuccess() {
       $(syncBtn).remove();

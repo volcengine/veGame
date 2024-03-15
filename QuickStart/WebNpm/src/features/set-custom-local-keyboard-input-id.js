@@ -1,6 +1,16 @@
 const setCustomLocalKeyboardInputId = (veGameSdkInstance) => {
   let setCustomLocalKeyboardInputIdBtn = null;
-  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云手机和成功停止云游戏时调用
+  // 返回的 startSuccess 和 stopSuccess 方法会分别在成功启动云游戏和成功停止云游戏时调用
+
+  const setCustomLocalKeyboardInputId = async () => {
+    try {
+      await veGameSdkInstance.setCustomLocalKeyboardInputId('customLocalKeyboardInputId');
+      alert('已设置自定义本地键盘 Input 框ID为 customLocalKeyboardInputId')
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
   return {
     startSuccess() {
       // demo 的 pc 场景才展示 设置自定义本地键盘 Input 框
@@ -10,13 +20,7 @@ const setCustomLocalKeyboardInputId = (veGameSdkInstance) => {
         .text('设置自定义本地键盘 Input 框')
         .addClass('btn btn-primary btn-sm')
         .appendTo('.action-container')
-        .on('click', async () => {
-          try {
-            await veGameSdkInstance.setCustomLocalKeyboardInputId('customLocalKeyboardInputId');
-          } catch (e) {
-            console.error(e)
-          }
-        });
+        .on('click', setCustomLocalKeyboardInputId);
       }
     },
     stopSuccess() {
