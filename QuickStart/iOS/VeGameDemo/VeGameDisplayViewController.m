@@ -30,7 +30,6 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "UIView+Draggable.h"
 #import "CustomViewController.h"
-#import "VeGamePadView.h"
 
 @implementation VeCloudGameConfigObject
 
@@ -57,13 +56,10 @@
     
     [self configSubView];
     
-    self.rotation = self.configObj.rotation;
+    self.rotation = 0;
     [VeGameManager sharedInstance].delegate = self;
     [VeGameManager sharedInstance].containerView = self.containerView;
-    // 附加信息
-    [[VeGameManager sharedInstance] setExtraParameters: @{
-    }];
-    if (NO) { // 网络探测
+    if (self.configObj.netProbe) { // 网络探测
         [SVProgressHUD showWithStatus: @"正在进行网络探测..."];
         VeGameConfigObject *configObj = [VeGameConfigObject new];
         configObj.ak = self.configObj.ak;
@@ -160,10 +156,6 @@
         }];
         label;
     });
-    
-//    VeGamePadJoystickView *joystickView = [[VeGamePadJoystickView alloc] init];
-//    joystickView.frame = CGRectMake(112, 164, 136, 136);
-//    [self.view addSubview:joystickView];
     
     // 网络探测按钮
     UIButton *netProbeOkBtn = [self createButton: @""];
@@ -692,7 +684,7 @@
                 [[VeGameManager sharedInstance] setSessionMode: tf.text.integerValue];
             }
         }];
-    } else if (btn.tag == 121) { // 挂机模式
+    } else if (btn.tag == 121) { // 采集视图显示/隐藏
         btn.selected = !btn.selected;
         self.localVideoView.hidden = !btn.selected;
         [btn setTitle: btn.selected ? @"采集视图显示" : @"采集视图隐藏" forState: UIControlStateNormal];
@@ -743,6 +735,7 @@
     if (!self.alreadyStart) {
         self.alreadyStart = YES;
         [SVProgressHUD showWithStatus: @"正在启动..."];
+        // 启动参数
         VeGameConfigObject *configObj = [VeGameConfigObject new];
         configObj.ak = self.configObj.ak;
         configObj.sk = self.configObj.sk;
@@ -750,16 +743,7 @@
         configObj.userId = self.configObj.userId;
         configObj.gameId = self.configObj.gameId;
         configObj.roundId = self.configObj.roundId;
-        VeGameControlObject *control = [VeGameControlObject new];
-        control.role = self.configObj.role;
-        control.roomType = self.configObj.roomType;
-        configObj.control = control;
-        configObj.sessionMode = self.configObj.sessionMode;
-        configObj.queuePriority = self.configObj.queuePriority;
-        configObj.keyboardEnable = self.configObj.keyboardEnable;
-        configObj.autoRecycleTime = self.configObj.autoRecycleTime;
-        configObj.videoStreamProfileId = self.configObj.videoStreamProfileId;
-        configObj.reservedId = self.configObj.reservedId.length ? self.configObj.reservedId : nil;
+        // 启动
         [[VeGameManager sharedInstance] startWithConfig: configObj];
     }
 }
@@ -814,6 +798,16 @@
 }
 
 #pragma mark - VeGameManagerDelegate
+
+- (void)firstRemoteAudioFrameArrivedFromGameManager:(VeGameManager *)manager
+{
+    NSLog(@"--- 收到首帧音频 ---");
+}
+
+- (void)firstRemoteVideoFrameArrivedFromGameManager:(VeGameManager *)manager
+{
+    NSLog(@"--- 收到首帧视频 ---");
+}
 
 - (void)gameManager:(VeGameManager *)manager startSucceedResult:(NSString *)gameId videoStreamProfileId:(NSInteger)streamProfileId reservedId:(NSString *)reservedId planId:(NSString *)planId extra:(NSDictionary *)extra
 {
@@ -919,6 +913,36 @@
     });
 }
 
+- (void)gameManager:(VeGameManager *)manager onNetProbeError:(VeBaseNetProbeErrorCode)code
+{
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [SVProgressHUD dismiss];
+        NSString *toast = nil;
+        switch (code) {
+            case VeBaseNetProbeErrorCodeBadNetwork:
+            {
+                toast = @"网络探测错误";
+            }
+                break;
+            case VeBaseNetProbeErrorCodeCancelByUser:
+            {
+                [self startGame];
+                toast = @"用户中断网络探测";
+                [self showNetProbeBtn: @"探测"];
+            }
+                break;
+            case VeBaseNetProbeErrorCodeEmptyStats:
+            {
+                toast = @"网络探测数据为空";
+            }
+                break;
+        }
+        [self.view makeToast: toast
+                    duration: 2.0f
+                    position: CSToastPositionCenter];
+    });
+}
+
 - (void)gameManager:(VeGameManager *)manager onTouchEvent:(NSArray<VeBaseTouchEventItem *> *)touchArray
 {
     VeBaseTouchEventItem *item = [touchArray lastObject];
@@ -973,36 +997,6 @@
     }
 }
 
-- (void)gameManager:(VeGameManager *)manager onNetProbeError:(VeBaseNetProbeErrorCode)code
-{
-    dispatch_async(dispatch_get_main_queue(), ^{
-        [SVProgressHUD dismiss];
-        NSString *toast = nil;
-        switch (code) {
-            case VeBaseNetProbeErrorCodeBadNetwork:
-            {
-                toast = @"网络探测错误";
-            }
-                break;
-            case VeBaseNetProbeErrorCodeCancelByUser:
-            {
-                [self startGame];
-                toast = @"用户中断网络探测";
-                [self showNetProbeBtn: @"探测"];
-            }
-                break;
-            case VeBaseNetProbeErrorCodeEmptyStats:
-            {
-                toast = @"网络探测数据为空";
-            }
-                break;
-        }
-        [self.view makeToast: toast
-                    duration: 2.0f
-                    position: CSToastPositionCenter];
-    });
-}
-
 - (void)startAudioCaptureRequestFromGameManager:(VeGameManager *)manager
 {
     [SVProgressHUD showWithStatus: @"正在启动麦克风..."];
@@ -1039,11 +1033,6 @@
 - (void)stopVideoCaptureRequestFromGameManager:(VeGameManager *)manager
 {
     [manager stopVideoStream];
-}
-
-- (void)firstLocalVideoFrameCapturedFromGameManager:(VeGameManager *)manager
-{
-    NSLog(@"本地视频采集：首帧到达");
 }
 
 - (void)gameManager:(VeGameManager *)manager onVideoCaptureDeviceState:(VeBaseMediaDeviceState)state deviceError:(VeBaseMediaDeviceError)error
@@ -1091,24 +1080,9 @@
     NSLog(@"---切换远端游戏前后台失败---");
 }
 
-- (void)gameManager:(VeGameManager *)manager receivedClipBoardMessage:(NSArray *)datArray
-{
-    NSLog(@"剪贴板数据：%@", datArray);
-}
-
 - (void)gameManager:(VeGameManager *)manager receivedGeneralStringMessage:(NSString *)dataString
 {
     NSLog(@"通用消息：%@", dataString);
-}
-
-- (void)gameManager:(VeGameManager *)manager setUserProfilePathType:(NSInteger)type result:(BOOL)result
-{
-    NSLog(@"设置配置信息：%@，结果：%@", type == 0 ? @"设置" : @"还原", result ? @"成功" : @"失败");
-}
-
-- (void)gameManager:(VeGameManager *)manager getUserProfilePathList:(NSArray<NSString *> *)list
-{
-    NSLog(@"获取配置信息：%@", list);
 }
 
 - (void)gameManager:(VeGameManager *)manager setAutoRecycleTimeCallback:(NSInteger)code time:(NSInteger)time
@@ -1347,6 +1321,10 @@
             toast = @"30008 画布尺寸无效";
         } else if (errCode == ERROR_INIT_ACCOUNT_ID_ILLEGAL) {
             toast = @"30009 火山账户ID非法";
+        } else if (errCode == ERROR_NET_PROBE_FAILED) {
+            toast = @"32000 网络探测失败";
+        } else if (errCode == ERROR_FIRST_FRAME_TIME_OUT) {
+            toast = @"33001 首帧超时";
         } else if (errCode == ERROR_GAME_STOPPED_DUPLICATE_START) {
             toast = @"游戏停止，原因：在不同设备上使用相同参数请求Start";
         } else if (errCode == ERROR_NET_REQUEST_ERROR) {
@@ -1457,6 +1435,5 @@
 {
     NSLog(@"--- VeCloudGameDisplayViewController Dealloc ---");
 }
-
 
 @end

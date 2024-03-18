@@ -26,21 +26,13 @@
 
 @interface VeCloudGameConfigObject : NSObject
 
+@property (nonatomic, assign) BOOL netProbe;
 @property (nonatomic, copy) NSString *ak;
 @property (nonatomic, copy) NSString *sk;
 @property (nonatomic, copy) NSString *token;
 @property (nonatomic, copy) NSString *gameId;
 @property (nonatomic, copy) NSString *userId;
 @property (nonatomic, copy) NSString *roundId;
-@property (nonatomic, copy) NSString *reservedId;
-@property (nonatomic, assign) NSInteger rotation;
-@property (nonatomic, assign) BOOL keyboardEnable;
-@property (nonatomic, assign) NSInteger sessionMode;
-@property (nonatomic, assign) VeBaseRoleType role;
-@property (nonatomic, assign) VeBaseRoomType roomType;
-@property (nonatomic, assign) NSInteger queuePriority;
-@property (nonatomic, assign) NSInteger autoRecycleTime;
-@property (nonatomic, assign) NSInteger videoStreamProfileId;
 
 @end
 
