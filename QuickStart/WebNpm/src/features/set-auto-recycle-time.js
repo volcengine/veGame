@@ -25,10 +25,9 @@ const autoRecycle = (veGameSdkInstance) => {
             设置自动回收时长
           </button>
           <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-            <li><a class="dropdown-item" href="#">0s</a></li>
-            <li><a class="dropdown-item" href="#">10s</a></li>
-            <li><a class="dropdown-item" href="#">20s</a></li>
             <li><a class="dropdown-item" href="#">100s</a></li>
+            <li><a class="dropdown-item" href="#">200s</a></li>
+            <li><a class="dropdown-item" href="#">300s</a></li>
           </ul>`,
         )
         .appendTo('.action-container')

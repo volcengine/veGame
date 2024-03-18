@@ -9,7 +9,7 @@ const sessionMode = (veGameSdkInstance) => {
     var value = $(this).text();
     if(value){
       try {
-        await veGameSdkInstance.sessionMode(veGameModeList.find(item=>item.label === value).value)
+        await veGameSdkInstance.setSessionMode(veGameModeList.find(item=>item.label === value).value)
         alert(`切换模式成功，当前为${value}`)
       } catch (error) {
         console.error(error)
