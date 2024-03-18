@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="22505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="22504"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -12,7 +12,7 @@
             <connections>
                 <outlet property="akTextField" destination="bqW-dN-e8a" id="esN-cG-qeR"/>
                 <outlet property="gameIdTextField" destination="Jga-48-8fq" id="UCe-5N-dTo"/>
-                <outlet property="rotationTextField" destination="n1q-Tq-5RV" id="7ap-Wu-EnH"/>
+                <outlet property="netProbeTextField" destination="ORN-2S-F5c" id="B09-qx-UBt"/>
                 <outlet property="roundIdTextField" destination="zv7-Af-DVw" id="3gz-ZU-rWl"/>
                 <outlet property="skTextField" destination="R8k-k2-9vz" id="7QK-ja-TpP"/>
                 <outlet property="tokenTextField" destination="oOk-7n-eq7" id="8Ad-f3-Pd1"/>
@@ -113,16 +113,16 @@
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <textInputTraits key="textInputTraits"/>
                 </textField>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Rotation" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FxV-3D-wA7">
-                    <rect key="frame" x="15" y="436" width="58" height="18"/>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="NetProbe" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="KN5-48-T0c">
+                    <rect key="frame" x="15" y="436" width="65" height="18"/>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
-                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="请输入游戏方向（竖屏0，横屏270）" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="n1q-Tq-5RV">
+                <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="0：NO；1：YES" textAlignment="natural" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="ORN-2S-F5c">
                     <rect key="frame" x="87.5" y="423" width="316.5" height="44"/>
                     <constraints>
-                        <constraint firstAttribute="height" constant="44" id="3Fr-pX-frL"/>
+                        <constraint firstAttribute="height" constant="44" id="JVp-kY-l44"/>
                     </constraints>
                     <fontDescription key="fontDescription" type="system" pointSize="15"/>
                     <textInputTraits key="textInputTraits" keyboardType="decimalPad"/>
@@ -160,36 +160,36 @@
                 <constraint firstItem="R8k-k2-9vz" firstAttribute="leading" secondItem="bqW-dN-e8a" secondAttribute="leading" id="2y5-gP-zKf"/>
                 <constraint firstItem="g3J-Zf-0lY" firstAttribute="top" secondItem="oCs-QF-VaG" secondAttribute="bottom" constant="40" id="Av3-tC-Yme"/>
                 <constraint firstItem="Jga-48-8fq" firstAttribute="leading" secondItem="gDi-Fq-BFN" secondAttribute="leading" id="DWh-S1-IlE"/>
+                <constraint firstItem="ORN-2S-F5c" firstAttribute="centerY" secondItem="KN5-48-T0c" secondAttribute="centerY" id="E3g-FO-q4Z"/>
                 <constraint firstItem="zv7-Af-DVw" firstAttribute="centerY" secondItem="nc1-9K-v3R" secondAttribute="centerY" id="Evo-FZ-Zef"/>
                 <constraint firstItem="Jga-48-8fq" firstAttribute="centerY" secondItem="51e-98-Ruw" secondAttribute="centerY" id="FH9-bQ-ypg"/>
-                <constraint firstItem="FxV-3D-wA7" firstAttribute="top" secondItem="nc1-9K-v3R" secondAttribute="bottom" constant="40" id="GGN-fQ-bbF"/>
-                <constraint firstItem="n1q-Tq-5RV" firstAttribute="leading" secondItem="zv7-Af-DVw" secondAttribute="leading" id="Gfh-re-t68"/>
-                <constraint firstItem="n1q-Tq-5RV" firstAttribute="centerY" secondItem="FxV-3D-wA7" secondAttribute="centerY" id="J9O-j7-pJL"/>
                 <constraint firstItem="EsR-fe-lls" firstAttribute="centerX" secondItem="FrH-MG-vhn" secondAttribute="centerX" id="Jfw-L0-stQ"/>
                 <constraint firstItem="R8k-k2-9vz" firstAttribute="trailing" secondItem="bqW-dN-e8a" secondAttribute="trailing" id="OoH-og-L3q"/>
                 <constraint firstItem="oOk-7n-eq7" firstAttribute="leading" secondItem="R8k-k2-9vz" secondAttribute="leading" id="Or4-BF-eq4"/>
+                <constraint firstItem="ORN-2S-F5c" firstAttribute="trailing" secondItem="zv7-Af-DVw" secondAttribute="trailing" id="Uwx-sh-JEv"/>
                 <constraint firstItem="IjS-7T-FGe" firstAttribute="top" secondItem="pae-Am-hyr" secondAttribute="bottom" constant="40" id="Vo4-Eh-MrS"/>
                 <constraint firstItem="g3J-Zf-0lY" firstAttribute="leading" secondItem="oCs-QF-VaG" secondAttribute="leading" id="WPB-zr-Tbu"/>
+                <constraint firstItem="ORN-2S-F5c" firstAttribute="leading" secondItem="zv7-Af-DVw" secondAttribute="leading" id="WTA-j2-Hac"/>
                 <constraint firstItem="pae-Am-hyr" firstAttribute="top" secondItem="g3J-Zf-0lY" secondAttribute="bottom" constant="40" id="ZRv-iq-GSN"/>
                 <constraint firstItem="oCs-QF-VaG" firstAttribute="top" secondItem="KRt-JA-FWu" secondAttribute="top" constant="40" id="Zdq-Uy-obE"/>
                 <constraint firstItem="gDi-Fq-BFN" firstAttribute="centerY" secondItem="IjS-7T-FGe" secondAttribute="centerY" id="ave-EJ-bUn"/>
                 <constraint firstItem="Jga-48-8fq" firstAttribute="trailing" secondItem="gDi-Fq-BFN" secondAttribute="trailing" id="bgY-28-tDC"/>
                 <constraint firstItem="oOk-7n-eq7" firstAttribute="centerY" secondItem="pae-Am-hyr" secondAttribute="centerY" id="cON-dF-OCN"/>
                 <constraint firstItem="KRt-JA-FWu" firstAttribute="trailing" secondItem="fAL-3R-ymd" secondAttribute="trailing" constant="20" id="cht-iw-KXT"/>
+                <constraint firstItem="KN5-48-T0c" firstAttribute="leading" secondItem="nc1-9K-v3R" secondAttribute="leading" id="fNF-KO-Z2x"/>
                 <constraint firstItem="KRt-JA-FWu" firstAttribute="trailing" secondItem="zv7-Af-DVw" secondAttribute="trailing" constant="10" id="g0v-Nf-Io8"/>
                 <constraint firstItem="nc1-9K-v3R" firstAttribute="leading" secondItem="KRt-JA-FWu" secondAttribute="leading" constant="15" id="hsk-v4-ODh"/>
                 <constraint firstItem="zv7-Af-DVw" firstAttribute="leading" secondItem="Jga-48-8fq" secondAttribute="leading" id="iva-8w-DJa"/>
                 <constraint firstItem="R8k-k2-9vz" firstAttribute="centerY" secondItem="g3J-Zf-0lY" secondAttribute="centerY" id="jbI-Pq-Xed"/>
                 <constraint firstItem="nc1-9K-v3R" firstAttribute="top" secondItem="51e-98-Ruw" secondAttribute="bottom" constant="40" id="kKG-QH-tyc"/>
-                <constraint firstItem="FxV-3D-wA7" firstAttribute="leading" secondItem="nc1-9K-v3R" secondAttribute="leading" id="kbc-pZ-ciK"/>
                 <constraint firstItem="EsR-fe-lls" firstAttribute="top" secondItem="fAL-3R-ymd" secondAttribute="bottom" constant="100" id="kpp-tW-BG2"/>
                 <constraint firstItem="bqW-dN-e8a" firstAttribute="leading" secondItem="zv7-Af-DVw" secondAttribute="leading" id="l8H-gx-Jjw"/>
                 <constraint firstItem="zv7-Af-DVw" firstAttribute="leading" secondItem="nc1-9K-v3R" secondAttribute="trailing" constant="10" id="nnT-ua-dpn"/>
                 <constraint firstItem="51e-98-Ruw" firstAttribute="top" secondItem="IjS-7T-FGe" secondAttribute="bottom" constant="40" id="nnh-g5-y9Q"/>
-                <constraint firstItem="n1q-Tq-5RV" firstAttribute="trailing" secondItem="zv7-Af-DVw" secondAttribute="trailing" id="pct-nl-jqX"/>
                 <constraint firstItem="oCs-QF-VaG" firstAttribute="leading" secondItem="nc1-9K-v3R" secondAttribute="leading" id="qZK-C3-ep6"/>
                 <constraint firstItem="bqW-dN-e8a" firstAttribute="trailing" secondItem="zv7-Af-DVw" secondAttribute="trailing" id="rYH-IP-EJa"/>
                 <constraint firstItem="oOk-7n-eq7" firstAttribute="trailing" secondItem="R8k-k2-9vz" secondAttribute="trailing" id="sqE-Qq-XRe"/>
+                <constraint firstItem="KN5-48-T0c" firstAttribute="top" secondItem="nc1-9K-v3R" secondAttribute="bottom" constant="40" id="syp-MX-YRk"/>
                 <constraint firstItem="KRt-JA-FWu" firstAttribute="bottom" secondItem="EsR-fe-lls" secondAttribute="bottom" constant="25" id="tEh-Mj-Qq4"/>
                 <constraint firstItem="51e-98-Ruw" firstAttribute="leading" secondItem="IjS-7T-FGe" secondAttribute="leading" id="txk-Bm-zfg"/>
                 <constraint firstItem="bqW-dN-e8a" firstAttribute="centerY" secondItem="oCs-QF-VaG" secondAttribute="centerY" id="wlu-gS-QK4"/>

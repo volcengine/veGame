@@ -37,7 +37,7 @@
 @property (weak, nonatomic) IBOutlet UITextField *userIdTextField;
 @property (weak, nonatomic) IBOutlet UITextField *gameIdTextField;
 @property (weak, nonatomic) IBOutlet UITextField *roundIdTextField;
-@property (weak, nonatomic) IBOutlet UITextField *rotationTextField;
+@property (weak, nonatomic) IBOutlet UITextField *netProbeTextField;
 
 @end
 
@@ -48,12 +48,14 @@
     [super viewDidLoad];
     
     self.navigationItem.title = @"云游戏演示";
-    
-    
-    
-    self.rotationTextField.text = @"270";
-    self.roundIdTextField.text = [NSString stringWithFormat: @"round_id_%@", self.userIdTextField.text];
-    
+    // 启动参数
+    self.akTextField.text = @"";
+    self.skTextField.text = @"";
+    self.tokenTextField.text = @"";
+    self.userIdTextField.text = @"";
+    self.gameIdTextField.text = @"";
+    self.roundIdTextField.text = @"";
+    self.netProbeTextField.text = @"0";
     // 版本号
     self.versionLabel.text = [NSString stringWithFormat: @"VeGameSDK版本: V%@\nDeviceId: %@", [VeGameManager currentVersion], [VeGameManager currentDeviceId]];
 }
@@ -99,7 +101,7 @@
     obj.userId = self.userIdTextField.text;
     obj.gameId = self.gameIdTextField.text;
     obj.roundId = self.roundIdTextField.text;
-    obj.rotation = self.rotationTextField.text.integerValue;
+    obj.netProbe = self.netProbeTextField.text.integerValue;
     gameDisplayVc.configObj = obj;
     [self.navigationController pushViewController: gameDisplayVc animated: YES];
 }
