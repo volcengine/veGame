@@ -12,7 +12,7 @@ export const initConfig = {
   userId: 'vegame_github_quick_start', // 必填参数，开发者可进行自定义，可以用来标识游戏玩家或账号等
   accountId: import.meta.env.VEGAME_ACCOUNT_ID, // 必填参数，火山引擎账号ID，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
   enableLocalKeyboard: true, // 是否开启本地键盘输入。前提：需要联系运营同学给游戏所在业务开启「拉起本地输入法配置」
-  mode: MODE.CLOUD_PC, // 默认为云游戏手游 MODE.CLOUD_PHONE_GAME，如果需要控制云游戏端游，请传 MODE.CLOUD_PC
+  mode: MODE.CLOUD_PHONE_GAME, // 默认为云游戏手游 MODE.CLOUD_PHONE_GAME，如果需要控制云游戏端游，请传 MODE.CLOUD_PC
   isPC, // 是否为 PC Web 环境下使用。默认非 PC Web 环境下，将会监听 Touch 事件，而 PC Web 环境下将监听鼠标以及键盘事件
   domId: 'player',
   isDebug: true,
