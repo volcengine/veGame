@@ -1,9 +1,11 @@
 package com.volcengine.vegameengine.scene.cs;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -22,6 +24,7 @@ import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.base.BasePlayActivity;
 import com.volcengine.vegameengine.components.rocker.KeyboardEventSender;
 import com.volcengine.vegameengine.components.rocker.RockerView;
+import com.volcengine.vegameengine.components.sensor.SensorController;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.ScreenUtil;
 
@@ -36,6 +39,9 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     private FrameLayout mContainer;
     private RockerView mRockView;
     private TextView mOperationTip;
+    private Button mSensorControllerButton;
+    private SensorController mSensorController;
+    private AngleSensorListener mAngleSensorListener = new AngleSensorListener();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -46,6 +52,7 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
         initGamePlayConfig();
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private void initView() {
         mContainer = findViewById(R.id.container);
         SwitchCompat mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
@@ -54,6 +61,24 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mOperationTip.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+        });
+
+        // 长按按钮启用陀螺仪控制画面视角的功能
+        // 释放按钮禁止陀螺仪控制画面视角的功能
+        mSensorControllerButton = findViewById(R.id.sensor_controller);
+        mSensorControllerButton.setOnTouchListener((view, motionEvent) -> {
+            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                if(mSensorController == null){
+                    mSensorController = new SensorController();
+                    mSensorController.setSensorEventListener(mAngleSensorListener);
+                }
+                mSensorController.startSensor(getApplicationContext());
+            } else if(motionEvent.getAction() == MotionEvent.ACTION_UP
+                        || motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
+                mSensorController.stopSensor();
+                mAngleSensorListener.reset();
+            }
+            return false;
         });
     }
 
@@ -99,6 +124,11 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     public void onPlaySuccess(String s, int i, Map<String, String> map, String s1, String s2) {
         Log.e(TAG, "onPlaySuccess is invoked...");
         IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
+
+        int containerWidth = mContainer.getMeasuredWidth();
+        int containerHeight = mContainer.getMeasuredHeight();
+        mAngleSensorListener.setSize(containerWidth, containerHeight);
+
         if (ioDeviceManager != null) {
             mRockView.setOnRockerChangeListener(new KeyboardEventSender(ioDeviceManager));
 
@@ -108,8 +138,6 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
             // 设置外部监听器，
             // 将触摸事件转换为mouse move事件，
             // 将屏幕点击事件转换成鼠标左键点击事件
-            int containerWidth = mContainer.getMeasuredWidth();
-            int containerHeight = mContainer.getMeasuredHeight();
             ioDeviceManager.sendInputCursorPos(0.5f, 0.5f);
             ioDeviceManager.setTouchListener(new IODeviceManager.BriefTouchListener() {
                 private float startX;

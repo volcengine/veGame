@@ -47,4 +47,17 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
+
+    <Button
+        android:id="@+id/sensor_controller"
+        android:layout_width="240dp"
+        android:layout_height="50dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="50dp"
+        android:background="#509C27B0"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="按住启用陀螺仪，松开关闭陀螺仪"
+        android:textSize="12sp"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
