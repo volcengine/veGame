@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */; };
 		2B3802022BB2A3F1008082A7 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3802012BB2A3F1008082A7 /* CoreMotion.framework */; };
+		2B3802062BB2B1D7008082A7 /* VeGamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B3802052BB2B1D7008082A7 /* VeGamePadView.m */; };
 		2B6D6C3426E63E080073011E /* VeNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3326E63E080073011E /* VeNavigationController.m */; };
 		2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3B26E642FA0073011E /* VeGameViewController.m */; };
 		2B6D6C3E26E642FA0073011E /* VeGameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */; };
@@ -27,6 +28,8 @@
 		2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SVProgressHUD+Category.m"; sourceTree = "<group>"; };
 		2B148BF32953FCD4004F396F /* SVProgressHUD+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+Category.h"; sourceTree = "<group>"; };
 		2B3802012BB2A3F1008082A7 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		2B3802042BB2B1D7008082A7 /* VeGamePadView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeGamePadView.h; sourceTree = "<group>"; };
+		2B3802052BB2B1D7008082A7 /* VeGamePadView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeGamePadView.m; sourceTree = "<group>"; };
 		2B6D6C3226E63E080073011E /* VeNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeNavigationController.h; sourceTree = "<group>"; };
 		2B6D6C3326E63E080073011E /* VeNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeNavigationController.m; sourceTree = "<group>"; };
 		2B6D6C3A26E642FA0073011E /* VeGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VeGameViewController.h; sourceTree = "<group>"; };
@@ -67,6 +70,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		2B3802032BB2B1D7008082A7 /* GamePad */ = {
+			isa = PBXGroup;
+			children = (
+				2B3802042BB2B1D7008082A7 /* VeGamePadView.h */,
+				2B3802052BB2B1D7008082A7 /* VeGamePadView.m */,
+			);
+			path = GamePad;
+			sourceTree = "<group>";
+		};
 		764F4351218F646FDEC60CD6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +109,7 @@
 		C83BF0021E1234250016E53D /* VeGameDemo */ = {
 			isa = PBXGroup;
 			children = (
+				2B3802032BB2B1D7008082A7 /* GamePad */,
 				2B91841A2808252800687C31 /* Utils.h */,
 				2B9184192808252800687C31 /* Utils.m */,
 				2BC4910C2B19BD1800CC3516 /* UIView+Draggable.h */,
@@ -276,6 +289,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */,
+				2B3802062BB2B1D7008082A7 /* VeGamePadView.m in Sources */,
 				2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */,
 				2BC4910D2B19BD1800CC3516 /* UIView+Draggable.m in Sources */,
 				C83BF0081E1234250016E53D /* AppDelegate.m in Sources */,
