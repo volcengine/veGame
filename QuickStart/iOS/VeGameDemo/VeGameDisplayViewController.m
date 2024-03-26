@@ -31,6 +31,7 @@
 #import "UIView+Draggable.h"
 #import "CustomViewController.h"
 #import "VeGamePadView.h"
+#import <CoreMotion/CoreMotion.h>
 
 @implementation VeCloudGameConfigObject
 
@@ -46,6 +47,9 @@
 @property (nonatomic, copy) NSString *operationDelayTime;
 @property (nonatomic, strong) UILabel *netProbeStatsLabel;
 @property (nonatomic, strong, readwrite) UIView *containerView;
+@property (nonatomic, strong) CMMotionManager *motionManager;
+@property (nonatomic, assign) double last_motion_x;
+@property (nonatomic, assign) double last_motion_y;
 
 @end
 
@@ -1458,5 +1462,22 @@
     NSLog(@"--- VeCloudGameDisplayViewController Dealloc ---");
 }
 
+
+#pragma mark - 业务拓展
+
+- (void)configMotion {
+    // 创建 CMMotionManager 对象
+    _motionManager = [[CMMotionManager alloc] init];
+    [_motionManager startGyroUpdatesToQueue:[NSOperationQueue currentQueue] withHandler:^(CMGyroData * _Nullable gyroData, NSError * _Nullable error) {
+        VeGameMouseMessage *move = [VeGameMouseMessage new];
+        move.x = (self.last_motion_x - gyroData.rotationRate.y) * 5;
+        move.y = (self.last_motion_y - gyroData.rotationRate.x) * 5;
+        move.action = VeGameMouseActionTypeMove;
+        [[VeGameManager sharedInstance] sendMouseData:move];
+        self.last_motion_x = gyroData.rotationRate.y;
+        self.last_motion_y = gyroData.rotationRate.x;
+        //                button.center = CGPointMake(button.center.x - gyroData.rotationRate.y * 5, button.center.y - gyroData.rotationRate.x * 5);
+    }];
+}
 
 @end

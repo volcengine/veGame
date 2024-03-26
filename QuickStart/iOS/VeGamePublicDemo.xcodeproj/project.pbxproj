@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2B148BF42953FCD4004F396F /* SVProgressHUD+Category.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */; };
+		2B3802022BB2A3F1008082A7 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2B3802012BB2A3F1008082A7 /* CoreMotion.framework */; };
 		2B6D6C3426E63E080073011E /* VeNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3326E63E080073011E /* VeNavigationController.m */; };
 		2B6D6C3D26E642FA0073011E /* VeGameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3B26E642FA0073011E /* VeGameViewController.m */; };
 		2B6D6C3E26E642FA0073011E /* VeGameViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2B6D6C3C26E642FA0073011E /* VeGameViewController.xib */; };
@@ -16,7 +17,7 @@
 		2BA157852B6B9959006386DE /* VeGamePadView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BA157842B6B9959006386DE /* VeGamePadView.m */; };
 		2BC4910D2B19BD1800CC3516 /* UIView+Draggable.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4910B2B19BD1800CC3516 /* UIView+Draggable.m */; };
 		2BC491102B19BD8300CC3516 /* CustomViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BC4910F2B19BD8300CC3516 /* CustomViewController.m */; };
-		3B226FAEC41B5F36464D454E /* libPods-VeGamePublicDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */; };
+		BD08F307FFA5CDA5B3647304 /* libPods-VeGamePublicDemo.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7D562079DBBD641AC095DAA4 /* libPods-VeGamePublicDemo.a */; };
 		C83BF0051E1234250016E53D /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C83BF0041E1234250016E53D /* main.m */; };
 		C83BF0081E1234250016E53D /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = C83BF0071E1234250016E53D /* AppDelegate.m */; };
 		C83BF0131E1234250016E53D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C83BF0111E1234250016E53D /* LaunchScreen.storyboard */; };
@@ -24,9 +25,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VeGamePublicDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "SVProgressHUD+Category.m"; sourceTree = "<group>"; };
 		2B148BF32953FCD4004F396F /* SVProgressHUD+Category.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+Category.h"; sourceTree = "<group>"; };
+		2B3802012BB2A3F1008082A7 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
 		2B6D6C3226E63E080073011E /* VeNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeNavigationController.h; sourceTree = "<group>"; };
 		2B6D6C3326E63E080073011E /* VeNavigationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VeNavigationController.m; sourceTree = "<group>"; };
 		2B6D6C3A26E642FA0073011E /* VeGameViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VeGameViewController.h; sourceTree = "<group>"; };
@@ -43,6 +44,7 @@
 		2BC4910E2B19BD8300CC3516 /* CustomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomViewController.h; sourceTree = "<group>"; };
 		2BC4910F2B19BD8300CC3516 /* CustomViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomViewController.m; sourceTree = "<group>"; };
 		5AC2CB67B6DAD858109A17C3 /* Pods-VeGamePublicDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-VeGamePublicDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-VeGamePublicDemo/Pods-VeGamePublicDemo.release.xcconfig"; sourceTree = "<group>"; };
+		7D562079DBBD641AC095DAA4 /* libPods-VeGamePublicDemo.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-VeGamePublicDemo.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C831249221C8DE66004F2EE0 /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/LaunchScreen.strings"; sourceTree = "<group>"; };
 		C83BF0001E1234250016E53D /* VeGamePublicDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VeGamePublicDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C83BF0041E1234250016E53D /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -60,7 +62,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3B226FAEC41B5F36464D454E /* libPods-VeGamePublicDemo.a in Frameworks */,
+				2B3802022BB2A3F1008082A7 /* CoreMotion.framework in Frameworks */,
+				BD08F307FFA5CDA5B3647304 /* libPods-VeGamePublicDemo.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -79,7 +82,8 @@
 		764F4351218F646FDEC60CD6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				17F234E0072D1D6CA49E5AF8 /* libPods-VeGamePublicDemo.a */,
+				2B3802012BB2A3F1008082A7 /* CoreMotion.framework */,
+				7D562079DBBD641AC095DAA4 /* libPods-VeGamePublicDemo.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -160,8 +164,8 @@
 				C83BEFFC1E1234250016E53D /* Sources */,
 				C83BEFFD1E1234250016E53D /* Frameworks */,
 				C83BEFFE1E1234250016E53D /* Resources */,
-				39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */,
 				BC6E9EE0F140C6A680B94BB4 /* [CP] Embed Pods Frameworks */,
+				0C322E428435BCF1B08EBFCC /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -221,7 +225,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		39431702E3052C0FF01670FB /* [CP] Copy Pods Resources */ = {
+		0C322E428435BCF1B08EBFCC /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
