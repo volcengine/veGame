@@ -138,7 +138,9 @@
 
     <!-- 场景相关 -->
     <string name="cs_demo">类CS游戏交互场景</string>
-    <string name="cs_demo_desc">在该演示中你可以体验类CS的PC端游戏的一种交互方式</string>
+    <string name="cs_demo_desc">在该演示中你可以通过陀螺仪及轮盘，来与类CS的PC端游戏进行交互</string>
+    <string name="cs_demo_2">类CS游戏交互场景2</string>
+    <string name="cs_demo_desc_2">在该演示中你可以通过外部触摸监听器，来与类CS的PC端游戏进行交互</string>
 
     <!--  旋转相关  -->
     <string name="roll_orientation">旋转</string>

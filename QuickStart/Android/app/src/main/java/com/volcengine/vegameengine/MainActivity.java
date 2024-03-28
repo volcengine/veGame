@@ -35,6 +35,7 @@ import com.volcengine.vegameengine.feature.PodControlServiceActivity;
 import com.volcengine.vegameengine.feature.ProbeNetworkActivity;
 import com.volcengine.vegameengine.feature.SensorActivity;
 import com.volcengine.vegameengine.scene.cs.CSDemoActivity;
+import com.volcengine.vegameengine.scene.cs.CSDemoWithOutterTouchListenerActivity;
 
 public class MainActivity extends BaseListActivity {
 
@@ -63,6 +64,7 @@ public class MainActivity extends BaseListActivity {
         holder.addItem(R.string.probe_network, R.string.probe_network_desc, ProbeNetworkActivity.class);
         holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class);
         holder.addItem(R.string.cs_demo, R.string.cs_demo_desc, CSDemoActivity.class);
+        holder.addItem(R.string.cs_demo_2, R.string.cs_demo_desc_2, CSDemoWithOutterTouchListenerActivity.class);
         holder.addItem(R.string.unclassified, R.string.unclassified_desc, OthersActivity.class);
     }
 

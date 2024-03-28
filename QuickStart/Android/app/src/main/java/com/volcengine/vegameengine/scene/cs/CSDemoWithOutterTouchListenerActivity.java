@@ -34,21 +34,18 @@ import org.json.JSONObject;
 import java.util.List;
 import java.util.Map;
 
-// 轮盘交互 + 陀螺仪交互
-public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListener {
+// 外部触摸事件来实现鼠标右键 + 滑动控制视角的交互效果
+public class CSDemoWithOutterTouchListenerActivity extends BasePlayActivity implements IGamePlayerListener {
     private final String TAG = "CSDemoActivity";
     private FrameLayout mContainer;
-    private RockerView mRockView;
     private TextView mOperationTip;
-    private Button mSensorControllerButton;
-    private SensorController mSensorController;
-    private AngleSensorListener mAngleSensorListener = new AngleSensorListener();
+    private Button mAimButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ScreenUtil.adaptHolePhone(this);
-        setContentView(R.layout.activity_cs_demo);
+        setContentView(R.layout.activity_cs_demo_with_out_touch_listener);
         initView();
         initGamePlayConfig();
     }
@@ -58,28 +55,48 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
         mContainer = findViewById(R.id.container);
         SwitchCompat mSwShowOrHide = findViewById(R.id.sw_show_or_hide);
         mOperationTip = findViewById(R.id.operation_tip);
-        mRockView = findViewById(R.id.w_a_s_d_rocker);
+        mAimButton = findViewById(R.id.aim_button);
+
+        mAimButton.setOnTouchListener(new View.OnTouchListener() {
+            private final TouchEventToMouseMoveConverter converter = new TouchEventToMouseMoveConverter();
+
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
+
+                int containerWidth = mContainer.getMeasuredWidth();
+                int containerHeight = mContainer.getMeasuredHeight();
+
+                float x = motionEvent.getX();
+                float y = motionEvent.getY();
+
+                // 坐标归一化
+                x /= containerWidth;
+                y /= containerHeight;
+
+                Log.e(TAG, String.format("the normalized coordination is [%f, %f]", x, y));
+
+                if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
+                    // 立即发送鼠标右键
+                    if(ioDeviceManager != null) {
+                        ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyRBUTTON_VALUE, KeySateType.DOWN);
+                        ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyRBUTTON_VALUE, KeySateType.UP);
+                    }
+
+                    converter.prepare(x, y, containerWidth, containerHeight);
+                } else if(motionEvent.getAction() == MotionEvent.ACTION_MOVE){
+                    // 将触摸事件转换成鼠标move事件
+                    // convert方法内部会进行判断，长按500毫秒后才会转换
+                    converter.convert(x, y);
+                } else {
+                    converter.reset();
+                }
+                return true;
+            }
+        });
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mOperationTip.setVisibility(isChecked ? View.VISIBLE : View.GONE);
-        });
-
-        // 长按按钮启用陀螺仪控制画面视角的功能
-        // 释放按钮禁止陀螺仪控制画面视角的功能
-        mSensorControllerButton = findViewById(R.id.sensor_controller);
-        mSensorControllerButton.setOnTouchListener((view, motionEvent) -> {
-            if(motionEvent.getAction() == MotionEvent.ACTION_DOWN){
-                if(mSensorController == null){
-                    mSensorController = new SensorController();
-                    mSensorController.setSensorEventListener(mAngleSensorListener);
-                }
-                mSensorController.startSensor(getApplicationContext());
-            } else if(motionEvent.getAction() == MotionEvent.ACTION_UP
-                        || motionEvent.getAction() == MotionEvent.ACTION_CANCEL){
-                mSensorController.stopSensor();
-                mAngleSensorListener.reset();
-            }
-            return false;
         });
     }
 
@@ -128,10 +145,8 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
 
         int containerWidth = mContainer.getMeasuredWidth();
         int containerHeight = mContainer.getMeasuredHeight();
-        mAngleSensorListener.setSize(containerWidth, containerHeight);
 
         if (ioDeviceManager != null) {
-            mRockView.setOnRockerChangeListener(new KeyboardEventSender(ioDeviceManager));
 
             // 禁止显示游戏画面的内部View，执行触摸事件的默认处理逻辑
             ioDeviceManager.setInterceptTouchSend(true);
@@ -141,9 +156,7 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
             // 将屏幕点击事件转换成鼠标左键点击事件
             ioDeviceManager.sendInputCursorPos(0.5f, 0.5f);
             ioDeviceManager.setTouchListener(new IODeviceManager.BriefTouchListener() {
-                private float startX;
-                private float startY;
-                private long startTimeTouch;
+                TouchEventToMouseMoveConverter converter = new TouchEventToMouseMoveConverter();
 
                 @Override
                 public void onBriefTouchEvent(List<BriefTouchEvent> briefEvents) {
@@ -159,34 +172,16 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
                     float currentY = briefTouchEvent.y;
 
                     if (briefTouchEvent.action == MotionEvent.ACTION_DOWN) {
-                        startX = currentX;
-                        startY = currentY;
-                        ioDeviceManager.sendInputCursorPos(startX, startY);
-                        startTimeTouch = System.currentTimeMillis();
+                        converter.prepare(currentX, currentY, containerWidth, containerHeight);
                     } else if (briefEvents.get(0).action == MotionEvent.ACTION_MOVE) {
-                        if(System.currentTimeMillis() - startTimeTouch <= 500){
-                            // 小于500毫秒一律当做点击
-                            // 业务方可根据自身业务灵活实现相关逻辑
-                            return;
-                        }
-                        currentX = currentX - startX;
-                        currentY = currentY - startY;
-                        int finalX = (int) (currentX * containerWidth);
-                        int finalY = (int) (currentY * containerHeight);
-                        if (finalX == 0 && finalY == 0) {
-                            // 如果手指未移动则不发送，减少发送数据量，降低data channel压力
-                            return;
-                        }
-                        Log.e(TAG, "the delta of mouse move is " + finalX + ", " + finalY + ";");
-                        ioDeviceManager.sendInputMouseMove(finalX, finalY);
-                        startX = briefTouchEvent.x;
-                        startY = briefTouchEvent.y;
+                        converter.convert(currentX, currentY);
                     } else if(briefEvents.get(0).action == MotionEvent.ACTION_UP){
-                        if(System.currentTimeMillis() - startTimeTouch <= 500){
+                        if(System.currentTimeMillis() - converter.startTimeTouch <= 500){
                             // 小于500毫秒一律当做点击
                             ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyLBUTTON_VALUE, KeySateType.DOWN);
                             ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyLBUTTON_VALUE, KeySateType.UP);
                         }
+                        converter.reset();
                     }
                 }
 
@@ -222,5 +217,63 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     @Override
     public void onQueueSuccessAndStart(int i) {
 
+    }
+
+    // 将触摸事件转换成鼠标move事件的转换器
+    private class TouchEventToMouseMoveConverter{
+        private float startX;
+        private float startY;
+        private long startTimeTouch;
+
+        // 准备后，需要经过多少毫秒才开始转换
+        private long duration = 500;
+
+        private int containerWidth, containerHeight;
+
+        private boolean isPrePared = false;
+
+        private void prepare(float x, float y, int width, int height){
+            if(isPrePared){
+                return;
+            }
+            isPrePared = true;
+            startX = x;
+            startY = y;
+            startTimeTouch = System.currentTimeMillis();
+
+            IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
+            ioDeviceManager.sendInputCursorPos(startX, startY);
+
+            containerWidth = width;
+            containerHeight = height;
+        }
+
+        private void convert(float x, float y){
+            if(System.currentTimeMillis() - startTimeTouch <= duration){
+                return;
+            }
+            float currentX = x - startX;
+            float currentY = y - startY;
+            int finalX = (int) (currentX * containerWidth);
+            int finalY = (int) (currentY * containerHeight);
+            if (finalX == 0 && finalY == 0) {
+                // 如果手指未移动则不发送，减少发送数据量，降低data channel压力
+                return;
+            }
+            Log.e(TAG, "the delta of mouse move is " + finalX + ", " + finalY + ";");
+            IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
+            ioDeviceManager.sendInputMouseMove(finalX, finalY);
+            startX = x;
+            startY = y;
+        }
+
+        private void reset(){
+            startTimeTouch = 0;
+            startX = 0;
+            startY = 0;
+            containerWidth = 0;
+            containerHeight = 0;
+            isPrePared = false;
+        }
     }
 }
