@@ -60,16 +60,7 @@
    configObj.userId = self.configObj.userId;
    configObj.gameId = self.configObj.gameId;
    configObj.roundId = self.configObj.roundId;
-   VeGameControlObject *control = [VeGameControlObject new];
-   control.role = self.configObj.role;
-   control.roomType = self.configObj.roomType;
-   configObj.control = control;
-   configObj.sessionMode = self.configObj.sessionMode;
-   configObj.queuePriority = self.configObj.queuePriority;
-   configObj.keyboardEnable = self.configObj.keyboardEnable;
-   configObj.autoRecycleTime = self.configObj.autoRecycleTime;
-   configObj.videoStreamProfileId = self.configObj.videoStreamProfileId;
-   configObj.reservedId = self.configObj.reservedId.length ? self.configObj.reservedId : nil;
+   // 启动
    [[VeGameManager sharedInstance] startWithConfig: configObj];
    ```
 4. 实现相关回调。
