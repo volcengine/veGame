@@ -39,6 +39,7 @@
 		2B6D6C4026E645C70073011E /* VeGameDisplayViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VeGameDisplayViewController.h; sourceTree = "<group>"; };
 		2B9184192808252800687C31 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		2B91841A2808252800687C31 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
+		2BA3B7DE2BF4C1AE004E9F12 /* VEGameDESC.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = VEGameDESC.h; sourceTree = SOURCE_ROOT; };
 		2BC4910B2B19BD1800CC3516 /* UIView+Draggable.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+Draggable.m"; sourceTree = "<group>"; };
 		2BC4910C2B19BD1800CC3516 /* UIView+Draggable.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+Draggable.h"; sourceTree = "<group>"; };
 		2BC4910E2B19BD8300CC3516 /* CustomViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomViewController.h; sourceTree = "<group>"; };
@@ -126,6 +127,7 @@
 				2B148BF32953FCD4004F396F /* SVProgressHUD+Category.h */,
 				2B148BF22953FCD4004F396F /* SVProgressHUD+Category.m */,
 				C83BF0031E1234250016E53D /* Supporting Files */,
+				2BA3B7DE2BF4C1AE004E9F12 /* VEGameDESC.h */,
 			);
 			path = VeGameDemo;
 			sourceTree = "<group>";
