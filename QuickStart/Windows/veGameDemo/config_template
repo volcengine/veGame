@@ -1,0 +1,17 @@
+{
+	"test_config": {
+		"id": "您公司在火山引擎中的账号",
+		"ak": "xxxx",
+		"sk": "xxxx",
+		"token": "xxxxx",
+		"gameId": "要运行的云游戏ID"
+	},
+
+	"test_config_2": {
+		"id": "您公司在火山引擎中的账号",
+		"ak": "xxxx",
+		"sk": "xxxx",
+		"token": "xxxxx",
+		"gameId": "要运行的云游戏ID"
+	}
+}

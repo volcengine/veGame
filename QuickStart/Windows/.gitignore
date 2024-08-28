@@ -6,7 +6,7 @@ build-
 sdkpublic
 **/out/**
 **/log/**
-
+out
 
 *.assemblyreference.cache
 *.aps
@@ -27,3 +27,4 @@ sdkpublic
 *.tmp
 *.vcxproj.FileListAbsolute.txt
 *.vcxproj.user
+veGameDemo/config.ini
