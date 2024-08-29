@@ -55,7 +55,6 @@
     self.userIdTextField.text = @"";
     self.gameIdTextField.text = @"";
     self.roundIdTextField.text = @"";
-    self.netProbeTextField.text = @"0";
     // 版本号
     self.versionLabel.text = [NSString stringWithFormat: @"VeGameSDK版本: V%@\nDeviceId: %@", [VeGameManager currentVersion], [VeGameManager currentDeviceId]];
 }
@@ -101,9 +100,23 @@
     obj.userId = self.userIdTextField.text;
     obj.gameId = self.gameIdTextField.text;
     obj.roundId = self.roundIdTextField.text;
-    obj.netProbe = self.netProbeTextField.text.integerValue;
     gameDisplayVc.configObj = obj;
     [self.navigationController pushViewController: gameDisplayVc animated: YES];
+}
+
+- (BOOL)shouldAutorotate
+{
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations
+{
+    return UIInterfaceOrientationMaskPortrait;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
+{
+    return UIInterfaceOrientationPortrait;
 }
 
 @end

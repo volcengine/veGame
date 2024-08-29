@@ -3,14 +3,20 @@ PODS:
   - SVProgressHUD (2.2.5)
   - Toast (4.0.0)
   - VEGameRTC/Core (352.104.036)
-  - VeGameSDK (1.38.0):
+  - VeGameSDK/Core (1.49.0):
     - VEGameRTC/Core (= 352.104.036)
+  - VeGameSDK/VeGamePad (1.49.0)
+  - VeGameSDK/VeGameVirtualInputSuite (1.49.0)
+  - VeGameSDK/VeVirtualKeyboard (1.49.0)
 
 DEPENDENCIES:
   - Masonry
   - SVProgressHUD
   - Toast
-  - VeGameSDK (= 1.38.0)
+  - VeGameSDK/Core (= 1.49.0)
+  - VeGameSDK/VeGamePad (= 1.49.0)
+  - VeGameSDK/VeGameVirtualInputSuite (= 1.49.0)
+  - VeGameSDK/VeVirtualKeyboard (= 1.49.0)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
@@ -26,8 +32,8 @@ SPEC CHECKSUMS:
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
   VEGameRTC: 48b914aa471909298aed4e2f5612c79c9c0df004
-  VeGameSDK: 4c07bddfe52d44223e4dde611acb2a04e1259bed
+  VeGameSDK: 8311398114a98189249b6269f97882eaa111404c
 
-PODFILE CHECKSUM: 724da76a911bd732cf2d9a8809190964254d5ffd
+PODFILE CHECKSUM: c8ba933ce2c8b7239067f0261097da9941c43828
 
 COCOAPODS: 1.11.3

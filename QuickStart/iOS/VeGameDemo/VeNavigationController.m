@@ -52,19 +52,22 @@
     return [self.topViewController prefersStatusBarHidden];
 }
 
+// 当前 viewcontroller 是否支持转屏
 - (BOOL)shouldAutorotate
 {
-    return self.visibleViewController.shouldAutorotate;
+    return [self.visibleViewController shouldAutorotate];
 }
 
+// 当前 viewcontroller 支持哪些转屏方向
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations
 {
-    return self.visibleViewController.supportedInterfaceOrientations;
+    return [self.visibleViewController supportedInterfaceOrientations];
 }
 
+// 当前 viewcontroller 默认的屏幕方向
 - (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation
 {
-    return self.visibleViewController.preferredInterfaceOrientationForPresentation;
+    return [self.visibleViewController preferredInterfaceOrientationForPresentation];
 }
 
 #pragma mark - UIGestureRecognizerDelegate

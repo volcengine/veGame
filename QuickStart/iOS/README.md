@@ -26,7 +26,8 @@
    inhibit_all_warnings!
    
    target 'TargetName' do
-     pod 'VeGameSDK', '1.38.0'
+       # VeGamePad、VeVirtualKeyboard、VeGameVirtualInputSuite按需添加，若都不需要，直接pod 'VeGameSDK', '1.49.0'即可
+       pod 'VeGameSDK', '1.49.0', :subspecs => ['Core', 'VeGamePad', 'VeVirtualKeyboard', 'VeGameVirtualInputSuite']
    end
    ```
 
