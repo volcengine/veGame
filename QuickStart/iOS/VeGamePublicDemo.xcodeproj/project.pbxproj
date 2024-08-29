@@ -226,8 +226,7 @@
 				TargetAttributes = {
 					C83BEFFF1E1234250016E53D = {
 						CreatedOnToolsVersion = 8.2;
-						DevelopmentTeam = 6N49VPDU43;
-						ProvisioningStyle = Manual;
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -485,10 +484,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 6N49VPDU43;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = 6N49VPDU43;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -543,10 +541,8 @@
 					"\"UIKit\"",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.deviceservice.cloudgame;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = dev_common;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = dev_common;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Debug;
@@ -557,11 +553,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "";
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
-				CODE_SIGN_STYLE = Manual;
-				DEVELOPMENT_TEAM = 6N49VPDU43;
-				"DEVELOPMENT_TEAM[sdk=iphoneos*]" = X46375UBYG;
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = "";
 				ENABLE_BITCODE = NO;
 				EXCLUDED_ARCHS = "";
 				FRAMEWORK_SEARCH_PATHS = (
@@ -607,10 +601,8 @@
 					"\"UIKit\"",
 					"-w",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.bytedance.deviceservice;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE_SPECIFIER = dev_common;
-				"PROVISIONING_PROFILE_SPECIFIER[sdk=iphoneos*]" = DeviceManagerServiceInHouse.dist;
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				VALIDATE_WORKSPACE = YES;
 			};
 			name = Release;
