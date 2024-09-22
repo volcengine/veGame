@@ -1,4 +1,4 @@
-// 存档/获取存档
+// 获取存档路径
 const getUserProfilePath = (veGameSdkInstance) => {
   let getUserProfilePathDropDown = null;
 
