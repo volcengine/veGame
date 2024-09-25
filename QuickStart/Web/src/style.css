@@ -6,7 +6,7 @@ body {
 .action-container {
     display: flex;
     flex-wrap: wrap;
-    width: 100%;
+    width: 300px;
     justify-content: flex-start;
     align-items: flex-start;
     position: absolute;
