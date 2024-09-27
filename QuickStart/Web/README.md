@@ -75,7 +75,7 @@ git clone https://github.com/volcengine/veGame.git
 2. 进入 Web Quick Start 目录
 
 ```bash
-cd vePhone/QuickStart/WebNpm
+cd vePhone/QuickStart/Web
 ```
 
 3. 安装依赖
