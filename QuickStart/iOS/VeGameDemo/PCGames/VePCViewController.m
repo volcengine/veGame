@@ -61,9 +61,15 @@
 
 - (void)viewWillAppear:(BOOL)animated
 {
-    [super viewWillAppear: animated];
+    [super viewWillAppear:animated];
     
-    [Utils rotateDeviceToOrientation: UIDeviceOrientationPortrait];
+    self.tabBarController.tabBar.hidden = NO;
+
+    if (@available(iOS 16, *)) {
+        [self setNeedsUpdateOfSupportedInterfaceOrientations];
+    } else {
+        [Utils rotateDeviceToOrientation:0];
+    }
 }
 
 - (void)touchesBegan:(NSSet<UITouch *> *)touches withEvent:(UIEvent *)event

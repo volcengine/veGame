@@ -57,7 +57,7 @@
 
     [self configSubView];
     
-    self.rotation = self.configObj.rotation;
+    self.rotation = 270;
 
 //    self.rotation = self.configObj.rotation;
     [VeGameManager sharedInstance].delegate = self;
@@ -89,6 +89,8 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+    
+    self.tabBarController.tabBar.hidden = YES;
 
     [self.navigationController setNavigationBarHidden:YES animated:YES];
 }
