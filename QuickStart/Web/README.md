@@ -1,52 +1,120 @@
-﻿# 云游戏客户端 Web SDK demo
+# 云游戏客户端 Web SDK demo
 
 这个开源项目展示了火山引擎云游戏客户端 Web SDK 的以下功能：
 
 1. 配置接入云游戏服务的必要参数
 2. 开始游戏和结束游戏
+3. 大文件传输
+4. 清晰度切换
+5. 自定义本地键盘 Input 框
+6. 虚拟手柄
+7. 挂机
+8. 单触点转鼠标消息
+9. 设置保活时间
+10. 设置重连时间
+11. 坐标旋转
+12. 切换角色
+13. 客户端前后台切换
+14. 同步本地键盘状态到云端
+15. 更新画面放缩比
+16. 虚拟键鼠
+17. 本地输入法显示中文合成过程
+18. 自动回收时长
 
 方便用户快速接入云游戏客户端 Web SDK。
 
-## 运行示例程序
+## 目录结构
 
-1. 将 Web SDK demo 代码下载到本地；
-2. 前往火山引擎 [云游戏文档中心]( https://www.volcengine.com/docs/6512/75594)，下载 Web/H5 SDK；解压后将其复制到 `lib` 文件夹下，并确认文件名为 `veGameSDK-Web.js`；
-3. 在 `src/config.js` 配置文件中补全以下配置信息：
-
-```js
-
-// 实例化 veGameSDK 的参数
-const initConfig = {
-  userId: '', // 必填参数，开发者可进行自定义，可以用来标识游戏玩家或账号等
-  accountId: '', // 必填参数，火山引擎账号ID，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
-  enableLocalKeyboard: true, // 是否开启本地键盘输入。前提：需要联系运营同学给游戏所在业务开启「拉起本地输入法配置」
-  mode: window.veGameSDK.MODE.CLOUD_PHONE_GAME, // 默认为云游戏手游，如果需要控制云游戏端游，请传 MODE.CLOUD_PC 
-  isPC, // 是否为 PC Web 环境下使用。默认非 PC Web 环境下，将会监听 Touch 事件，而 PC Web 环境下将监听鼠标以及键盘事件
-  domId: 'player',
-  isDebug: true,
-};
-
-// 调用 veGameSDK.start 的参数
-const startConfig = {
-  gameId: '', //必填参数，游戏ID，可通过火山引擎云游戏控制台『游戏管理』页面获取，例如：1428112352161312345
-  token: {
-      SessionToken: '',   // 用于鉴权的临时Token
-      AccessKeyID: '',    // 用于鉴权的临时AccessKey
-      SecretAccessKey: '' // 用于鉴权的临时SecretKey
-  }, // 必填参数，启动云游戏的令牌，通过调用服务端 STSToken 接口获取，接口参考：https://www.volcengine.com/docs/6512/75588
-  roundId: '', //必填参数，当次游戏生命周期的标识符，请根据实际业务需求做修改
-  audioAutoPlay: true,
-  mute: true, // audioAutoPlay 和 mute 设置为 true 是针对部分浏览器对网页上的自动播放功能做了限制而做的特殊处理，请根据实际业务场景选择是否设置以及使用哪种自动播放处理策略。云游戏自动播放策略处理详见文档：https://www.volcengine.com/docs/6512/129586
-};
-
+```bash
+├── src
+│   ├── config.js # 导出 Web SDK 需要的配置
+│   ├── index.html # 页面布局
+│   ├── main.js # 主要实现逻辑
+│   ├── libs # 项目依赖的sdk
+│   ├── utils.js # 公共方法
+│   ├── constant.js # 公共常量
+│   ├── features # 功能模块
+│   │   ├── file-channel.js # 大文件传输
+│   ├── features # 功能模块
+│   │   ├── index.js # 导出模块
+│   │   ├── clarity.js # 清晰度切换
+│   │   ├── clear-custom-local-keyboard-input.js # 清除自定义本地键盘 Input 框的状态
+│   │   ├── game-pad.js # 虚拟手柄
+│   │   ├── get-auto-recycle-time.js # 获取自动回收时长
+│   │   ├── get-user-profile-path.js # 获取存档路径
+│   │   ├── idle-time.js # 设置保活时间
+│   │   ├── ime-composition-visible.js # 本地输入法显示中文合成过程
+│   │   ├── reconnect-time.js # 设置重连时间
+│   │   ├── rotate-coordinate.js # 坐标旋转
+│   │   ├── session-mode.js # 挂机
+│   │   ├── set-auto-recycle-time.js # 自动回收时长
+│   │   ├── set-idle-time.js # 设置保活时间
+│   │   ├── set-custom-local-keyboard-input-id.js # 设置自定义本地键盘 Input 框
+│   │   ├── set-role.js # 切换角色
+│   │   ├── set-touch-to-mouse.js # 单触点转鼠标消息
+│   │   ├── set-user-profile-path.js # 设置存档路径
+│   │   ├── switch-background.js # 客户端前后台切换
+│   │   ├── sync-local-keyboard-close-status.js # 同步本地键盘状态到云端
+│   │   ├── update-video-scale.js # 更新画面放缩比
+│   │   ├── virtual-input-suite.js # 虚拟键鼠
+│   └── style.css # 样式文件
+└── vite.config.js # vite 配置文件
+└── .env #  Web SDK 启动需要的配置
 ```
 
-3. 在浏览器中打开 `src/index.html` 文件；
-   
-4. 点击开始游戏，体验云游戏效果。
+## 运行示例程序
+
+> 首先需要确保拥有 `node` 环境，如果没有，请前往 [nodejs 官网](https://nodejs.org/zh-cn/download)下载并安装 `nodejs`
+
+1. 下载项目到本地
+
+```bash
+git clone https://github.com/volcengine/veGame.git
+```
+
+2. 进入 Web Quick Start 目录
+
+```bash
+cd vePhone/QuickStart/WebNpm
+```
+
+3. 安装依赖
+
+```bash
+npm install
+```
+
+4. 在`.env`文件中填写启动云游戏需要的配置，配置如下：
+
+```bash
+# init config
+VEGAME_ACCOUNT_ID="your accountId" # 火山引擎用户账号，可通过火山引擎官网页面右上角 用户 > 账号管理 > 主账号信息 获取
+
+# start config
+VEGAME_GAME_ID="your gameId" # 游戏ID，可通过火山引擎云游戏控制台『游戏管理』页面获取，例如：1428112352161312345
+
+# start token 启动云游戏的令牌（通过调用服务端 STSToken 接口获取），有关服务端 STSToken 接口的详细信息，参考 [签发临时 Token](https://www.volcengine.com/docs/6512/75588)
+# 实际业务场景中根据接口获取，就没必要放在环境变量中，start 之前先调用一遍接口，获取 token 即可
+ # Token 创建时间
+VEGAME_TOKEN_CURRENT_TIME=""
+ #Token 过期时间
+VEGAME_TOKEN_EXPIRED_TIME=""
+# 用于鉴权的临时 Token
+VEGAME_TOKEN_SESSION_TOKEN=""
+# 用于鉴权的临时 Access Key
+VEGAME_TOKEN_ACCESS_KEY_ID=""
+# 用于鉴权的临时 Secret Key
+VEGAME_TOKEN_SECRET_ACCESS_KEY=""
+```
+
+5. 执行启动命令
+
+```bash
+npm run dev
+```
+
+6. 打开浏览器，访问 `localhost:8080` 即可
 
 ## 参考资料
-
-客户端 SDK 下载：https://www.volcengine.com/docs/6512/75597
 
 注：如果不能访问以上链接，请参考 [开通云游戏服务](https://www.volcengine.com/docs/6512/75577) 说明文档。
