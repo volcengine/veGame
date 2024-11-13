@@ -173,7 +173,7 @@ function bindEventListener(veGameSdkInstance, callback) {
             开启日志上传功能所需要的对象存储信息:
             注：开启日志上传至对象存储功能，需向云游戏技术支持提供火山引擎云游戏业务 ID（可通过云游戏控制台 业务配置 页面获取）
            */
-          debug_info: {
+          debug_info: JSON.stringify({
             schema: "btd_tos", // 固定值，必填
             config: {
               ak: "your_ak",
@@ -183,7 +183,7 @@ function bindEventListener(veGameSdkInstance, callback) {
               region: "cn-beijing",
             },
             key: "test/adc.zip", // 仅支持zip格式
-          },
+          }),
           // 云游戏改机参数列表，具体配置可联系云游戏相关人员提供技术支持
           characteristics: JSON.stringify({
             manufacturer: "xxx", // 厂商
