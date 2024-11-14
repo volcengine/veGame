@@ -196,6 +196,8 @@ function bindEventListener(veGameSdkInstance, callback) {
             "com.pkg3",
           ]),
         },
+        // 关闭默认Touch事件
+        disableDefaultTouchEvent: true,
       });
       console.log("start success", startRes);
 
