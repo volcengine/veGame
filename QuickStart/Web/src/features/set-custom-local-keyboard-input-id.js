@@ -4,23 +4,27 @@ const setCustomLocalKeyboardInputId = (veGameSdkInstance) => {
 
   const setCustomLocalKeyboardInputId = async () => {
     try {
-      await veGameSdkInstance.setCustomLocalKeyboardInputId('customLocalKeyboardInputId');
-      alert('已设置自定义本地键盘 Input 框ID为 customLocalKeyboardInputId')
+      await veGameSdkInstance.setCustomLocalKeyboardInputId(
+        "customLocalKeyboardInputId"
+      );
+      console.log(
+        "已设置自定义本地键盘 Input 框ID为 customLocalKeyboardInputId"
+      );
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
+  };
 
   return {
     startSuccess() {
       // demo 的 pc 场景才展示 设置自定义本地键盘 Input 框
-      if(veGameSdkInstance.isPC){
-        setCustomLocalKeyboardInputIdBtn = document.createElement('btn');
+      if (veGameSdkInstance.isPC) {
+        setCustomLocalKeyboardInputIdBtn = document.createElement("btn");
         $(setCustomLocalKeyboardInputIdBtn)
-        .text('设置自定义本地键盘 Input 框')
-        .addClass('btn btn-primary btn-sm')
-        .appendTo('.action-container')
-        .on('click', setCustomLocalKeyboardInputId);
+          .text("设置自定义本地键盘 Input 框")
+          .addClass("btn btn-primary btn-sm")
+          .appendTo(".action-container")
+          .on("click", setCustomLocalKeyboardInputId);
       }
     },
     stopSuccess() {

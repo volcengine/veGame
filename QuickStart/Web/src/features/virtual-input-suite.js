@@ -13,18 +13,18 @@ const virtualInputSuite = (veGameSdkInstance) => {
         switch (value) {
           case "关闭触屏操作透传至游戏":
             vis.enableTouch(false);
-            alert(`${value}成功`);
+            console.log(`${value}成功`);
             break;
           case "导出虚拟键鼠配置":
             const config = await vis.exportKeysConfig();
-            alert(`导出虚拟键鼠配置成功，${JSON.stringify(config)}`);
+            console.log(`导出虚拟键鼠配置成功，${JSON.stringify(config)}`);
             break;
           default:
             vis[
               veGameVirtualInputSuiteList.find((item) => item.label === value)
                 .value
             ]?.();
-            alert(`${value}成功`);
+            console.log(`${value}成功`);
             break;
         }
       } catch (error) {

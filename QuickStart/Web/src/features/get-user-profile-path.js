@@ -8,7 +8,9 @@ const getUserProfilePath = (veGameSdkInstance) => {
       try {
         // 实例代码：具体的path可自定义
         const userProfilePath = await veGameSdkInstance.getUserProfilePath();
-        alert(`保存用户配置文件的路径为：${JSON.stringify(userProfilePath)}`);
+        console.log(
+          `保存用户配置文件的路径为：${JSON.stringify(userProfilePath)}`
+        );
       } catch (error) {
         console.error(error);
       }

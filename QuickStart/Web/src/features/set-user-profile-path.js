@@ -8,7 +8,7 @@ const setUserProfilePath = (veGameSdkInstance) => {
       try {
         // 实例代码：具体的path可自定义
         await veGameSdkInstance.setUserProfilePath(["/a/b/", "/c/d/"]);
-        alert(`设置保存用户配置文件的路径成功`);
+        console.log(`设置保存用户配置文件的路径成功`);
       } catch (error) {
         console.error(error);
       }

@@ -14,7 +14,7 @@ const imeCompositionVisible = (veGameSdkInstance) => {
         true,
         "background-color: transparent;"
       );
-      alert("本地输入法显示中文合成过程成功");
+      console.log("本地输入法显示中文合成过程成功");
     } catch (error) {
       console.error(error);
     }

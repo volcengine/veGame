@@ -12,7 +12,7 @@ const sessionMode = (veGameSdkInstance) => {
         await veGameSdkInstance.setSessionMode(
           veGameModeList.find((item) => item.label === value).value
         );
-        alert(`切换模式成功，当前为${value}`);
+        console.log(`切换模式成功，当前为${value}`);
       } catch (error) {
         console.error(error);
       }

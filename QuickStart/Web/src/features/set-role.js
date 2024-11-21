@@ -13,7 +13,7 @@ const setRole = (veGameSdkInstance) => {
           userId: "xxx",
           role: veGameRoleList.find((item) => item.label === value).value,
         });
-        alert(`切换角色成功，当前为${value}`);
+        console.log(`切换角色成功，当前为${value}`);
       } catch (error) {
         console.error(error);
       }
