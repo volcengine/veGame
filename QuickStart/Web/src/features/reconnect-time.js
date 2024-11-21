@@ -11,7 +11,7 @@ const reconnectTime = (veGameSdkInstance) => {
         await veGameSdkInstance.setReconnectTime(
           Number(value.replace("s", "")) * 1000
         );
-        alert(`已设置重连时间为${value}`);
+        console.log(`已设置重连时间为${value}`);
       } catch (error) {
         console.error(error);
       }

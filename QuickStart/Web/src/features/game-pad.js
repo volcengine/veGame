@@ -13,19 +13,19 @@ const gamePad = (veGameSdkInstance) => {
         switch (value) {
           case "关闭触屏操作透传至游戏":
             pad.enableTouch(false);
-            alert(`${value}成功`);
+            console.log(`${value}成功`);
             break;
           case "关闭震动":
             pad.enableVibrate(false);
-            alert(`${value}成功`);
+            console.log(`${value}成功`);
             break;
           case "导出虚拟手柄配置":
             const config = await pad.exportGamePadConfig();
-            alert(`导出虚拟手柄配置，${JSON.stringify(config)}`);
+            console.log(`导出虚拟手柄配置，${JSON.stringify(config)}`);
             break;
           default:
             pad[veGamePadList.find((item) => item.label === value).value]?.();
-            alert(`${value}成功`);
+            console.log(`${value}成功`);
             break;
         }
       } catch (error) {

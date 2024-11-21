@@ -68,20 +68,20 @@ function initSdk() {
     console.log("message-received", msg);
     const { command } = msg;
     if (command === 8) {
-      alert("游戏超时退出");
+      console.log("游戏超时退出");
     }
   });
 
   // 如果启动时开启了排队服务，可以通过以下方式监听排队状态
   veGameSdkInstance.on("queue-update", ({ queueList, done }) => {
-    alert(
+    console.log(
       `排队中，排队信息：${JSON.stringify(queueList)}，排队状态：${
         done ? "成功" : "排队中"
       }`
     );
   });
   veGameSdkInstance.on("queue-success", ({ remainTime }) => {
-    alert(`排队成功，等待时间：${remainTime}`);
+    console.log(`排队成功，等待时间：${remainTime}`);
   });
 
   // 在页面 unmount 时检查云游戏是否处在运行状态，如果是正在运行，则调用 stop

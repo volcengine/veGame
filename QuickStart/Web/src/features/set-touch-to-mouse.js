@@ -7,7 +7,7 @@ const setTouchToMouse = (veGameSdkInstance) => {
     if (value) {
       try {
         await veGameSdkInstance.Mouse.setTouchToMouse(value === "开启");
-        alert(`单触点转鼠标消息${value}成功`);
+        console.log(`单触点转鼠标消息${value}成功`);
       } catch (error) {
         console.error(error);
       }
