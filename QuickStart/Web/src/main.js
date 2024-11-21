@@ -73,11 +73,15 @@ function initSdk() {
   });
 
   // 如果启动时开启了排队服务，可以通过以下方式监听排队状态
-  veGameSdkInstance.on("queue-update", ({ remainTime }) => {
-    alert(`排队中，前面还有：${remainTime}个用户`);
+  veGameSdkInstance.on("queue-update", ({ queueList, done }) => {
+    alert(
+      `排队中，排队信息：${JSON.stringify(queueList)}，排队状态：${
+        done ? "成功" : "排队中"
+      }`
+    );
   });
-  veGameSdkInstance.on("queue-success", (data) => {
-    alert("排队成功");
+  veGameSdkInstance.on("queue-success", ({ remainTime }) => {
+    alert(`排队成功，等待时间：${remainTime}`);
   });
 
   // 在页面 unmount 时检查云游戏是否处在运行状态，如果是正在运行，则调用 stop
