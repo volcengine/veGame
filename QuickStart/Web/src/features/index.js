@@ -17,3 +17,4 @@ export { default as getUserProfilePath } from "./get-user-profile-path.js";
 export { default as setTouchToMouse } from "./set-touch-to-mouse.js";
 export { default as virtualInputSuite } from "./virtual-input-suite.js";
 export { default as gamePad } from "./game-pad.js";
+export { default as touchToMouseEvent } from "./touch-to-mouse-event.js";

@@ -20,6 +20,7 @@
 16. 虚拟键鼠
 17. 本地输入法显示中文合成过程
 18. 自动回收时长
+19. 触控转鼠标
 
 方便用户快速接入云游戏客户端 Web SDK。
 
@@ -57,6 +58,7 @@
 │   │   ├── sync-local-keyboard-close-status.js # 同步本地键盘状态到云端
 │   │   ├── update-video-scale.js # 更新画面放缩比
 │   │   ├── virtual-input-suite.js # 虚拟键鼠
+│   │   ├── touch-to-mouse-event.js # 触控转鼠标
 │   └── style.css # 样式文件
 └── vite.config.js # vite 配置文件
 └── .env #  Web SDK 启动需要的配置
