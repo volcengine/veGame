@@ -34,7 +34,7 @@ public class SensorController implements SensorEventListener {
 
         mGyroscope = mSensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
 
-        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_UI);
+        mSensorManager.registerListener(this, mGyroscope, SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     public void stopSensor(){

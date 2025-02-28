@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -11,12 +12,75 @@
         android:layout_height="match_parent">
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/sw_sensor_control_mouse_move_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="23dp"
+        android:layout_marginStart="15dp"
+        android:textColor="@color/white"
+        android:text="是否开启传感器控制视角: " />
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/sw_sensor_control_mouse_move"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:checked="false"
+        app:layout_constraintStart_toEndOf="@id/sw_sensor_control_mouse_move_tip"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/sensor_to_mouse_move_num_speed_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/sensor_to_mouse_move_num_speed_tip_str"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>
+
+    <SeekBar
+        android:id="@+id/sensor_to_mouse_move_num_speed"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:max="50"
+        android:min="5"
+        android:background="#40ffffff"
+        app:layout_constraintStart_toEndOf="@id/sensor_to_mouse_move_num_speed_tip"
+        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>
+    <TextView
+        android:id="@+id/sensor_to_mouse_move_num_speed_tip_2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="50"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toEndOf="@id/sensor_to_mouse_move_num_speed"
+        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>
+
+    <TextView
+        android:id="@+id/mouse_event_monitor_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:gravity="center"
+        android:textColor="#8000FF00"
+        />
+
     <androidx.appcompat.widget.SwitchCompat
         android:id="@+id/sw_show_or_hide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:checked="true"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="120dp"
         android:layout_marginStart="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
@@ -40,24 +104,166 @@
 
     <com.volcengine.vegameengine.components.rocker.RockerView
         android:id="@+id/w_a_s_d_rocker"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="95dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         />
 
-    <Button
-        android:id="@+id/sensor_controller"
-        android:layout_width="240dp"
-        android:layout_height="50dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="50dp"
-        android:background="#509C27B0"
+    <View
+        android:id="@+id/left_shot_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="200dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@mipmap/shot_bg"
+        />
+
+    <TextView
+        android:id="@+id/jump_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/jump_tip"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_bg"
+        android:layout_marginStart="50dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintLeft_toRightOf="@id/w_a_s_d_rocker"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <com.volcengine.vegameengine.components.rocker.RockerView
+        android:id="@+id/right_shot_rocker"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginEnd="100dp"
+        android:layout_marginBottom="70dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:text="按住启用陀螺仪，松开关闭陀螺仪"
-        android:textSize="12sp"/>
+        />
+
+    <TextView
+        android:id="@+id/speed_seek_end_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/max_speed_seek_tip"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintRight_toRightOf="parent"/>
+
+    <SeekBar
+        android:id="@+id/mouse_move_speed_seek"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:max="100"
+        android:min="10"
+        android:background="#40ffffff"
+        app:layout_constraintEnd_toStartOf="@id/speed_seek_end_tip"
+        app:layout_constraintBottom_toBottomOf="@id/speed_seek_end_tip"/>
+
+    <TextView
+        android:id="@+id/speed_seek_start_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/min_speed_seek_tip"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/mouse_move_speed_seek"/>
+
+    <TextView
+        android:id="@+id/replace_bullet_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/replace_bullet_tip"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_bg"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="20dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/review_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/review_tip"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_bg"
+        android:layout_marginEnd="200dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/switch_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/switch_tip"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_bg"
+        android:layout_marginEnd="200dp"
+        android:layout_marginTop="120dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/key_B_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/B_key_tip"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_bg"
+        android:layout_marginEnd="100dp"
+        android:layout_marginTop="40dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <TextView
+        android:id="@+id/key_Esc_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:text="@string/esc_key_tip"
+        android:textSize="18sp"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:background="@drawable/corner_bg"
+        android:layout_marginEnd="100dp"
+        android:layout_marginTop="120dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <View
+        android:id="@+id/right_aim_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="180dp"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:background="@mipmap/aim_bg"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

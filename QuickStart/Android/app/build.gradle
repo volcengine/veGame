@@ -4,12 +4,20 @@ plugins {
 }
 
 android {
+    signingConfigs {
+        release {
+            storeFile file('/Users/bytedance/work/cp_cg/veGame/Untitled')
+            storePassword '123456'
+            keyAlias 'key0'
+            keyPassword '123456'
+        }
+    }
     compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.volcengine.vegameengine.demo"
-        minSdkVersion 19
+        minSdkVersion 26
         //noinspection ExpiredTargetSdkVersion
         targetSdkVersion 29
         versionCode 1
@@ -19,12 +27,16 @@ android {
         }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
 
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            debuggable true
         }
         debug {
             minifyEnabled false
@@ -49,7 +61,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
 
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'com.volcengine.vegame:vegame:1.30.0'
+    implementation 'com.volcengine.vegame:vegame:1.47.1'
     implementation 'com.volcengine.vegame:VeGameConsole:1.0.2'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.annotation:annotation:1.1.0'

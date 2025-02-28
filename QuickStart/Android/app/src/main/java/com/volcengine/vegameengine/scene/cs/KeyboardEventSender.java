@@ -1,4 +1,4 @@
-package com.volcengine.vegameengine.components.rocker;
+package com.volcengine.vegameengine.scene.cs;
 
 import android.util.Log;
 
@@ -8,6 +8,8 @@ import androidx.annotation.NonNull;
 import com.volcengine.cloudcore.common.mode.KeyBoardKey;
 import com.volcengine.cloudcore.common.mode.KeySateType;
 import com.volcengine.cloudphone.apiservice.IODeviceManager;
+import com.volcengine.vegameengine.components.rocker.Constant;
+import com.volcengine.vegameengine.components.rocker.RockerView;
 
 /**
  * W、A、S、D 4个按键单独或组合发送的发送器
@@ -142,15 +144,19 @@ public class KeyboardEventSender implements RockerView.OnRockerChangeListener {
         switch (key) {
             case A_KEY:
                 ioDeviceManager.sendKeyboardKey(KeyBoardKey.KeyboardKeyA, keyState);
+                Monitor.monitor();
                 break;
             case W_KEY:
                 ioDeviceManager.sendKeyboardKey(KeyBoardKey.KeyboardKeyW, keyState);
+                Monitor.monitor();
                 break;
             case S_KEY:
                 ioDeviceManager.sendKeyboardKey(KeyBoardKey.KeyboardKeyS, keyState);
+                Monitor.monitor();
                 break;
             case D_KEY:
                 ioDeviceManager.sendKeyboardKey(KeyBoardKey.KeyboardKeyD, keyState);
+                Monitor.monitor();
                 break;
         }
     }

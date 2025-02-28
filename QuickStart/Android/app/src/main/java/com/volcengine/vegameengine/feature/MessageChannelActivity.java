@@ -295,6 +295,11 @@ public class MessageChannelActivity extends BasePlayActivity
                     Toast.makeText(MessageChannelActivity.this, "[onReceiveMessage] message: " + iChannelMessage, Toast.LENGTH_SHORT).show();
                 }
 
+                @Override
+                public void onReceiveBinaryMessage(IMessageChannel.IChannelBinaryMessage iChannelBinaryMessage) {
+
+                }
+
                 /**
                  * 发送消息结果回调
                  *

@@ -22,9 +22,6 @@ import com.volcengine.cloudphone.apiservice.IODeviceManager;
 import com.volcengine.cloudphone.apiservice.outinterface.IGamePlayerListener;
 import com.volcengine.vegameengine.R;
 import com.volcengine.vegameengine.base.BasePlayActivity;
-import com.volcengine.vegameengine.components.rocker.KeyboardEventSender;
-import com.volcengine.vegameengine.components.rocker.RockerView;
-import com.volcengine.vegameengine.components.sensor.SensorController;
 import com.volcengine.vegameengine.util.AssetsUtil;
 import com.volcengine.vegameengine.util.ScreenUtil;
 
@@ -217,6 +214,12 @@ public class CSDemoWithOutterTouchListenerActivity extends BasePlayActivity impl
     @Override
     public void onQueueSuccessAndStart(int i) {
 
+    }
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        VeGameEngine.getInstance().stop();
     }
 
     // 将触摸事件转换成鼠标move事件的转换器

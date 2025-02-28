@@ -57,6 +57,8 @@ public class RockerView extends View {
 
     private OnRockerChangeListener mListener;
 
+    private OnRockerLocationListener locationListener;
+
     private static final int TRACE_NO_POINTER = -1;
     private int mPointerIdTrace = TRACE_NO_POINTER;
 
@@ -220,12 +222,18 @@ public class RockerView extends View {
             case MotionEvent.ACTION_DOWN:
                 if (mPointerIdTrace == TRACE_NO_POINTER && isTouchMe(event)) {
                     mPointerIdTrace = event.getPointerId(event.getActionIndex());
+                    if(locationListener != null) {
+                        locationListener.onRockLocationUpdated(event.getX(), event.getY(), mDiskRadius);
+                    }
                 }
             case MotionEvent.ACTION_MOVE: {
                 if (event.getPointerId(event.getActionIndex()) == mPointerIdTrace) {
                     int direction = calculateTouchInfo(event.getX(), event.getY());
                     isControl = true;
                     handleRockerChange(MotionEvent.ACTION_DOWN, direction);
+                    if(locationListener != null) {
+                        locationListener.onRockLocationUpdated(event.getX(), event.getY(), mDiskRadius);
+                    }
                     break;
                 }
             }
@@ -238,6 +246,9 @@ public class RockerView extends View {
                     mAngle = 0;
                     handleRockerChange(MotionEvent.ACTION_UP, direction);
                     mPointerIdTrace = TRACE_NO_POINTER;
+                    if(locationListener != null) {
+                        locationListener.onRockLocationUpdated(event.getX(), event.getY(), mDiskRadius);
+                    }
                 }
                 break;
             }
@@ -280,6 +291,10 @@ public class RockerView extends View {
         this.mListener = listener;
     }
 
+    public void setOnRockerLocationListener(OnRockerLocationListener listener){
+        this.locationListener = listener;
+    }
+
     public interface OnRockerChangeListener {
         /**
          *
@@ -287,5 +302,18 @@ public class RockerView extends View {
          * @param direction  表示摇杆所在方向
          */
         void onRock(int action, int direction);
+    }
+
+    /**
+     * 摇杆中心相对位置变化监听器
+     */
+    public interface OnRockerLocationListener {
+        /**
+         *
+         * @param x          当前触摸事件的X坐标
+         * @param y          当前触摸事件的Y坐标
+         * @param diskRadius 底盘半径
+         */
+        void onRockLocationUpdated(float x, float y, float diskRadius);
     }
 }
