@@ -185,8 +185,8 @@
     <string name="official_website">火山官网</string>
     <string name="official_website_url">https://www.volcengine.com/docs/6512/75577</string>
     <string name="first_open_app">firstOpenApp</string>
-    <string name="min_speed_seek_tip">速率(越大越快):10</string>
-    <string name="max_speed_seek_tip">100</string>
+    <string name="min_speed_seek_tip">陀螺仪敏感度(越大越快):1</string>
+    <string name="max_speed_seek_tip">50</string>
     <string name="jump_tip">跳跃</string>
     <string name="replace_bullet_tip">换弹</string>
     <string name="review_tip">检视</string>
@@ -194,5 +194,6 @@
     <string name="B_key_tip">B键</string>
     <string name="esc_key_tip">Esc键</string>
     <string name="sensor_to_mouse_move_num_speed_tip_str">每多少毫秒传输1次传感器数据: 5</string>
+    <string name="auto_close_sensor_when_moving_shot_tip">移动射击时自动关闭陀螺仪</string>
 
 </resources>

@@ -48,24 +48,24 @@ public class MainActivity extends BaseListActivity {
 
     @Override
     protected void setupAdapter(ItemsHolder holder) {
-        holder.addItem(R.string.audio, R.string.audio_desc, AudioServiceActivity.class);
-        holder.addItem(R.string.camera, R.string.camera_desc, CameraManagerActivity.class);
-        holder.addItem(R.string.clarity, R.string.clarity_desc, ClarityServiceActivity.class);
-        holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class);
-        holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FileChannelExtActivity.class);
-        holder.addItem(R.string.switch_ground, R.string.switch_ground_desc, GroundManagerActivity.class);
-        holder.addItem(R.string.io_device, R.string.io_device_desc, IODeviceManagerActivity.class);
-        holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class);
-        holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class);
-        holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class);
-        holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class);
-        holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class);
-        holder.addItem(R.string.pod_control, R.string.pod_control_desc, PodControlServiceActivity.class);
-        holder.addItem(R.string.probe_network, R.string.probe_network_desc, ProbeNetworkActivity.class);
-        holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class);
+//        holder.addItem(R.string.audio, R.string.audio_desc, AudioServiceActivity.class);
+//        holder.addItem(R.string.camera, R.string.camera_desc, CameraManagerActivity.class);
+//        holder.addItem(R.string.clarity, R.string.clarity_desc, ClarityServiceActivity.class);
+//        holder.addItem(R.string.clipboard, R.string.clipboard_desc, ClipBoardServiceManagerActivity.class);
+//        holder.addItem(R.string.file_channel_ext, R.string.file_channel_ext_desc, FileChannelExtActivity.class);
+//        holder.addItem(R.string.switch_ground, R.string.switch_ground_desc, GroundManagerActivity.class);
+//        holder.addItem(R.string.io_device, R.string.io_device_desc, IODeviceManagerActivity.class);
+//        holder.addItem(R.string.local_input, R.string.local_input_desc, LocalInputManagerActivity.class);
+//        holder.addItem(R.string.location, R.string.location_desc, LocationServiceActivity.class);
+//        holder.addItem(R.string.message_channel, R.string.message_channel_desc, MessageChannelActivity.class);
+//        holder.addItem(R.string.multi_user, R.string.multi_user_desc, MultiUserManagerActivity.class);
+//        holder.addItem(R.string.game_pad, R.string.game_pad_desc, GamePadServiceActivity.class);
+//        holder.addItem(R.string.pod_control, R.string.pod_control_desc, PodControlServiceActivity.class);
+//        holder.addItem(R.string.probe_network, R.string.probe_network_desc, ProbeNetworkActivity.class);
+//        holder.addItem(R.string.sensor, R.string.sensor_desc, SensorActivity.class);
         holder.addItem(R.string.cs_demo, R.string.cs_demo_desc, CSDemoActivity.class);
-        holder.addItem(R.string.cs_demo_2, R.string.cs_demo_desc_2, CSDemoWithOutterTouchListenerActivity.class);
-        holder.addItem(R.string.unclassified, R.string.unclassified_desc, OthersActivity.class);
+//        holder.addItem(R.string.cs_demo_2, R.string.cs_demo_desc_2, CSDemoWithOutterTouchListenerActivity.class);
+//        holder.addItem(R.string.unclassified, R.string.unclassified_desc, OthersActivity.class);
     }
 
     @Override

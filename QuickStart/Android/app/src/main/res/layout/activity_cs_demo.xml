@@ -28,40 +28,59 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="15dp"
+        android:layout_marginLeft="7dp"
         android:checked="false"
         app:layout_constraintStart_toEndOf="@id/sw_sensor_control_mouse_move_tip"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
-        android:id="@+id/sensor_to_mouse_move_num_speed_tip"
+        android:id="@+id/auto_close_sensor_when_moving_shot_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
-        android:text="@string/sensor_to_mouse_move_num_speed_tip_str"
+        android:text="@string/auto_close_sensor_when_moving_shot_tip"
         android:layout_marginStart="15dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>
 
-    <SeekBar
-        android:id="@+id/sensor_to_mouse_move_num_speed"
-        android:layout_width="100dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:max="50"
-        android:min="5"
-        android:background="#40ffffff"
-        app:layout_constraintStart_toEndOf="@id/sensor_to_mouse_move_num_speed_tip"
-        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>
-    <TextView
-        android:id="@+id/sensor_to_mouse_move_num_speed_tip_2"
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/auto_close_sensor_when_moving_shot"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:text="50"
-        android:layout_marginTop="10dp"
-        app:layout_constraintStart_toEndOf="@id/sensor_to_mouse_move_num_speed"
+        app:layout_constraintStart_toEndOf="@id/auto_close_sensor_when_moving_shot_text"
         app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>
+
+<!--    <TextView-->
+<!--        android:id="@+id/sensor_to_mouse_move_num_speed_tip"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:text="@string/sensor_to_mouse_move_num_speed_tip_str"-->
+<!--        android:layout_marginStart="15dp"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>-->
+
+<!--    <SeekBar-->
+<!--        android:id="@+id/sensor_to_mouse_move_num_speed"-->
+<!--        android:layout_width="100dp"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        android:max="50"-->
+<!--        android:min="5"-->
+<!--        android:background="#40ffffff"-->
+<!--        app:layout_constraintStart_toEndOf="@id/sensor_to_mouse_move_num_speed_tip"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>-->
+<!--    <TextView-->
+<!--        android:id="@+id/sensor_to_mouse_move_num_speed_tip_2"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:textColor="@color/white"-->
+<!--        android:text="50"-->
+<!--        android:layout_marginTop="10dp"-->
+<!--        app:layout_constraintStart_toEndOf="@id/sensor_to_mouse_move_num_speed"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/sw_sensor_control_mouse_move"/>-->
 
     <TextView
         android:id="@+id/mouse_event_monitor_tip"
@@ -79,7 +98,7 @@
         android:id="@+id/sw_show_or_hide"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:checked="true"
+        android:checked="false"
         android:layout_marginTop="120dp"
         android:layout_marginStart="15dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -99,6 +118,7 @@
         android:padding="15dp"
         android:textColor="@color/white"
         android:lineSpacingMultiplier = "1.5"
+        android:visibility="gone"
         android:text="1. 点击屏幕相当于点击鼠标左键;\n2. 在屏幕上触摸滑动相当于移动鼠标;\n3. 使用方向盘发送W、A、S、D4个按键;"
         />
 
@@ -125,8 +145,8 @@
 
     <TextView
         android:id="@+id/jump_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="@string/jump_tip"
         android:textSize="18sp"
         android:gravity="center"
@@ -157,18 +177,18 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="20dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintRight_toRightOf="parent"/>
+        app:layout_constraintRight_toRightOf="parent" />
 
     <SeekBar
         android:id="@+id/mouse_move_speed_seek"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
-        android:max="100"
-        android:min="10"
+        android:max="50"
+        android:min="1"
         android:background="#40ffffff"
         app:layout_constraintEnd_toStartOf="@id/speed_seek_end_tip"
-        app:layout_constraintBottom_toBottomOf="@id/speed_seek_end_tip"/>
+        app:layout_constraintBottom_toBottomOf="@id/speed_seek_end_tip" />
 
     <TextView
         android:id="@+id/speed_seek_start_tip"
@@ -178,12 +198,12 @@
         android:text="@string/min_speed_seek_tip"
         android:layout_marginTop="10dp"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/mouse_move_speed_seek"/>
+        app:layout_constraintEnd_toStartOf="@id/mouse_move_speed_seek" />
 
     <TextView
         android:id="@+id/replace_bullet_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="@string/replace_bullet_tip"
         android:textSize="18sp"
         android:gravity="center"
@@ -197,8 +217,8 @@
 
     <TextView
         android:id="@+id/review_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="@string/review_tip"
         android:textSize="18sp"
         android:gravity="center"
@@ -212,8 +232,8 @@
 
     <TextView
         android:id="@+id/switch_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="@string/switch_tip"
         android:textSize="18sp"
         android:gravity="center"
@@ -227,8 +247,8 @@
 
     <TextView
         android:id="@+id/key_B_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="@string/B_key_tip"
         android:textSize="18sp"
         android:gravity="center"
@@ -242,8 +262,8 @@
 
     <TextView
         android:id="@+id/key_Esc_button"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
         android:text="@string/esc_key_tip"
         android:textSize="18sp"
         android:gravity="center"

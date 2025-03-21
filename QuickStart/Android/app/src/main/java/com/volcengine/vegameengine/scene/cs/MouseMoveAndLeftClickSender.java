@@ -16,6 +16,7 @@ import java.util.Locale;
  */
 public class MouseMoveAndLeftClickSender implements RockerView.OnRockerChangeListener, RockerView.OnRockerLocationListener {
     private final static String TAG = "MouseMoveAndLeftClickSender";
+    final static int SENSITIVITY_FACTOR = 10;
     private static final int ROCK_DOWN = 0;
     private static final int ROCK_UP = 1;
 
@@ -33,8 +34,20 @@ public class MouseMoveAndLeftClickSender implements RockerView.OnRockerChangeLis
     // 模拟鼠标事件发送
     private final IODeviceManager ioDeviceManager;
 
+    // 移动射击启用时，自动关闭陀螺仪
+    private AngleSensorListener angleSensorListener;
+    private boolean autoCloseSensorWhenMovingShot;
+
     public MouseMoveAndLeftClickSender(@NonNull IODeviceManager _ioDeviceManager) {
         ioDeviceManager = _ioDeviceManager;
+    }
+
+    public void setAngleSensorListener(AngleSensorListener listener){
+        angleSensorListener = listener;
+    }
+
+    public void enableAutoCloseSensorWhenMovingShot(boolean enable){
+        autoCloseSensorWhenMovingShot = enable;
     }
 
     public void setMaxMoveSize(int x, int y) {
@@ -59,12 +72,22 @@ public class MouseMoveAndLeftClickSender implements RockerView.OnRockerChangeLis
                 ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyLBUTTON_VALUE, KeySateType.DOWN);
                 Monitor.monitor();
             }
+
+            if(autoCloseSensorWhenMovingShot
+                && angleSensorListener !=null){
+                angleSensorListener.pause();
+            }
+
         } else if (action == ROCK_UP) {
             ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyLBUTTON_VALUE, KeySateType.UP);
             Monitor.monitor();
             hasSetMouseCursorPos = false;
             currentMoveDistanceX = 0;
             currentMoveDistanceY = 0;
+
+            if(angleSensorListener !=null){
+                angleSensorListener.resume();
+            }
         }
     }
 
@@ -87,9 +110,7 @@ public class MouseMoveAndLeftClickSender implements RockerView.OnRockerChangeLis
             return;
         }
 
-        float sensitivityFactor = SensitivityManager.getCurrentSensitivity();
-        sensitivityFactor /= 10.f;
-        ioDeviceManager.sendInputMouseMove((int)(deltaX * sensitivityFactor), (int)(deltaY * sensitivityFactor));
+        ioDeviceManager.sendInputMouseMove((int)(deltaX * SENSITIVITY_FACTOR), (int)(deltaY * SENSITIVITY_FACTOR));
         String log = String.format(Locale.ENGLISH, "deltaX: %d, deltaY: %d, x: %f, y: %f ", deltaX, deltaY, x, y);
         Log.e(TAG, log);
         Monitor.monitor();

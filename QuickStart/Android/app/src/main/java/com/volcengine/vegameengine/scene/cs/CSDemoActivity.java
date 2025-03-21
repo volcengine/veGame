@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -43,6 +44,7 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     private TextView mOperationTip;
     private SensorController mSensorController;
     private final AngleSensorListener mAngleSensorListener = new AngleSensorListener();
+    private MouseMoveAndLeftClickSender mouseMoveAndLeftClickSender;
     // 左射击按钮，点击触发鼠标左键点击
     private View mLeftShotButton;
     // 右射击按钮，点击触发鼠标左键点击，长按滑动Rocker对应左键长按 + 鼠标滑动
@@ -67,9 +69,13 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     // 鼠标事件每秒发送个数统计视图
     private TextView monitorView;
     // 传感器速率提示View
-    private TextView sensorSpeedTip1, sensorSpeedTip2;
+//    private TextView sensorSpeedTip1, sensorSpeedTip2;
     // 传感器速率调整seek bar
-    private SeekBar sensorSpeedSeekBar;
+//    private SeekBar sensorSpeedSeekBar;
+    // 移动射击时自动关闭陀螺仪提示View
+    private TextView autoCloseSensorWhenMovingShotTextView;
+    // 移动射击时自动关闭陀螺仪开关
+    private SwitchCompat autoCloseSensorWhenMovingShotSwitch;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -97,28 +103,35 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
         _BButton = findViewById(R.id.key_B_button);
         escButton = findViewById(R.id.key_Esc_button);
         monitorView = findViewById(R.id.mouse_event_monitor_tip);
-        sensorSpeedTip1 = findViewById(R.id.sensor_to_mouse_move_num_speed_tip);
-        sensorSpeedTip2 = findViewById(R.id.sensor_to_mouse_move_num_speed_tip_2);
-        sensorSpeedSeekBar = findViewById(R.id.sensor_to_mouse_move_num_speed);
-        Monitor.listener = this;
-
-        sensorSpeedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                int currentSensitivity = seekBar.getProgress();
-                mAngleSensorListener.setSensorDataInterval((int)currentSensitivity);
+//        sensorSpeedTip1 = findViewById(R.id.sensor_to_mouse_move_num_speed_tip);
+//        sensorSpeedTip2 = findViewById(R.id.sensor_to_mouse_move_num_speed_tip_2);
+//        sensorSpeedSeekBar = findViewById(R.id.sensor_to_mouse_move_num_speed);
+        autoCloseSensorWhenMovingShotTextView = findViewById(R.id.auto_close_sensor_when_moving_shot_text);
+        autoCloseSensorWhenMovingShotSwitch = findViewById(R.id.auto_close_sensor_when_moving_shot);
+        autoCloseSensorWhenMovingShotSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(mouseMoveAndLeftClickSender != null) {
+                mouseMoveAndLeftClickSender.enableAutoCloseSensorWhenMovingShot(isChecked);
             }
         });
+        Monitor.listener = this;
+
+//        sensorSpeedSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+//
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                int currentSensitivity = seekBar.getProgress();
+//                mAngleSensorListener.setSensorDataInterval((int)currentSensitivity);
+//            }
+//        });
 
         mSwShowOrHide.setOnCheckedChangeListener((buttonView, isChecked) -> {
             mOperationTip.setVisibility(isChecked ? View.VISIBLE : View.GONE);
@@ -135,29 +148,43 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     private void enableSensorControlMouseMove(boolean enable){
         if(enable){
             // 启用陀螺仪控制画面视角的功能
-            if (mSensorController == null) {
-                mSensorController = new SensorController();
-                mSensorController.setSensorEventListener(mAngleSensorListener);
-            }
-            mSensorController.startSensor(getApplicationContext());
+            startSensor();
 
-            sensorSpeedTip1.setVisibility(View.VISIBLE);
-            sensorSpeedTip2.setVisibility(View.VISIBLE);
-            sensorSpeedSeekBar.setVisibility(View.VISIBLE);
-            sensorSpeedSeekBar.setProgress((int)mAngleSensorListener.getSensorDataInterval());
+            autoCloseSensorWhenMovingShotTextView.setVisibility(View.VISIBLE);
+            autoCloseSensorWhenMovingShotSwitch.setVisibility(View.VISIBLE);
+            autoCloseSensorWhenMovingShotSwitch.setChecked(false);
+
+//            sensorSpeedTip1.setVisibility(View.VISIBLE);
+//            sensorSpeedTip2.setVisibility(View.VISIBLE);
+//            sensorSpeedSeekBar.setVisibility(View.VISIBLE);
+//            sensorSpeedSeekBar.setProgress((int)mAngleSensorListener.getSensorDataInterval());
         } else {
             // 禁止陀螺仪控制画面视角的功能
-            if(mSensorController != null){
-                mSensorController.stopSensor();
-            }
-            mAngleSensorListener.reset();
+            stopSensor();
 
-            sensorSpeedTip1.setVisibility(View.GONE);
-            sensorSpeedTip2.setVisibility(View.GONE);
-            sensorSpeedSeekBar.setVisibility(View.GONE);
+            autoCloseSensorWhenMovingShotTextView.setVisibility(View.GONE);
+            autoCloseSensorWhenMovingShotSwitch.setVisibility(View.GONE);
+
+//            sensorSpeedTip1.setVisibility(View.GONE);
+//            sensorSpeedTip2.setVisibility(View.GONE);
+//            sensorSpeedSeekBar.setVisibility(View.GONE);
         }
     }
 
+    private void startSensor(){
+        if (mSensorController == null) {
+            mSensorController = new SensorController();
+            mSensorController.setSensorEventListener(mAngleSensorListener);
+        }
+        mSensorController.startSensor(getApplicationContext());
+    }
+
+    private void stopSensor(){
+        if(mSensorController != null){
+            mSensorController.stopSensor();
+        }
+        mAngleSensorListener.reset();
+    }
 
     private void initGamePlayConfig() {
         /**
@@ -199,6 +226,7 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
     @Override
     public void onPlaySuccess(String s, int i, Map<String, String> map, String s1, String s2) {
         Log.e(TAG, "onPlaySuccess is invoked...");
+
         IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
 
         int containerWidth = mContainer.getMeasuredWidth();
@@ -235,10 +263,13 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
             });
 
             // MouseMoveAndLeftClickSender封装了将按钮点击事件、长按事件转换为鼠标左键长按、鼠标滑动事件的逻辑
-            MouseMoveAndLeftClickSender mouseMoveAndLeftClickSender = new MouseMoveAndLeftClickSender(ioDeviceManager);
+            mouseMoveAndLeftClickSender = new MouseMoveAndLeftClickSender(ioDeviceManager);
             mouseMoveAndLeftClickSender.setMaxMoveSize(containerWidth, containerHeight);
-            int currentSensitivity = SensitivityManager.getCurrentSensitivity();
-            mMouseMoveSensitivityController.setProgress(currentSensitivity);
+            mouseMoveAndLeftClickSender.setAngleSensorListener(mAngleSensorListener);
+            mouseMoveAndLeftClickSender.enableAutoCloseSensorWhenMovingShot(autoCloseSensorWhenMovingShotSwitch.isChecked());
+
+//            int currentSensitivity = SensitivityManager.getCurrentSensitivity();
+            mMouseMoveSensitivityController.setProgress((int)AngleSensorListener.sensitivityFactor);
             mRightShotRockerView.setOnRockerLocationListener(mouseMoveAndLeftClickSender);
             mRightShotRockerView.setOnRockerChangeListener(mouseMoveAndLeftClickSender);
 
@@ -255,7 +286,7 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
                 @Override
                 public void onStopTrackingTouch(SeekBar seekBar) {
                     int currentSensitivity = seekBar.getProgress();
-                    SensitivityManager.setSensitivity(currentSensitivity);
+                    AngleSensorListener.sensitivityFactor = currentSensitivity;
                 }
             });
         }
@@ -319,8 +350,8 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
                     startY = currentY;
                     startTimeTouch = System.currentTimeMillis();
                 } else if (briefEvents.get(0).action == MotionEvent.ACTION_MOVE) {
-                    if (System.currentTimeMillis() - startTimeTouch <= 500) {
-                        // 小于500毫秒一律当做点击
+                    if (System.currentTimeMillis() - startTimeTouch <= 100) {
+                        // 小于100毫秒一律当做点击
                         // 业务方可根据自身业务灵活实现相关逻辑
                         return;
                     }
@@ -333,13 +364,13 @@ public class CSDemoActivity extends BasePlayActivity implements IGamePlayerListe
                         return;
                     }
                     Log.e(TAG, "the delta of mouse move is " + finalX + ", " + finalY + ";");
-                    int sensitivityFactor = SensitivityManager.getCurrentSensitivity();
-                    ioDeviceManager.sendInputMouseMove(finalX * sensitivityFactor, finalY * sensitivityFactor);
+
+                    ioDeviceManager.sendInputMouseMove(finalX * MouseMoveAndLeftClickSender.SENSITIVITY_FACTOR, finalY * MouseMoveAndLeftClickSender.SENSITIVITY_FACTOR);
                     startX = briefTouchEvent.x;
                     startY = briefTouchEvent.y;
                 } else if (briefEvents.get(0).action == MotionEvent.ACTION_UP) {
-                    if (System.currentTimeMillis() - startTimeTouch <= 500) {
-                        // 小于500毫秒一律当做点击
+                    if (System.currentTimeMillis() - startTimeTouch <= 100) {
+                        // 小于100毫秒一律当做点击
                         ioDeviceManager.sendInputCursorPos(currentX, currentY);
                         ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyLBUTTON_VALUE, KeySateType.DOWN);
                         ioDeviceManager.sendInputMouseKey(MouseKey.MouseKeyLBUTTON_VALUE, KeySateType.UP);

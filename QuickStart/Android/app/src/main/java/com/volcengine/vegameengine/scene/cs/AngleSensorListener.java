@@ -10,78 +10,91 @@ import com.volcengine.cloudphone.apiservice.IODeviceManager;
 
 public class AngleSensorListener implements SensorEventListener {
     private static final String TAG = "AngleSensorListener";
-    private float timestamp = 0;
+    static double sensitivityFactor = 50;
+    private double timestamp = 0;
     private long lastSendEventTimestamp = 0;
-    private float[] angle = new float[3];
-    private static final float NS2S = 1.0f / 1_000_000_000.0f;
-    private boolean isFirstTime = true;
-    private int startX, startY;
+    private double[] angle = new double[2];
+    private static final double NS2S = 1.0 / 1_000_000_000.0;
     private int mWidth, mHeight;
-    private float radiusThreshold;
-    private int smoothCount;
+    private long sensorDataInterval = 10;
+    private double angleThreshold = 0.0008;
 
-    private long sensorDataInterval = 49;
+    private boolean enableSendEvent = true;
 
-    public void setSize(int width, int height){
+    public void setSize(int width, int height) {
         mWidth = width;
         mHeight = height;
-        radiusThreshold = (float) Math.toRadians(0.1);
+    }
+
+    void pause(){
+        enableSendEvent = false;
+    }
+
+    void resume(){
+        enableSendEvent = true;
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         IODeviceManager ioDeviceManager = VeGameEngine.getInstance().getIODeviceManager();
-        if(ioDeviceManager == null){
+        if (ioDeviceManager == null) {
             return;
         }
         if (timestamp != 0) {
-            final float dT = (sensorEvent.timestamp - timestamp) * NS2S;
-            float deltaX = sensorEvent.values[0] * dT;
-            float deltaY = sensorEvent.values[1] * dT;
-            float deltaZ = sensorEvent.values[2] * dT;
+            final double dT = (sensorEvent.timestamp - timestamp) * NS2S;
 
-            if(Math.abs(deltaX) > radiusThreshold) {
-                smoothCount++;
-                angle[0] += deltaX;
-            }
-            if(Math.abs(deltaY) > radiusThreshold) {
-                smoothCount++;
-                angle[1] += deltaY;
-            }
-            if(Math.abs(deltaZ) > radiusThreshold) {
-                angle[2] += deltaZ;
-            }
+            // 使用过滤后的数据
+            double deltaX = -sensorEvent.values[0] * dT;
+            double deltaY = sensorEvent.values[1] * dT;
 
-            float angleX = (float) Math.toDegrees(angle[0]);
-            float angleY = (float) Math.toDegrees(angle[1]);
-            float angleZ = (float) Math.toDegrees(angle[2]);
+            long currentTime = System.currentTimeMillis();
+            // 累积
+            angle[0] += deltaX;
+            angle[1] += deltaY;
 
-            // 横屏状态下，只需要考虑Y轴、X轴旋转
-            deltaY = angleY / 360.0f; // 垂直转动陀螺仪的范围为0~180度，对应0~Height
-            deltaX = -(angleX / 360.0f); // 水平转动陀螺仪的范围为0~360度，对应0~Width;
+            // 控制鼠标事件频率频率
+            if (currentTime - lastSendEventTimestamp >= sensorDataInterval) {
+                boolean isValidX = Math.abs(angle[0]) > angleThreshold;
+                boolean isValidY = Math.abs(angle[1]) > angleThreshold;
 
-            int sensitivity = SensitivityManager.getCurrentSensitivity();
-            int finalX = (int) (deltaX * mWidth) * sensitivity;
-            int finalY = (int) (deltaY * mHeight) * sensitivity;
+                boolean needUploadEvent = true;
+                double finalAngleX = angle[0];
+                double finalAngleY = angle[1];
 
-            if(isFirstTime){
-                startX = finalX;
-                startY = finalY;
-                isFirstTime = false;
-            } else {
-                long currentTime = System.currentTimeMillis();
-                if(currentTime - lastSendEventTimestamp >= sensorDataInterval) {
-                    // 控制频率，最大不超100次/秒
-                    ioDeviceManager.sendInputMouseMove(finalX - startX, finalY - startY);
-                    lastSendEventTimestamp = currentTime;
-                    Log.e(TAG, String.format("the current degree is [%d, %d], [%d, %d], [%d]...", finalX - startX, finalY - startY, finalX, finalY, sensitivity));
-                    if(smoothCount > 0) {
-                        Log.e("TAG", "the smooth count is " + smoothCount);
+                if (!isValidX && !isValidY) {
+                    // 都未超过阈值，不发送事件，保证画面稳定
+                    // 并且不改变angle数组，保持angle数组的积累
+                    needUploadEvent = false;
+                } else if (!isValidX) {
+                    finalAngleX = 0;
+                } else if (!isValidY) {
+                    finalAngleY = 0;
+                }
+
+                if (needUploadEvent) {
+                    // 横屏状态下，只需要考虑Y轴、X轴旋转
+                    double distanceX = finalAngleX / 3.1415926; // 水平转动陀螺仪的范围为0~360度，对应0~Width;
+                    distanceX *= mWidth;
+                    distanceX *= (sensitivityFactor * 0.1);
+                    double distanceY = finalAngleY / 3.1415926; // 垂直转动陀螺仪的范围为0~360度，对应0~Height;
+                    distanceY *= mHeight;
+                    distanceY *= (sensitivityFactor * 0.1);
+
+                    int finalX = (int) distanceX;
+                    int finalY = (int) distanceY;
+
+                    if(enableSendEvent) {
+                        ioDeviceManager.sendInputMouseMove(finalX, finalY);
+                        Log.e(TAG, String.format("the current degree is [%f, %f], [%d, %d], [%f]...", angle[0], angle[1], finalX, finalY, sensitivityFactor));
+                        Monitor.monitor();
                     }
-                    smoothCount = 0;
-                    startX = finalX;
-                    startY = finalY;
-                    Monitor.monitor();
+                    lastSendEventTimestamp = currentTime;
+                    if (isValidX) {
+                        angle[0] = 0;
+                    }
+                    if (isValidY) {
+                        angle[1] = 0;
+                    }
                 }
             }
         } else {
@@ -97,8 +110,7 @@ public class AngleSensorListener implements SensorEventListener {
 
     public void reset() {
         timestamp = 0;
-        angle = new float[3];
-        isFirstTime = true;
+        angle = new double[2];
     }
 
     public long getSensorDataInterval() {
@@ -106,7 +118,7 @@ public class AngleSensorListener implements SensorEventListener {
     }
 
     public void setSensorDataInterval(long sensorDataInterval) {
-        if(sensorDataInterval < 5 || sensorDataInterval > 50){
+        if (sensorDataInterval < 5 || sensorDataInterval > 50) {
             return;
         }
         this.sensorDataInterval = sensorDataInterval;

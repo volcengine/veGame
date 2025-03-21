@@ -1,5 +1,5 @@
 <!-- res/drawable/circle_transparent_background.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#40ffffff" /> <!-- 半透明背景色，#80 表示 50% 透明度 -->
-    <corners android:radius="70dp" /> <!-- 圆角半径，确保是足够大的值以形成圆形 -->
+    <solid android:color="#20ffffff" /> <!-- 半透明背景色，#80 表示 50% 透明度 -->
+    <corners android:radius="50dp" /> <!-- 圆角半径，确保是足够大的值以形成圆形 -->
 </shape>
