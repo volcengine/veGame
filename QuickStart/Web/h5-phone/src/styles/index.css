@@ -1,0 +1,136 @@
+/* 添加全局字体大小 */
+body {
+    font-size: 13px;
+    margin: 0;
+    padding: 0;
+}
+
+/* 基础样式 */
+.container {
+    display: flex;
+    gap: 10px;
+    max-width: 1600px;
+    margin: 0 auto;
+    padding: 20px;
+    position: relative;
+}
+
+#player {
+    background: #000;
+}
+
+/* 竖屏 */
+#player.pc-portrait {
+    height: calc(100vh - 100px);
+    width: calc((100vh - 100px) / 1920 * 1080);
+}
+
+/* 横屏 */
+#player.pc-landscape {
+    width: calc(100vh - 100px);
+    height: calc((100vh - 100px) / 1920 * 1080);
+}
+
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 15px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    min-width: 200px;
+}
+
+/* 非移动端样式 */
+@media screen and (min-width: 769px) {
+    .control-panel.hidden {
+        display: none !important;
+    }
+}
+
+/* 移动端样式 */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 0;
+    }
+
+    #player {
+        min-width: 100%;
+        height: 100vh;
+    }
+
+    .control-panel {
+        position: fixed;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        width: 200px;
+        background: rgba(245, 245, 245, 0.9);
+        transform: translateX(100%);
+        transition: transform 0.3s ease;
+        z-index: 99;
+    }
+
+    .control-panel.hidden {
+        display: flex !important;
+        transform: translateX(100%);
+    }
+
+    .control-panel:not(.hidden) {
+        transform: translateX(0);
+    }
+}
+
+/* 按钮样式 */
+button {
+    padding: 4px 16px;
+    border: none;
+    border-radius: 4px;
+    background: #1890ff;
+    color: white;
+    cursor: pointer;
+    font-size: 13px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background: #40a9ff;
+}
+
+/* 切换按钮特殊样式 */
+.toggle-btn {
+    position: fixed;
+    right: 10px; 
+    top: 30px;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    width: auto;
+    min-width: 80px;
+    text-align: center;
+}
+
+.toggle-btn:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.resolution-control {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+select {
+    padding: 6px;
+    border-radius: 4px;
+    border: 1px solid #d9d9d9;
+    width: 100%;
+    font-size: 13px;
+}
+
+label {
+    font-size: 13px;
+}
