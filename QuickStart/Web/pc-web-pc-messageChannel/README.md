@@ -2,7 +2,7 @@
 
 ## 功能说明
 
-这个示例展示了如何在 PC 玩端游场景下消息通道。
+这个示例展示了如何在 PC 玩端游场景下实现消息通道。
 
 ## 目录结构
 
@@ -55,10 +55,16 @@ VEGAME_TOKEN_SECRET_ACCESS_KEY=""
 npm install
 ```
 
-2. 配置环境变量：
+2. 在您的游戏中集成 Message Channel SDK
+
+具体参考：[手游 Message Channel SDK 接入说明](https://www.volcengine.com/docs/6512/75598) / [端游 Message Channel SDK 接入说明](https://www.volcengine.com/docs/6512/161930)
+
+3. 在 [火山引擎控制台](https://console.volcengine.com/veGame/region:veGame+cn-north-1/guidepage?activeStep=sdk&collapse=false) 创建业务->上架游戏->购买套餐，并且为游戏配置部署策略
+
+4. 配置环境变量：
    修改 `.env` 文件，填入您的配置信息
 
-3. 根据您的实际场景调整`index.ts`中的初始化参数`initConfig`，默认是 PC 玩端游
+5. 根据您的实际场景调整`index.ts`中的初始化参数`initConfig`，默认是 PC 玩端游
 
 ```
 | 实际场景       | isPC（是否是PC端） | mode（手游/端游）   |
@@ -68,7 +74,7 @@ npm install
 | h5玩手游       | false            | MODE.CLOUD_PHONE_GAME|
 ```
 
-4. 启动项目：
+6. 启动项目：
 
 ```bash
 npm start

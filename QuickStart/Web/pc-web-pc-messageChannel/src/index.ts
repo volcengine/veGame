@@ -29,10 +29,56 @@ const gameController = new GameController({
   },
 });
 
-// 获取/设置自动回收时长：游戏启动后才可以调用实例方法
 const startSuccessCallback = (gameController) => {
   // 展示操作的UI
   document.getElementById("control-panel-detail")?.classList.remove("hidden");
+
+  const destUserIds = new Map();
+
+  // 运行过程中，云端实例发送到客户端的自定义消息事件回调。
+  gameController.sdkInstance.on("message", (msg) => {
+    /*
+    userId: string; // 发送消息的用户id
+    mid: number; // 消息唯一标识 ID
+    text: string; // 文本消息内容
+    binary: ArrayBuffer; // 二进制消息内容（仅端游支持 ArrayBuffer 数据类型发送）
+    time: number; // 消息发送时的时间戳
+    key: string; // 自定义消息的 key
+    */
+    const { userId, mid, text, binary, time, key } = msg;
+    console.log(userId, mid, text, binary, time, key);
+    // 处理消息的逻辑
+  });
+
+  // 通过消息通道收发消息时，云端实例在线的回调
+  gameController.sdkInstance.on(
+    "message-channel-online",
+    async (destUserId) => {
+      destUserIds.set(destUserId, true);
+      console.log("------------------当前通道连接成功:", destUserId);
+      // 客户端发送消息到云端实例，需要在消息通道建立后调用，即需要收到 'message-channel-online' 事件回调。
+      const message = {
+        // 消息内容（仅端游支持 ArrayBuffer 数据类型发送），比如您需要传递的登录参数等信息
+        message: "message",
+        // 发送的消息否需要应答
+        needAck: true,
+        // 应答消息的超时时间（毫秒）
+        timeout: 5 * 1000,
+        // 云端游戏初始化 veMessageChannelClient 时填入的目标用户 ID（如果 Message Channel 连接通道超过1条，必须指定 destUserId）
+        destUserId,
+        // 自定义消息的 key
+        key: "test-key",
+      };
+      const res = await gameController.sdkInstance.sendMessage(message);
+      console.log("发送消息结果：", res);
+    }
+  );
+  // 通过消息通道收发消息时，云端实例离线的回调（发送消息可能失败）
+  gameController.sdkInstance.on("message-channel-offline", (destUserId) => {
+    destUserIds.set(destUserId, false);
+    // 处理消息通道离线的逻辑
+    console.log("------------------当前通道断开连接:", destUserId);
+  });
 };
 
 const stopSuccessCallback = () => {
