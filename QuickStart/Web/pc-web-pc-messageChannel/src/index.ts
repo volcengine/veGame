@@ -34,7 +34,6 @@ const startSuccessCallback = (gameController) => {
   document.getElementById("control-panel-detail")?.classList.remove("hidden");
 
   const destUserIds = new Map();
-
   // 运行过程中，云端实例发送到客户端的自定义消息事件回调。
   gameController.sdkInstance.on("message", (msg) => {
     /*

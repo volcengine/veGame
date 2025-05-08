@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PC 玩端游场景下文件上传示例</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 游戏画面容器 -->
+      <div id="player"></div>
+
+      <!-- 控制面板切换按钮 -->
+      <button id="toggle-panel" class="toggle-btn">隐藏控制面板</button>
+
+      <!-- 控制面板 -->
+      <div class="control-panel" id="control-panel">
+        <button id="start-btn">开始游戏</button>
+        <button id="stop-btn">停止游戏</button>
+
+        <div id="control-panel-detail" class="hidden">
+          <input type="file" id="upload-input" />
+          <div style="display: flex; flex-wrap: wrap; gap: 4px">
+            <button id="upload-btn" class="file-btn">上传文件</button>
+            <button id="pause-upload-btn" class="file-btn">暂停上传</button>
+            <button id="stop-upload-btn" class="file-btn">停止上传</button>
+            <button id="pause-download-btn" class="file-btn">暂停下载</button>
+            <button id="stop-download-btn" class="file-btn">停止下载</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>
