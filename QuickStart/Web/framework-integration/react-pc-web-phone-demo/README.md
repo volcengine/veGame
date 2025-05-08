@@ -26,6 +26,7 @@ npm install
 4. 运行
 
 ```bash
+cd QuickStart/Web/framework-integration/react-pc-web-phone-demo
 npm run dev
 ```
 

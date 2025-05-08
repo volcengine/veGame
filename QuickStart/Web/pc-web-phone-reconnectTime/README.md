@@ -25,7 +25,7 @@
 ## 前置条件
 
 - Node.js 无版本要求
-- SDK 版本 >= xxxx
+- SDK 版本 >= 1.62.0
 - 浏览器需支持 WebRTC
 
 ## ⚙️ 配置项说明
@@ -73,7 +73,8 @@ npm install
 4. 启动项目：
 
 ```bash
-npm start
+cd QuickStart/Web/pc-web-phone-reconnectTime
+npm run dev
 ```
 
 ## 问题反馈

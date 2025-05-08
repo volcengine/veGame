@@ -10,7 +10,6 @@
 npm install
 ```
 
-
 2. 配置环境变量：
    修改 `.env` 文件，填入您的配置信息
 
@@ -27,6 +26,7 @@ npm install
 4. 运行
 
 ```bash
+cd QuickStart/Web/framework-integration/vue-pc-web-phone-demo
 npm run dev
 ```
 
