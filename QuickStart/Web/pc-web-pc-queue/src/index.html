@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PC 玩端游场景下排队示例</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 游戏画面容器 -->
+      <div id="player"></div>
+
+      <!-- 控制面板切换按钮 -->
+      <button id="toggle-panel" class="toggle-btn">隐藏控制面板</button>
+
+      <!-- 控制面板 -->
+      <div class="control-panel" id="control-panel">
+        <button id="start-btn">开始游戏</button>
+        <button id="stop-btn">停止游戏</button>
+
+        <div id="control-panel-detail" class="hidden">
+          <!-- 新增自动化回收时长输入框和按钮 -->
+          <div class="queue-control">
+            <button id="cancel-queue-btn">退出排队</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

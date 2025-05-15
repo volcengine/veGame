@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>H5 端玩手游场景下使用本地键盘示例</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 游戏画面容器 -->
+      <div id="player"></div>
+
+      <!-- 控制面板切换按钮 -->
+      <button id="toggle-panel" class="toggle-btn">隐藏控制面板</button>
+
+      <!-- 控制面板 -->
+      <div class="control-panel" id="control-panel">
+        <button id="start-btn">开始游戏</button>
+        <button id="stop-btn">停止游戏</button>
+
+        <div id="control-panel-detail" class="hidden">
+          <div id="custom-keyboard-input-id-container">
+            <label for="custom-keyboard-input-id"></label>
+            <input type="text" id="custom-keyboard-input-id" />
+            <button id="submit-custom-keyboard-id">
+              同步本地键盘隐藏或关闭状态到云端游戏
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>

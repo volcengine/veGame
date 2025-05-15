@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PC 端玩手游场景下设置/获取保存用户配置文件的路径示例</title>
+  </head>
+  <body>
+    <div class="container">
+      <!-- 游戏画面容器 -->
+      <div id="player"></div>
+
+      <!-- 控制面板切换按钮 -->
+      <button id="toggle-panel" class="toggle-btn">隐藏控制面板</button>
+
+      <!-- 控制面板 -->
+      <div class="control-panel" id="control-panel">
+        <button id="start-btn">开始游戏</button>
+        <button id="stop-btn">停止游戏</button>
+
+        <div id="control-panel-detail" class="hidden">
+          <!-- 新增自动化回收时长输入框和按钮 -->
+          <div class="user-profile-path-control">
+            <label for="user-profile-path">用户配置文件路径:</label>
+            <textarea
+              id="user-profile-path"
+              placeholder="输入用户配置文件路径，多个换行分隔"
+            ></textarea>
+            <button id="set-user-profile-path">提交修改</button>
+            <button id="get-user-profile-path">获取当前值</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="./index.ts"></script>
+  </body>
+</html>
