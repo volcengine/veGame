@@ -8,7 +8,7 @@
     "lint": "eslint . --ext .ts,.tsx"
   },
   "dependencies": {
-    "@volcengine/vegame": "1.62.0"
+    "@volcengine/vegame": "1.65.0"
   },
   "devDependencies": {
     "typescript": "4.9.5",
