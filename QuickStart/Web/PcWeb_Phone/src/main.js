@@ -101,7 +101,10 @@ function bindInstanceEvent(veGameSdkInstance) {
       const startRes = await veGameSdkInstance?.start({
         ...startConfig,
         rotation: isPC ? "landscape" : "portrait", // 以竖屏状态启动
-        isScreenLock: !isPC, // 移动端是开启锁定屏幕横竖屏显示（即默认开启自动旋转功能，移动端时监听 orientation 进行画面旋转）
+        isScreenLock: !isPC,// 移动端是开启锁定屏幕横竖屏显示（即默认开启自动旋转功能，移动端时监听 orientation 进行画面旋转）
+        extra: {
+          key1: 'value1'
+        }, // extra 自定义参数
       });
       console.log("start success", startRes);
       // 隐藏启动云游戏按钮， 展示关闭云游戏按钮
